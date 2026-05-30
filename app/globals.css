@@ -1,0 +1,115 @@
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css");
+
+@import "tailwindcss";
+@config "../tailwind.config.ts";
+
+@theme {
+  --color-white: #ffffff;
+  --color-surface: #ffffff;
+  --color-surface-warm: #f9f9f9;
+  --color-copper: #c87d41;
+  --color-copper-dark: #b87333;
+  --color-copper-light: #f5e6d8;
+  --color-copper-muted: #fdf8f4;
+  --color-border: rgba(0, 0, 0, 0.06);
+  --color-border-soft: rgba(0, 0, 0, 0.04);
+  --color-text-primary: #1a1a1a;
+  --color-text-secondary: #5c5c5c;
+  --color-text-muted: #8a8a8a;
+
+  --font-pretendard: "Pretendard", -apple-system, BlinkMacSystemFont, system-ui,
+    sans-serif;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply font-pretendard font-normal tracking-tight text-text-primary antialiased;
+    line-height: 1.7;
+    min-height: 100vh;
+    background-color: #ffffff;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-semibold tracking-tight text-text-primary;
+    line-height: 1.35;
+  }
+
+  ::selection {
+    background: rgba(200, 125, 65, 0.22);
+    color: #1a1a1a;
+  }
+}
+
+@layer components {
+  /* 모던 GNB — 반투명 블러 */
+  .gnb-modern {
+    @apply sticky top-0 z-50 border-b border-border bg-white/75 backdrop-blur-xl backdrop-saturate-150;
+  }
+
+  .section-white {
+    @apply bg-white;
+  }
+
+  .section-warm {
+    @apply bg-surface-warm;
+  }
+
+  /* 소프트 카드 */
+  .soft-card {
+    @apply rounded-2xl border border-border bg-white shadow-lg shadow-black/5;
+  }
+
+  .soft-card-interactive {
+    @apply rounded-2xl border border-border bg-white shadow-lg shadow-black/5 transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-xl hover:shadow-black/10;
+  }
+
+  /* 카퍼 버튼 */
+  .btn-copper {
+    @apply inline-flex items-center justify-center rounded-full bg-copper px-8 py-3 text-sm font-medium text-white transition-all duration-300 ease-in-out hover:-translate-y-0.5 hover:bg-copper-dark hover:shadow-lg hover:shadow-copper/20;
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center justify-center rounded-full border border-border bg-white px-8 py-3 text-sm font-medium text-text-secondary transition-all duration-300 ease-in-out hover:-translate-y-0.5 hover:border-copper/30 hover:text-copper hover:shadow-md hover:shadow-black/5;
+  }
+
+  /* 필터 칩 */
+  .chip {
+    @apply rounded-full border border-border bg-white px-5 py-2.5 text-sm font-medium text-text-secondary transition-all duration-300 ease-in-out hover:border-copper/25 hover:text-copper hover:shadow-md hover:shadow-black/5;
+  }
+
+  .chip-active {
+    @apply border-copper/30 bg-copper-muted text-copper shadow-md shadow-copper/10;
+  }
+
+  .site-footer {
+    @apply border-t border-border bg-surface-warm;
+  }
+
+  .font-wiki {
+    @apply font-pretendard font-normal leading-loose tracking-tight text-text-secondary;
+  }
+}
+
+@layer utilities {
+  .leading-loose {
+    line-height: 1.85;
+  }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}

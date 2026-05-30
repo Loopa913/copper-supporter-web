@@ -1,0 +1,46 @@
+"use client";
+
+import Link from "next/link";
+import { ExternalLink } from "lucide-react";
+import { motion } from "framer-motion";
+import { SHOP_CTA, SHOP_INTRO } from "@/lib/data/shop";
+import { GoodsSlider } from "@/components/shop/GoodsSlider";
+import { SectionHeader } from "@/components/ui/SectionHeader";
+import { FadeIn } from "@/components/ui/FadeIn";
+
+export function ShopGallery() {
+  return (
+    <div className="section-white px-5 py-24 sm:px-8 sm:py-28">
+      <div className="mx-auto max-w-6xl">
+        <SectionHeader
+          eyebrow="굿즈샵"
+          title={SHOP_INTRO.title}
+          description={SHOP_INTRO.description}
+          align="center"
+        />
+
+        <FadeIn className="mx-auto mt-10 max-w-2xl">
+          <p className="soft-card p-6 text-center text-sm font-light leading-loose text-text-secondary">
+            {SHOP_INTRO.supportNote}
+          </p>
+        </FadeIn>
+
+        <GoodsSlider />
+
+        <FadeIn className="mt-16 text-center">
+          <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+            <Link
+              href={SHOP_CTA.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-copper inline-flex gap-2 px-10 py-4 text-base"
+            >
+              {SHOP_CTA.label}
+              <ExternalLink className="h-5 w-5" />
+            </Link>
+          </motion.div>
+        </FadeIn>
+      </div>
+    </div>
+  );
+}
