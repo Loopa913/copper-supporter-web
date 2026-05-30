@@ -2,6 +2,8 @@ import { ProjectIntro } from "@/components/home/ProjectIntro";
 import { getHomeContent } from "@/lib/cms/home-content";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 
+export const runtime = "edge";
+
 export default async function HomePage() {
   const content = await getHomeContent();
 

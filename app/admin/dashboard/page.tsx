@@ -3,6 +3,8 @@ import { getHomeContent } from "@/lib/cms/home-content";
 import { requireAdmin } from "@/lib/auth/admin";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 
+export const runtime = "edge";
+
 export default async function AdminDashboardPage() {
   const session = await requireAdmin();
   const homeContent = await getHomeContent();
