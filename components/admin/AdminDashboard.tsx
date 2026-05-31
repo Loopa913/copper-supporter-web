@@ -7,6 +7,7 @@ import { createClient } from "@/lib/supabase/client";
 import type { HomeContent } from "@/lib/cms/types";
 import { SoftCard } from "@/components/ui/SoftCard";
 import { FadeIn } from "@/components/ui/FadeIn";
+import { HomeCmsEditor } from "@/components/admin/HomeCmsEditor";
 
 type AdminDashboardProps = {
   session: { email: string; role: string };
@@ -35,7 +36,7 @@ export function AdminDashboard({
           <div>
             <h1 className="text-2xl font-semibold tracking-tight">관리자 대시보드</h1>
             <p className="mt-2 text-sm font-light text-text-secondary">
-              {session.email} · {supabaseConnected ? "DB 연결됨" : "로컬 기본값"}
+              {session.email} · {supabaseConnected ? "DB 연결됨" : "로컬 기본값 (DB 연결 필요)"}
             </p>
           </div>
           <button
@@ -48,26 +49,34 @@ export function AdminDashboard({
           </button>
         </FadeIn>
 
-        <div className="mt-10 grid gap-5 sm:grid-cols-2">
-          <SoftCard className="p-6">
-            <h2 className="font-semibold text-copper">홈 CMS</h2>
-            <p className="mt-2 text-sm font-light text-text-secondary">다음 단계</p>
-          </SoftCard>
-          <SoftCard className="p-6">
-            <h2 className="font-semibold text-copper">위키</h2>
-            <p className="mt-2 text-sm font-light text-text-secondary">다음 단계</p>
-          </SoftCard>
-        </div>
+        <div className="mt-10 grid gap-8 lg:grid-cols-3">
+          <div className="lg:col-span-2">
+            <FadeIn delay={0.1}>
+              <HomeCmsEditor initialData={homeContent} disabled={!supabaseConnected} />
+            </FadeIn>
+          </div>
+          
+          <div className="space-y-5">
+            <FadeIn delay={0.2}>
+              <SoftCard className="p-6">
+                <h2 className="font-semibold text-copper">위키 관리</h2>
+                <p className="mt-2 text-sm font-light text-text-secondary">다음 단계에서 구현 예정입니다.</p>
+              </SoftCard>
+            </FadeIn>
 
-        <SoftCard interactive={false} className="mt-8 p-6">
-          <p className="text-sm font-light text-text-secondary">
-            로드맵 {homeContent.roadmapEvents.length}건 · 멤버{" "}
-            {homeContent.supporters.length}명
-          </p>
-          <Link href="/" className="mt-4 inline-block text-sm font-medium text-copper hover:underline">
-            메인 보기
-          </Link>
-        </SoftCard>
+            <FadeIn delay={0.3}>
+              <SoftCard interactive={false} className="p-6">
+                <p className="text-sm font-light text-text-secondary">
+                  로드맵 {homeContent.roadmapEvents.length}건 · 멤버{" "}
+                  {homeContent.supporters.length}명
+                </p>
+                <Link href="/" target="_blank" className="mt-4 inline-block text-sm font-medium text-copper hover:underline">
+                  홈페이지 새 창으로 보기 ↗
+                </Link>
+              </SoftCard>
+            </FadeIn>
+          </div>
+        </div>
       </div>
     </div>
   );
