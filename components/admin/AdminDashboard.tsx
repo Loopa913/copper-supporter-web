@@ -8,6 +8,8 @@ import type { HomeContent } from "@/lib/cms/types";
 import { SoftCard } from "@/components/ui/SoftCard";
 import { FadeIn } from "@/components/ui/FadeIn";
 import { HomeCmsEditor } from "@/components/admin/HomeCmsEditor";
+import { RoadmapCmsEditor } from "@/components/admin/RoadmapCmsEditor";
+import { SupporterCmsEditor } from "@/components/admin/SupporterCmsEditor";
 
 type AdminDashboardProps = {
   session: { email: string; role: string };
@@ -50,21 +52,29 @@ export function AdminDashboard({
         </FadeIn>
 
         <div className="mt-10 grid gap-8 lg:grid-cols-3">
-          <div className="lg:col-span-2">
+          <div className="space-y-8 lg:col-span-2">
             <FadeIn delay={0.1}>
               <HomeCmsEditor initialData={homeContent} disabled={!supabaseConnected} />
+            </FadeIn>
+            
+            <FadeIn delay={0.2}>
+              <RoadmapCmsEditor initialData={homeContent} disabled={!supabaseConnected} />
+            </FadeIn>
+
+            <FadeIn delay={0.3}>
+              <SupporterCmsEditor initialData={homeContent} disabled={!supabaseConnected} />
             </FadeIn>
           </div>
           
           <div className="space-y-5">
-            <FadeIn delay={0.2}>
+            <FadeIn delay={0.4}>
               <SoftCard className="p-6">
                 <h2 className="font-semibold text-copper">위키 관리</h2>
                 <p className="mt-2 text-sm font-light text-text-secondary">다음 단계에서 구현 예정입니다.</p>
               </SoftCard>
             </FadeIn>
 
-            <FadeIn delay={0.3}>
+            <FadeIn delay={0.5}>
               <SoftCard interactive={false} className="p-6">
                 <p className="text-sm font-light text-text-secondary">
                   로드맵 {homeContent.roadmapEvents.length}건 · 멤버{" "}
