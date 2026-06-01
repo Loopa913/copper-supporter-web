@@ -8,7 +8,7 @@ import {
   WIKI_PAGES,
 } from "@/lib/data/wiki";
 import { WikiSidebar } from "@/components/wiki/WikiSidebar";
-import { WikiEditorPlaceholder } from "@/components/wiki/WikiEditorPlaceholder";
+import { WikiEditor } from "@/components/wiki/WikiEditor";
 import { cn } from "@/lib/utils/cn";
 
 export function WikiShell() {
@@ -31,26 +31,27 @@ export function WikiShell() {
         />
       </aside>
 
-      <div className="flex min-w-0 flex-1 flex-col">
-        <div className="flex items-center gap-3 border-b border-border px-5 py-4">
-          <button
-            type="button"
-            onClick={() => setSidebarOpen((o) => !o)}
-            className="rounded-xl border border-border p-2.5 text-text-secondary transition-all duration-300 ease-in-out hover:border-copper/20 hover:bg-copper-muted hover:text-copper"
-            aria-label={sidebarOpen ? "사이드바 닫기" : "사이드바 열기"}
-          >
-            {sidebarOpen ? (
-              <PanelLeftClose className="h-4 w-4" />
-            ) : (
-              <PanelLeft className="h-4 w-4" />
-            )}
-          </button>
-          <h1 className="truncate text-lg font-semibold tracking-tight text-text-primary">
-            {page.title}
-          </h1>
+        <div className="flex min-w-0 flex-1 flex-col">
+          <div className="flex items-center gap-3 border-b border-border px-5 py-4">
+            <button
+              type="button"
+              onClick={() => setSidebarOpen((o) => !o)}
+              className="rounded-xl border border-border p-2.5 text-text-secondary transition-all duration-300 ease-in-out hover:border-copper/20 hover:bg-copper-muted hover:text-copper"
+              aria-label={sidebarOpen ? "사이드바 닫기" : "사이드바 열기"}
+            >
+              {sidebarOpen ? (
+                <PanelLeftClose className="h-4 w-4" />
+              ) : (
+                <PanelLeft className="h-4 w-4" />
+              )}
+            </button>
+            <h1 className="truncate text-lg font-semibold tracking-tight text-text-primary">
+              {page.title}
+            </h1>
+          </div>
+          {/* Key prop ensures the editor completely re-mounts when switching pages */}
+          <WikiEditor key={page.id} page={page} />
         </div>
-        <WikiEditorPlaceholder page={page} />
       </div>
-    </div>
-  );
-}
+    );
+  }

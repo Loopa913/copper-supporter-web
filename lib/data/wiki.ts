@@ -11,6 +11,7 @@ export type WikiPage = {
   title: string;
   categorySlug: string;
   excerpt: string;
+  content?: string;
 };
 
 export const WIKI_CATEGORIES: WikiCategory[] = [
