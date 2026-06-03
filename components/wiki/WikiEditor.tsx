@@ -1,9 +1,9 @@
 "use client";
 
 import { useCreateBlockNote } from "@blocknote/react";
-import { BlockNoteView } from "@blocknote/mantine";
+import { BlockNoteView } from "@blocknote/shadcn";
 import "@blocknote/core/fonts/inter.css";
-import "@blocknote/mantine/style.css";
+import "@blocknote/shadcn/style.css";
 import type { WikiPage } from "@/lib/data/wiki";
 import { FadeIn } from "@/components/ui/FadeIn";
 
