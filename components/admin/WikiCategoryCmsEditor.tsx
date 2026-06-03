@@ -27,7 +27,10 @@ export function WikiCategoryCmsEditor({
   const [expandedPages, setExpandedPages] = useState<Record<string, boolean>>({});
 
   const togglePageExpand = (id: string) => {
-    setExpandedPages(prev => ({ ...prev, [id]: !prev[id] }));
+    setExpandedPages(prev => ({
+      ...prev,
+      [id]: prev[id] === undefined ? false : !prev[id] // toggle logic fix for default true
+    }));
   };
 
   const handleAddCategory = () => {
