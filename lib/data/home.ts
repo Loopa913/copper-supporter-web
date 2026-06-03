@@ -12,7 +12,8 @@ export type Supporter = {
   name: string;
   role: string;
   bio: string;
-  avatarColor: string;
+  group?: "서포터즈" | "시드 플레이어";
+  avatarColor?: string;
 };
 
 export const PROJECT_TAGLINE =
@@ -79,41 +80,41 @@ export const SUPPORTERS: Supporter[] = [
     name: "카퍼",
     role: "스트리머 / 프로젝트 리드",
     bio: "서포터즈와 함께 성장하는 메인 스트리머",
-    avatarColor: "bg-copper",
+    group: "서포터즈",
   },
   {
     id: "2",
     name: "루나",
     role: "콘텐츠 기획",
     bio: "이벤트·방송 일정 및 로드맵 운영",
-    avatarColor: "bg-copper-dark",
+    group: "서포터즈",
   },
   {
     id: "3",
     name: "아크",
     role: "마크 서버 운영",
     bio: "서버·위키 인프라 및 기술 지원",
-    avatarColor: "bg-copper-dark",
+    group: "서포터즈",
   },
   {
     id: "4",
     name: "미라",
     role: "굿즈·디자인",
     bio: "일러스트·굿즈 라인업 큐레이션",
-    avatarColor: "bg-copper-dark",
+    group: "시드 플레이어",
   },
   {
     id: "5",
     name: "제로",
     role: "커뮤니티",
     bio: "서포터즈 소통·간담회 진행",
-    avatarColor: "bg-copper",
+    group: "시드 플레이어",
   },
   {
     id: "6",
     name: "세이지",
     role: "미디어",
     bio: "영상·SNS·홍보 콘텐츠 제작",
-    avatarColor: "bg-copper-dark",
+    group: "시드 플레이어",
   },
 ];

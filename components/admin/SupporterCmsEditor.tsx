@@ -13,14 +13,6 @@ type SupporterCmsEditorProps = {
   disabled?: boolean;
 };
 
-// 프로필 색상 옵션
-const COLOR_OPTIONS = [
-  { label: "카퍼", value: "bg-copper" },
-  { label: "카퍼 다크", value: "bg-copper-dark" },
-  { label: "블랙", value: "bg-text-primary" },
-  { label: "그레이", value: "bg-text-secondary" },
-];
-
 export function SupporterCmsEditor({ initialData, disabled = false }: SupporterCmsEditorProps) {
   const [isPending, startTransition] = useTransition();
   const [isSaved, setIsSaved] = useState(false);
@@ -33,7 +25,7 @@ export function SupporterCmsEditor({ initialData, disabled = false }: SupporterC
       name: "새 멤버",
       role: "역할 입력",
       bio: "소개글을 입력하세요.",
-      avatarColor: "bg-copper",
+      group: "서포터즈",
     };
     setSupporters([...supporters, newSupporter]);
   };
@@ -66,10 +58,10 @@ export function SupporterCmsEditor({ initialData, disabled = false }: SupporterC
       <div className="flex items-center justify-between border-b border-border bg-surface-warm px-6 py-4">
         <div>
           <h2 className="text-lg font-semibold tracking-tight text-text-primary">
-            참여 인원 (서포터즈) 관리
+            서포터즈 및 시드 플레이어 관리
           </h2>
           <p className="mt-1 text-xs font-light text-text-muted">
-            프로젝트에 참여하는 서포터즈 멤버 명단을 수정합니다.
+            프로젝트에 참여하는 그룹별 멤버 명단을 수정합니다.
           </p>
         </div>
         <button
@@ -112,11 +104,17 @@ export function SupporterCmsEditor({ initialData, disabled = false }: SupporterC
                 </div>
                 
                 <div className="flex-1 space-y-3 min-w-0">
-                  <div className="flex gap-2">
-                    <div className={cn("flex shrink-0 h-10 w-10 items-center justify-center rounded-full text-white font-semibold text-lg", member.avatarColor)}>
-                      {member.name.charAt(0) || "?"}
-                    </div>
-                    <div className="flex-1 space-y-2">
+                  <div className="flex flex-col gap-2">
+                    <select
+                      value={member.group || "서포터즈"}
+                      onChange={(e) => handleChange(member.id, "group", e.target.value)}
+                      className="w-full rounded-lg border border-border bg-surface-warm px-3 py-1.5 text-xs text-text-primary focus:border-copper focus:outline-none"
+                    >
+                      <option value="서포터즈">그룹: 서포터즈</option>
+                      <option value="시드 플레이어">그룹: 시드 플레이어</option>
+                    </select>
+                    
+                    <div className="flex gap-2">
                       <input
                         type="text"
                         value={member.name}
@@ -141,18 +139,6 @@ export function SupporterCmsEditor({ initialData, disabled = false }: SupporterC
                     rows={2}
                     className="w-full resize-none rounded-lg border border-border bg-surface-warm px-3 py-1.5 text-sm font-light text-text-secondary"
                   />
-                  
-                  <select
-                    value={member.avatarColor}
-                    onChange={(e) => handleChange(member.id, "avatarColor", e.target.value)}
-                    className="w-full rounded-lg border border-border bg-surface-warm px-3 py-1.5 text-xs text-text-muted"
-                  >
-                    {COLOR_OPTIONS.map((opt) => (
-                      <option key={opt.value} value={opt.value}>
-                        프로필 색상: {opt.label}
-                      </option>
-                    ))}
-                  </select>
                 </div>
 
                 <button

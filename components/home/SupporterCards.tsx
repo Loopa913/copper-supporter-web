@@ -12,34 +12,23 @@ type SupporterCardsProps = {
 };
 
 export function SupporterCards({ supporters }: SupporterCardsProps) {
-  return (
-    <section
-      id="supporters"
-      className="section-white px-5 py-24 sm:px-8 sm:py-28"
-    >
-      <div className="mx-auto max-w-6xl">
-        <SectionHeader
-          eyebrow="참여 인원"
-          title="서포터즈를 소개합니다"
-          description="둥근 프로필과 직관적인 정보로 구성했습니다."
-          align="center"
-        />
+  // 그룹별 필터링 (명시되지 않은 경우 기본값으로 서포터즈에 포함)
+  const regularSupporters = supporters.filter(s => !s.group || s.group === "서포터즈");
+  const seedPlayers = supporters.filter(s => s.group === "시드 플레이어");
 
-        <div className="mt-14 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {supporters.map((member, index) => (
-            <FadeIn key={member.id} delay={index * 0.05}>
+  const renderGroup = (title: string, groupSupporters: Supporter[], delayOffset: number) => {
+    if (groupSupporters.length === 0) return null;
+    
+    return (
+      <div className="mt-14">
+        <h3 className="mb-6 text-xl font-bold text-center text-text-primary">{title}</h3>
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {groupSupporters.map((member, index) => (
+            <FadeIn key={member.id} delay={delayOffset + index * 0.05}>
               <SoftCard className="flex flex-col items-center p-8 text-center">
-                <div
-                  className={cn(
-                    "flex h-20 w-20 items-center justify-center rounded-full text-2xl font-semibold text-white shadow-lg shadow-black/10",
-                    member.avatarColor
-                  )}
-                >
-                  {member.name.charAt(0)}
-                </div>
-                <h3 className="mt-5 text-lg font-semibold tracking-tight text-text-primary">
+                <h4 className="text-lg font-semibold tracking-tight text-text-primary">
                   {member.name}
-                </h3>
+                </h4>
                 <p className="mt-1 text-sm font-medium text-copper">{member.role}</p>
                 <p className="mt-4 text-sm font-light leading-loose text-text-secondary">
                   {member.bio}
@@ -48,11 +37,30 @@ export function SupporterCards({ supporters }: SupporterCardsProps) {
             </FadeIn>
           ))}
         </div>
+      </div>
+    );
+  };
 
-        <FadeIn className="mt-12">
+  return (
+    <section
+      id="supporters"
+      className="section-white px-5 py-24 sm:px-8 sm:py-28"
+    >
+      <div className="mx-auto max-w-6xl">
+        <SectionHeader
+          eyebrow="서포터즈 및 시드 플레이어"
+          title="참여 멤버를 소개합니다"
+          description="스트리머 프로젝트와 함께하는 그룹 멤버들입니다."
+          align="center"
+        />
+
+        {renderGroup("서포터즈", regularSupporters, 0)}
+        {renderGroup("시드 플레이어", seedPlayers, regularSupporters.length * 0.05)}
+
+        <FadeIn className="mt-16">
           <div className="soft-card flex items-center justify-center gap-2 border-dashed py-8 text-sm font-light text-text-muted">
             <Users className="h-4 w-4 text-copper" />
-            서포터즈 모집은 정기 간담회 안내를 통해 진행됩니다.
+            멤버 모집은 정기 간담회 안내를 통해 진행됩니다.
           </div>
         </FadeIn>
       </div>

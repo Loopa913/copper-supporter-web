@@ -29,7 +29,7 @@ export function HeroSection({ tagline, heroSummary, videoId }: HeroSectionProps)
               일정 보기
             </a>
             <a href="#supporters" className="btn-ghost">
-              참여 인원
+              서포터즈
             </a>
           </div>
         </FadeIn>
