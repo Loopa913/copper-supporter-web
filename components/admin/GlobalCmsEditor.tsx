@@ -5,6 +5,7 @@ import { Loader2, Save } from "lucide-react";
 import type { GlobalConfig } from "@/lib/cms/global-config";
 import { SoftCard } from "@/components/ui/SoftCard";
 import { updateSiteContent } from "@/app/admin/actions";
+import { ImageUpload } from "@/components/ui/ImageUpload";
 
 export function GlobalCmsEditor({
   initialData,
@@ -64,22 +65,12 @@ export function GlobalCmsEditor({
 
       <div className="space-y-4">
         <div className="space-y-1">
-          <label className="text-xs font-medium text-text-secondary">네비게이션 상단 로고 이미지 URL (미입력 시 기본 CP 텍스트 박스)</label>
-          <div className="flex gap-3 items-start">
-            {data.logoUrl && (
-              <div className="relative w-12 h-12 rounded overflow-hidden shrink-0 border border-border bg-black/5">
-                <img src={data.logoUrl} alt="preview" className="object-cover w-full h-full" />
-              </div>
-            )}
-            <input
-              type="text"
-              value={data.logoUrl || ""}
-              onChange={(e) => setData({ ...data, logoUrl: e.target.value })}
-              disabled={disabled}
-              placeholder="https://..."
-              className="input-field text-sm py-1.5 flex-1"
-            />
-          </div>
+          <label className="text-xs font-medium text-text-secondary">네비게이션 상단 로고 이미지 (URL 또는 업로드) *미입력 시 기본 CP 텍스트</label>
+          <ImageUpload
+            value={data.logoUrl || ""}
+            onChange={(url) => setData({ ...data, logoUrl: url })}
+            disabled={disabled}
+          />
         </div>
       </div>
     </SoftCard>

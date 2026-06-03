@@ -6,6 +6,7 @@ import type { ProtocolContent } from "@/lib/cms/protocol-content";
 import { SoftCard } from "@/components/ui/SoftCard";
 import { updateSiteContent } from "@/app/admin/actions";
 import type { ProtocolTabKey } from "@/lib/data/protocol";
+import { ImageUpload } from "@/components/ui/ImageUpload";
 
 export function ProtocolCmsEditor({
   initialData,
@@ -171,25 +172,12 @@ export function ProtocolCmsEditor({
       <div className="space-y-4">
         {/* 프로세스 이미지 설정 추가 */}
         <div className="rounded-xl border border-border overflow-hidden bg-white p-4">
-          <h3 className="text-sm font-semibold text-copper mb-4">상단 프로세스 이미지</h3>
-          <div className="space-y-1">
-            <label className="text-xs font-medium text-text-secondary">프로세스 이미지 URL</label>
-            <div className="flex gap-3 items-start">
-              {data.processImageUrl && (
-                <div className="relative w-24 h-16 rounded overflow-hidden shrink-0 border border-border bg-black/5">
-                  <img src={data.processImageUrl} alt="preview" className="object-cover w-full h-full" />
-                </div>
-              )}
-              <input
-                type="text"
-                value={data.processImageUrl || ""}
-                onChange={(e) => setData({ ...data, processImageUrl: e.target.value })}
-                disabled={disabled}
-                placeholder="https://..."
-                className="input-field text-sm py-1.5 flex-1"
-              />
-            </div>
-          </div>
+          <h3 className="text-sm font-semibold text-copper mb-4">상단 프로세스 이미지 (URL 또는 업로드)</h3>
+          <ImageUpload
+            value={data.processImageUrl || ""}
+            onChange={(url) => setData({ ...data, processImageUrl: url })}
+            disabled={disabled}
+          />
         </div>
 
         {Object.entries(data.tabs).map(([tabKey, tab]) => (
@@ -331,12 +319,10 @@ export function ProtocolCmsEditor({
                           </div>
                           <div className="space-y-1">
                             <label className="text-[10px] uppercase text-text-muted">이미지 힌트 (선택)</label>
-                            <input
-                              type="text"
+                            <ImageUpload
                               value={detail.imageHint || ""}
-                              onChange={(e) => handleDetailChange(tabKey, index, "imageHint", e.target.value)}
+                              onChange={(url) => handleDetailChange(tabKey, index, "imageHint", url)}
                               disabled={disabled}
-                              className="input-field text-sm py-1"
                             />
                           </div>
                         </div>
