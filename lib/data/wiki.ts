@@ -12,6 +12,7 @@ export type WikiPage = {
   slug: string;
   title: string;
   categorySlug: string;
+  parentSlug?: string;
   excerpt: string;
   content?: string;
 };

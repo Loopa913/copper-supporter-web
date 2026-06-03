@@ -56,12 +56,74 @@ export function WikiCategoryCmsEditor({
     }));
   };
 
-  const handleAddPage = (categorySlug: string) => {
+  const renderPageEditor = (page: WikiPage, depth: number) => {
+    const childPages = pages.filter((p) => p.parentSlug === page.slug);
+    return (
+      <div key={page.id} className={cn("group flex flex-col gap-2", depth > 0 && "ml-4 mt-3 border-l-2 border-copper/10 pl-4")}>
+        <div className="flex gap-3 items-start">
+          <div className="flex-1 space-y-2">
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={page.title}
+                onChange={(e) => handleChangePage(page.id, "title", e.target.value)}
+                placeholder="문서 제목"
+                className="w-1/2 rounded-lg border border-border bg-surface-warm px-3 py-1.5 text-sm"
+              />
+              <div className="flex flex-1 items-center gap-2">
+                <span className="text-xs text-text-muted shrink-0">Slug:</span>
+                <input
+                  type="text"
+                  value={page.slug}
+                  onChange={(e) => handleChangePage(page.id, "slug", e.target.value)}
+                  placeholder="page-slug"
+                  className="w-full rounded-lg border border-border bg-surface-warm px-3 py-1.5 text-xs text-text-secondary"
+                />
+              </div>
+            </div>
+            <input
+              type="text"
+              value={page.excerpt}
+              onChange={(e) => handleChangePage(page.id, "excerpt", e.target.value)}
+              placeholder="짧은 요약 (선택)"
+              className="w-full rounded-lg border border-border bg-surface-warm px-3 py-1 text-xs text-text-secondary"
+            />
+          </div>
+          
+          <button
+            type="button"
+            onClick={() => handleAddSubPage(page.slug, page.categorySlug)}
+            className="mt-1 p-1 text-copper opacity-0 transition-opacity hover:text-copper-dark group-hover:opacity-100 shrink-0"
+            title="하위 문서 추가"
+          >
+            <Plus className="h-4 w-4" />
+          </button>
+          <button
+            type="button"
+            onClick={() => handleRemovePage(page.id)}
+            className="mt-1 p-1 text-red-400 opacity-0 transition-opacity hover:text-red-600 group-hover:opacity-100 shrink-0"
+            title="문서 삭제"
+          >
+            <Trash2 className="h-4 w-4" />
+          </button>
+        </div>
+        
+        {childPages.length > 0 && (
+          <div className="mt-2 space-y-3">
+            {childPages.map(cp => renderPageEditor(cp, depth + 1))}
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  const handleAddSubPage = (parentSlug: string, categorySlug: string) => {
     const newPage: WikiPage = {
       id: crypto.randomUUID(),
-      title: "새 문서",
+      title: "새 하위 문서",
       slug: `page-${Date.now()}`,
       categorySlug,
+      parentSlug,
       excerpt: "짧은 설명을 입력하세요.",
       content: "",
     };
@@ -69,11 +131,37 @@ export function WikiCategoryCmsEditor({
   };
 
   const handleRemovePage = (id: string) => {
-    setPages(pages.filter((p) => p.id !== id));
+    setPages((prev) => {
+      const target = prev.find(p => p.id === id);
+      if (!target) return prev;
+
+      const getDescendants = (slug: string): string[] => {
+        const children = prev.filter(p => p.parentSlug === slug);
+        let ids = children.map(c => c.id);
+        children.forEach(c => {
+          ids = [...ids, ...getDescendants(c.slug)];
+        });
+        return ids;
+      };
+
+      const idsToRemove = [id, ...getDescendants(target.slug)];
+      return prev.filter(p => !idsToRemove.includes(p.id));
+    });
   };
 
   const handleChangePage = (id: string, field: keyof WikiPage, value: string) => {
-    setPages(pages.map((p) => (p.id === id ? { ...p, [field]: value } : p)));
+    setPages((prev) => {
+      const target = prev.find(p => p.id === id);
+      if (!target) return prev;
+      
+      let updated = prev.map((p) => (p.id === id ? { ...p, [field]: value } : p));
+      
+      // cascade slug
+      if (field === "slug" && target.slug !== value) {
+        updated = updated.map(p => p.parentSlug === target.slug ? { ...p, parentSlug: value } : p);
+      }
+      return updated;
+    });
   };
 
   const handleSave = () => {
@@ -155,54 +243,25 @@ export function WikiCategoryCmsEditor({
                   
                   <div className="mt-4 pl-4 border-l-2 border-copper/20 space-y-3">
                     <p className="text-xs font-medium text-text-muted">문서 목록</p>
-                    {categoryPages.map((page) => (
-                      <div key={page.id} className="flex gap-3 items-start group">
-                        <div className="flex-1 space-y-2">
-                          <div className="flex gap-2">
-                            <input
-                              type="text"
-                              value={page.title}
-                              onChange={(e) => handleChangePage(page.id, "title", e.target.value)}
-                              placeholder="문서 제목"
-                              className="w-1/2 rounded-lg border border-border bg-surface-warm px-3 py-1.5 text-sm"
-                            />
-                            <div className="flex flex-1 items-center gap-2">
-                              <span className="text-xs text-text-muted shrink-0">Slug:</span>
-                              <input
-                                type="text"
-                                value={page.slug}
-                                onChange={(e) => handleChangePage(page.id, "slug", e.target.value)}
-                                placeholder="page-slug"
-                                className="w-full rounded-lg border border-border bg-surface-warm px-3 py-1.5 text-xs text-text-secondary"
-                              />
-                            </div>
-                          </div>
-                          <input
-                            type="text"
-                            value={page.excerpt}
-                            onChange={(e) => handleChangePage(page.id, "excerpt", e.target.value)}
-                            placeholder="짧은 요약 (선택)"
-                            className="w-full rounded-lg border border-border bg-surface-warm px-3 py-1 text-xs text-text-secondary"
-                          />
-                        </div>
-                        <button
-                          type="button"
-                          onClick={() => handleRemovePage(page.id)}
-                          className="mt-1 p-1 text-red-400 opacity-0 transition-opacity hover:text-red-600 group-hover:opacity-100 shrink-0"
-                          title="문서 삭제"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </button>
-                      </div>
-                    ))}
+                    {categoryPages.filter(p => !p.parentSlug).map((page) => renderPageEditor(page, 0))}
                     
                     <button
                       type="button"
-                      onClick={() => handleAddPage(cat.slug)}
+                      onClick={() => {
+                        const newPage: WikiPage = {
+                          id: crypto.randomUUID(),
+                          title: "새 문서",
+                          slug: `page-${Date.now()}`,
+                          categorySlug: cat.slug,
+                          excerpt: "짧은 설명을 입력하세요.",
+                          content: "",
+                        };
+                        setPages([...pages, newPage]);
+                      }}
                       className="flex items-center gap-1.5 text-xs font-medium text-copper hover:text-copper-dark transition-colors"
                     >
                       <FileText className="h-3 w-3" />
-                      이 카테고리에 새 문서 추가
+                      이 카테고리에 새 최상위 문서 추가
                     </button>
                   </div>
                 </div>
