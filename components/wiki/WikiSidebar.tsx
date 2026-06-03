@@ -28,14 +28,14 @@ export function WikiSidebar({
     setExpanded((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
-  const renderPages = (parentSlug: string, depth: number) => {
-    const childPages = pages.filter((p) => p.categorySlug === parentSlug);
+  const renderPages = (parentId: string | null, categorySlug: string, depth: number) => {
+    const childPages = pages.filter((p) => p.categorySlug === categorySlug && (p.parentSlug || null) === parentId);
     if (childPages.length === 0) return null;
 
     return (
       <ul className={cn("space-y-0.5 border-l border-border", depth === 0 ? "ml-4 mt-0.5 pl-2" : "ml-2 mt-0.5 pl-2")}>
         {childPages.map((child) => {
-          const hasChildren = pages.some((p) => p.categorySlug === child.slug);
+          const hasChildren = pages.some((p) => p.parentSlug === child.slug);
           return (
             <li key={child.id}>
               <div
@@ -85,7 +85,7 @@ export function WikiSidebar({
                   </button>
                 )}
               </div>
-              {expanded[child.id] && renderPages(child.slug, depth + 1)}
+              {expanded[child.id] && renderPages(child.slug, categorySlug, depth + 1)}
             </li>
           );
         })}
@@ -143,7 +143,7 @@ export function WikiSidebar({
                 </button>
               )}
             </div>
-            {expanded[cat.id] && renderPages(cat.slug, 0)}
+            {expanded[cat.id] && renderPages(null, cat.slug, 0)}
           </li>
         )})}
       </ul>
