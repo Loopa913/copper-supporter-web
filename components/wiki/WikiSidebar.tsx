@@ -2,17 +2,19 @@
 
 import { ChevronRight } from "lucide-react";
 import { useState } from "react";
-import type { WikiCategory } from "@/lib/data/wiki";
+import type { WikiCategory, WikiPage } from "@/lib/data/wiki";
 import { cn } from "@/lib/utils/cn";
 
 type WikiSidebarProps = {
   categories: WikiCategory[];
+  pages: WikiPage[];
   activeSlug: string;
   onSelect: (slug: string) => void;
 };
 
 export function WikiSidebar({
   categories,
+  pages,
   activeSlug,
   onSelect,
 }: WikiSidebarProps) {
@@ -24,7 +26,10 @@ export function WikiSidebar({
     <nav className="h-full overflow-y-auto p-4" aria-label="위키 목록">
       <p className="mb-4 px-2 text-xs font-medium text-text-muted">카퍼 위키</p>
       <ul className="space-y-0.5">
-        {categories.map((cat) => (
+        {categories.map((cat) => {
+          const categoryPages = pages.filter((p) => p.categorySlug === cat.slug);
+          
+          return (
           <li key={cat.id}>
             <button
               type="button"
@@ -41,9 +46,9 @@ export function WikiSidebar({
               />
               {cat.title}
             </button>
-            {expanded[cat.id] && cat.children && (
+            {expanded[cat.id] && categoryPages.length > 0 && (
               <ul className="ml-4 mt-0.5 space-y-0.5 border-l border-border pl-2">
-                {cat.children.map((child) => (
+                {categoryPages.map((child) => (
                   <li key={child.id}>
                     <button
                       type="button"
@@ -62,7 +67,7 @@ export function WikiSidebar({
               </ul>
             )}
           </li>
-        ))}
+        )})}
       </ul>
     </nav>
   );

@@ -41,6 +41,7 @@ export function WikiShell({ isAdmin = false, initialContent }: WikiShellProps) {
         <div className="flex-1 overflow-y-auto">
           <WikiSidebar
             categories={initialContent.categories}
+            pages={initialContent.pages}
             activeSlug={activeSlug}
             onSelect={(slug) => {
               setActiveSlug(slug);
