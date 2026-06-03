@@ -34,10 +34,10 @@ export function Navbar({ config }: { config?: GlobalConfig }) {
           )}
           <div>
             <span className="block text-[15px] font-semibold tracking-tight text-text-primary">
-              카퍼 서포터즈
+              함께 만드는 스트리머 프로젝트
             </span>
             <span className="block text-xs font-light text-text-muted">
-              Supporter Project
+              Streamer Project
             </span>
           </div>
         </Link>
