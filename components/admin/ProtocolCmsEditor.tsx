@@ -23,6 +23,7 @@ export function ProtocolCmsEditor({
     setIsSaving(true);
     setSaved(false);
     try {
+      await updateSiteContent("protocol", "processImageUrl", data.processImageUrl);
       await updateSiteContent("protocol", "tabs", data.tabs);
       setSaved(true);
       setTimeout(() => setSaved(false), 3000);
@@ -168,6 +169,29 @@ export function ProtocolCmsEditor({
       </div>
 
       <div className="space-y-4">
+        {/* 프로세스 이미지 설정 추가 */}
+        <div className="rounded-xl border border-border overflow-hidden bg-white p-4">
+          <h3 className="text-sm font-semibold text-copper mb-4">상단 프로세스 이미지</h3>
+          <div className="space-y-1">
+            <label className="text-xs font-medium text-text-secondary">프로세스 이미지 URL</label>
+            <div className="flex gap-3 items-start">
+              {data.processImageUrl && (
+                <div className="relative w-24 h-16 rounded overflow-hidden shrink-0 border border-border bg-black/5">
+                  <img src={data.processImageUrl} alt="preview" className="object-cover w-full h-full" />
+                </div>
+              )}
+              <input
+                type="text"
+                value={data.processImageUrl || ""}
+                onChange={(e) => setData({ ...data, processImageUrl: e.target.value })}
+                disabled={disabled}
+                placeholder="https://..."
+                className="input-field text-sm py-1.5 flex-1"
+              />
+            </div>
+          </div>
+        </div>
+
         {Object.entries(data.tabs).map(([tabKey, tab]) => (
           <div key={tabKey} className="rounded-xl border border-border overflow-hidden">
             <button

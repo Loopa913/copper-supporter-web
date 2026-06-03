@@ -2,11 +2,13 @@ import { PROTOCOL_TABS, type ProtocolTabKey } from "@/lib/data/protocol";
 import { createClientIfConfigured } from "@/lib/supabase/server";
 
 export type ProtocolContent = {
+  processImageUrl: string | null;
   tabs: typeof PROTOCOL_TABS;
 };
 
 export function getDefaultProtocolContent(): ProtocolContent {
   return {
+    processImageUrl: null,
     tabs: PROTOCOL_TABS,
   };
 }
@@ -40,6 +42,7 @@ export async function getProtocolContent(): Promise<ProtocolContent> {
   const defaults = getDefaultProtocolContent();
 
   return {
+    processImageUrl: parseJsonValue(map.get("processImageUrl"), defaults.processImageUrl),
     tabs: parseJsonValue(map.get("tabs"), defaults.tabs),
   };
 }

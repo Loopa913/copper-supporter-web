@@ -23,7 +23,16 @@ export function ProtocolTabs({ content }: { content: ProtocolContent }) {
           align="center"
         />
 
-        <div className="mt-12">
+        <div className="mt-12 text-center">
+          {content.processImageUrl && (
+            <div className="mb-12 flex justify-center">
+              <img
+                src={content.processImageUrl}
+                alt="프로젝트 프로세스"
+                className="max-h-[400px] w-auto rounded-2xl object-contain shadow-lg border border-border"
+              />
+            </div>
+          )}
           <FilterChipTabs active={active} onChange={setActive} tabs={content.tabs} />
         </div>
 

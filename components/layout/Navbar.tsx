@@ -7,10 +7,11 @@ import { Menu, X } from "lucide-react";
 import { useState } from "react";
 import { NAV_ITEMS } from "@/lib/constants/navigation";
 import { cn } from "@/lib/utils/cn";
+import type { GlobalConfig } from "@/lib/cms/global-config";
 
 const PUBLIC_NAV = NAV_ITEMS.filter((item) => item.href !== "/admin");
 
-export function Navbar() {
+export function Navbar({ config }: { config?: GlobalConfig }) {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -21,12 +22,16 @@ export function Navbar() {
           href="/"
           className="flex shrink-0 items-center gap-3 transition-opacity duration-300 hover:opacity-80"
         >
-          <span
-            className="flex h-11 w-11 items-center justify-center rounded-2xl bg-copper text-sm font-semibold text-white shadow-md shadow-copper/20"
-            aria-hidden
-          >
-            CP
-          </span>
+          {config?.logoUrl ? (
+            <img src={config.logoUrl} alt="Logo" className="h-11 w-11 object-cover rounded-2xl shadow-md" />
+          ) : (
+            <span
+              className="flex h-11 w-11 items-center justify-center rounded-2xl bg-copper text-sm font-semibold text-white shadow-md shadow-copper/20"
+              aria-hidden
+            >
+              CP
+            </span>
+          )}
           <div>
             <span className="block text-[15px] font-semibold tracking-tight text-text-primary">
               카퍼 서포터즈

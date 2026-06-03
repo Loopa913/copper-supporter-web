@@ -8,6 +8,7 @@ import type { HomeContent } from "@/lib/cms/types";
 import type { WikiContent } from "@/lib/cms/wiki-content";
 import type { ProtocolContent } from "@/lib/cms/protocol-content";
 import type { ShopContent } from "@/lib/cms/shop-content";
+import type { GlobalConfig } from "@/lib/cms/global-config";
 import { SoftCard } from "@/components/ui/SoftCard";
 import { FadeIn } from "@/components/ui/FadeIn";
 import { HomeCmsEditor } from "@/components/admin/HomeCmsEditor";
@@ -16,6 +17,7 @@ import { SupporterCmsEditor } from "@/components/admin/SupporterCmsEditor";
 import { WikiCategoryCmsEditor } from "@/components/admin/WikiCategoryCmsEditor";
 import { ProtocolCmsEditor } from "@/components/admin/ProtocolCmsEditor";
 import { ShopCmsEditor } from "@/components/admin/ShopCmsEditor";
+import { GlobalCmsEditor } from "@/components/admin/GlobalCmsEditor";
 
 type AdminDashboardProps = {
   session: { email: string; role: string };
@@ -23,6 +25,7 @@ type AdminDashboardProps = {
   wikiContent: WikiContent;
   protocolContent: ProtocolContent;
   shopContent: ShopContent;
+  globalConfig: GlobalConfig;
   supabaseConnected: boolean;
 };
 
@@ -32,6 +35,7 @@ export function AdminDashboard({
   wikiContent,
   protocolContent,
   shopContent,
+  globalConfig,
   supabaseConnected,
 }: AdminDashboardProps) {
   const router = useRouter();
@@ -65,6 +69,10 @@ export function AdminDashboard({
 
         <div className="mt-10 grid gap-8 lg:grid-cols-3">
           <div className="space-y-8 lg:col-span-2">
+            <FadeIn delay={0.05}>
+              <GlobalCmsEditor initialData={globalConfig} disabled={!supabaseConnected} />
+            </FadeIn>
+
             <FadeIn delay={0.1}>
               <HomeCmsEditor initialData={homeContent} disabled={!supabaseConnected} />
             </FadeIn>
