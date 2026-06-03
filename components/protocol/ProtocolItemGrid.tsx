@@ -14,7 +14,7 @@ export function ProtocolItemGrid({ items }: ProtocolItemGridProps) {
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
-      className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3"
+      className="mt-10 flex flex-wrap justify-center gap-5"
     >
       {items.map((item, index) => (
         <motion.div
@@ -22,8 +22,9 @@ export function ProtocolItemGrid({ items }: ProtocolItemGridProps) {
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: index * 0.05 }}
+          className="w-full sm:w-[calc(50%-10px)] lg:w-[calc(33.333%-14px)]"
         >
-          <SoftCard className="p-6">
+          <SoftCard className="h-full p-6">
             <span className="text-xs font-medium text-copper">프로그램</span>
             <h3 className="mt-2 font-semibold tracking-tight text-text-primary">
               {item.title}
