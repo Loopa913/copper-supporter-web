@@ -27,4 +27,5 @@ export async function updateSiteContent(section: string, key: string, value: unk
   // Revalidate the home page so changes reflect immediately
   revalidatePath("/");
   revalidatePath("/admin/dashboard");
+  revalidatePath("/wiki");
 }
