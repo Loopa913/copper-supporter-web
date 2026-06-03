@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { Loader2, Save, Check, Plus, Trash2, FolderPlus, FileText } from "lucide-react";
+import { Loader2, Save, Check, Plus, Trash2, FolderPlus, FileText, ChevronRight } from "lucide-react";
 import { updateSiteContent } from "@/app/admin/actions";
 import { SoftCard } from "@/components/ui/SoftCard";
 import { cn } from "@/lib/utils/cn";
@@ -23,8 +23,97 @@ export function WikiCategoryCmsEditor({
 
   const [categories, setCategories] = useState<WikiCategory[]>(initialCategories);
   const [pages, setPages] = useState<WikiPage[]>(initialPages);
+  
+  const [expandedPages, setExpandedPages] = useState<Record<string, boolean>>({});
+
+  const togglePageExpand = (id: string) => {
+    setExpandedPages(prev => ({ ...prev, [id]: !prev[id] }));
+  };
 
   const handleAddCategory = () => {
+    const newCategory: WikiCategory = {
+      id: crypto.randomUUID(),
+      title: "새 카테고리",
+      slug: `category-${Date.now()}`,
+      children: [],
+    };
+    setCategories([...categories, newCategory]);
+  };
+
+  const renderPageEditor = (page: WikiPage, depth: number) => {
+    const childPages = pages.filter((p) => p.parentSlug === page.slug);
+    const isExpanded = expandedPages[page.id] !== false; // Default true
+
+    return (
+      <div key={page.id} className={cn("group flex flex-col gap-2", depth > 0 && "ml-4 mt-3 border-l-2 border-copper/10 pl-4")}>
+        <div className="flex gap-3 items-start">
+          <button
+            type="button"
+            onClick={() => togglePageExpand(page.id)}
+            className={cn("mt-1.5 shrink-0 text-text-muted transition-colors hover:text-text-primary", childPages.length === 0 && "invisible")}
+            disabled={childPages.length === 0}
+          >
+            <ChevronRight className={cn("h-4 w-4 transition-transform duration-200", isExpanded && "rotate-90")} />
+          </button>
+          
+          <div className="flex-1 space-y-2">
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={page.title}
+                onChange={(e) => handleChangePage(page.id, "title", e.target.value)}
+                placeholder="문서 제목"
+                className="w-1/2 rounded-lg border border-border bg-surface-warm px-3 py-1.5 text-sm"
+              />
+              <div className="flex flex-1 items-center gap-2">
+                <span className="text-xs text-text-muted shrink-0">Slug:</span>
+                <input
+                  type="text"
+                  value={page.slug}
+                  onChange={(e) => handleChangePage(page.id, "slug", e.target.value)}
+                  placeholder="page-slug"
+                  className="w-full rounded-lg border border-border bg-surface-warm px-3 py-1.5 text-xs text-text-secondary"
+                />
+              </div>
+            </div>
+            <input
+              type="text"
+              value={page.excerpt}
+              onChange={(e) => handleChangePage(page.id, "excerpt", e.target.value)}
+              placeholder="짧은 요약 (선택)"
+              className="w-full rounded-lg border border-border bg-surface-warm px-3 py-1 text-xs text-text-secondary"
+            />
+          </div>
+          
+          <button
+            type="button"
+            onClick={() => {
+              setExpandedPages(prev => ({ ...prev, [page.id]: true }));
+              handleAddSubPage(page.slug, page.categorySlug);
+            }}
+            className="mt-1 p-1 text-copper opacity-0 transition-opacity hover:text-copper-dark group-hover:opacity-100 shrink-0"
+            title="하위 문서 추가"
+          >
+            <Plus className="h-4 w-4" />
+          </button>
+          <button
+            type="button"
+            onClick={() => handleRemovePage(page.id)}
+            className="mt-1 p-1 text-red-400 opacity-0 transition-opacity hover:text-red-600 group-hover:opacity-100 shrink-0"
+            title="문서 삭제"
+          >
+            <Trash2 className="h-4 w-4" />
+          </button>
+        </div>
+        
+        {childPages.length > 0 && isExpanded && (
+          <div className="mt-2 space-y-3">
+            {childPages.map(cp => renderPageEditor(cp, depth + 1))}
+          </div>
+        )}
+      </div>
+    );
+  };
     const newCategory: WikiCategory = {
       id: crypto.randomUUID(),
       title: "새 카테고리",
