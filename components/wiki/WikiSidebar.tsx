@@ -33,18 +33,28 @@ export function WikiSidebar({
           <li key={cat.id}>
             <button
               type="button"
-              onClick={() =>
-                setExpanded((e) => ({ ...e, [cat.id]: !e[cat.id] }))
-              }
-              className="flex w-full items-center gap-1.5 rounded-md px-2 py-1.5 text-sm font-medium text-text-secondary transition-colors duration-200 hover:bg-black/[0.03]"
+              onClick={() => {
+                setExpanded((e) => ({ ...e, [cat.id]: true }));
+                onSelect(cat.slug);
+              }}
+              className={cn(
+                "flex w-full items-center gap-1.5 rounded-md px-2 py-1.5 text-sm transition-colors duration-200",
+                activeSlug === cat.slug
+                  ? "bg-copper-muted font-semibold text-copper"
+                  : "font-medium text-text-secondary hover:bg-black/[0.03]"
+              )}
             >
               <ChevronRight
                 className={cn(
-                  "h-3.5 w-3.5 transition-transform duration-200",
+                  "h-3.5 w-3.5 shrink-0 transition-transform duration-200",
                   expanded[cat.id] && "rotate-90"
                 )}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setExpanded((prev) => ({ ...prev, [cat.id]: !prev[cat.id] }));
+                }}
               />
-              {cat.title}
+              <span className="truncate">{cat.title}</span>
             </button>
             {expanded[cat.id] && categoryPages.length > 0 && (
               <ul className="ml-4 mt-0.5 space-y-0.5 border-l border-border pl-2">

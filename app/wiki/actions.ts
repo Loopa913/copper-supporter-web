@@ -11,22 +11,36 @@ export async function saveWikiPageContent(pageId: string, contentJson: string) {
 
   const wikiContent = await getWikiContent();
   
-  // Find the page and update its content
-  let pageFound = false;
+  let found = false;
+  
+  // First, check if it's a page
   const updatedPages = wikiContent.pages.map((page) => {
     if (page.id === pageId) {
-      pageFound = true;
+      found = true;
       return { ...page, content: contentJson };
     }
     return page;
   });
 
-  if (!pageFound) {
-    throw new Error("Page not found");
-  }
+  if (found) {
+    // Save back to site_content
+    await updateSiteContent("wiki", "pages", JSON.stringify(updatedPages));
+  } else {
+    // Check if it's a category
+    const updatedCategories = wikiContent.categories.map((cat) => {
+      if (cat.id === pageId) {
+        found = true;
+        return { ...cat, content: contentJson };
+      }
+      return cat;
+    });
 
-  // Save back to site_content
-  await updateSiteContent("wiki", "pages", JSON.stringify(updatedPages));
+    if (found) {
+      await updateSiteContent("wiki", "categories", JSON.stringify(updatedCategories));
+    } else {
+      throw new Error("Page or Category not found");
+    }
+  }
   
   // Revalidate wiki paths
   revalidatePath("/wiki");

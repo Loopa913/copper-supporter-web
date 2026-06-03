@@ -2,6 +2,8 @@ export type WikiCategory = {
   id: string;
   title: string;
   slug: string;
+  excerpt?: string;
+  content?: string;
   children?: WikiCategory[];
 };
 

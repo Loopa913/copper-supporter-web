@@ -25,10 +25,24 @@ export function WikiShell({ isAdmin = false, initialContent }: WikiShellProps) {
   const [isEditingStructure, setIsEditingStructure] = useState(false);
   
   // Provide a safe fallback slug if none is available
-  const defaultSlug = initialContent.pages.length > 0 ? initialContent.pages[0].slug : "";
+  const defaultSlug = initialContent.categories.length > 0 ? initialContent.categories[0].slug : "";
   const [activeSlug, setActiveSlug] = useState(defaultSlug);
   
-  const page = initialContent.pages.find((p) => p.slug === activeSlug) ?? initialContent.pages[0];
+  let page = initialContent.pages.find((p) => p.slug === activeSlug);
+  
+  if (!page) {
+    const category = initialContent.categories.find((c) => c.slug === activeSlug);
+    if (category) {
+      page = {
+        id: category.id,
+        slug: category.slug,
+        title: category.title,
+        categorySlug: "",
+        excerpt: category.excerpt || "",
+        content: category.content,
+      };
+    }
+  }
 
   return (
     <div className="font-wiki flex min-h-[calc(100vh-72px)] bg-white">
