@@ -42,3 +42,21 @@ export async function requireAdmin(): Promise<AdminSession> {
     role: profile.role,
   };
 }
+
+export async function checkIsAdmin(): Promise<boolean> {
+  if (!isSupabaseConfigured()) return false;
+  
+  const supabase = await createClientIfConfigured();
+  if (!supabase) return false;
+
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return false;
+
+  const { data: profile } = await supabase
+    .from("admin_profiles")
+    .select("role")
+    .eq("user_id", user.id)
+    .maybeSingle();
+
+  return !!profile;
+}

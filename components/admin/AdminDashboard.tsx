@@ -5,21 +5,25 @@ import Link from "next/link";
 import { LogOut } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import type { HomeContent } from "@/lib/cms/types";
+import type { WikiContent } from "@/lib/cms/wiki-content";
 import { SoftCard } from "@/components/ui/SoftCard";
 import { FadeIn } from "@/components/ui/FadeIn";
 import { HomeCmsEditor } from "@/components/admin/HomeCmsEditor";
 import { RoadmapCmsEditor } from "@/components/admin/RoadmapCmsEditor";
 import { SupporterCmsEditor } from "@/components/admin/SupporterCmsEditor";
+import { WikiCategoryCmsEditor } from "@/components/admin/WikiCategoryCmsEditor";
 
 type AdminDashboardProps = {
   session: { email: string; role: string };
   homeContent: HomeContent;
+  wikiContent: WikiContent;
   supabaseConnected: boolean;
 };
 
 export function AdminDashboard({
   session,
   homeContent,
+  wikiContent,
   supabaseConnected,
 }: AdminDashboardProps) {
   const router = useRouter();
@@ -68,10 +72,11 @@ export function AdminDashboard({
           
           <div className="space-y-5">
             <FadeIn delay={0.4}>
-              <SoftCard className="p-6">
-                <h2 className="font-semibold text-copper">위키 관리</h2>
-                <p className="mt-2 text-sm font-light text-text-secondary">다음 단계에서 구현 예정입니다.</p>
-              </SoftCard>
+              <WikiCategoryCmsEditor
+                initialCategories={wikiContent.categories}
+                initialPages={wikiContent.pages}
+                disabled={!supabaseConnected}
+              />
             </FadeIn>
 
             <FadeIn delay={0.5}>
@@ -79,6 +84,8 @@ export function AdminDashboard({
                 <p className="text-sm font-light text-text-secondary">
                   로드맵 {homeContent.roadmapEvents.length}건 · 멤버{" "}
                   {homeContent.supporters.length}명
+                  <br />
+                  위키 카테고리 {wikiContent.categories.length}개 · 문서 {wikiContent.pages.length}개
                 </p>
                 <Link href="/" target="_blank" className="mt-4 inline-block text-sm font-medium text-copper hover:underline">
                   홈페이지 새 창으로 보기 ↗

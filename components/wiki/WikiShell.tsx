@@ -3,11 +3,7 @@
 import { useState } from "react";
 import dynamic from "next/dynamic";
 import { PanelLeftClose, PanelLeft } from "lucide-react";
-import {
-  DEFAULT_WIKI_SLUG,
-  WIKI_CATEGORIES,
-  WIKI_PAGES,
-} from "@/lib/data/wiki";
+import type { WikiContent } from "@/lib/cms/wiki-content";
 import { WikiSidebar } from "@/components/wiki/WikiSidebar";
 import { cn } from "@/lib/utils/cn";
 
@@ -18,10 +14,19 @@ const WikiEditor = dynamic(
   { ssr: false, loading: () => <div className="p-12 text-center text-text-muted">에디터 로딩중...</div> }
 );
 
-export function WikiShell() {
+type WikiShellProps = {
+  isAdmin?: boolean;
+  initialContent: WikiContent;
+};
+
+export function WikiShell({ isAdmin = false, initialContent }: WikiShellProps) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [activeSlug, setActiveSlug] = useState(DEFAULT_WIKI_SLUG);
-  const page = WIKI_PAGES.find((p) => p.slug === activeSlug) ?? WIKI_PAGES[0];
+  
+  // Provide a safe fallback slug if none is available
+  const defaultSlug = initialContent.pages.length > 0 ? initialContent.pages[0].slug : "";
+  const [activeSlug, setActiveSlug] = useState(defaultSlug);
+  
+  const page = initialContent.pages.find((p) => p.slug === activeSlug) ?? initialContent.pages[0];
 
   return (
     <div className="font-wiki flex min-h-[calc(100vh-72px)] bg-white">
@@ -32,7 +37,7 @@ export function WikiShell() {
         )}
       >
         <WikiSidebar
-          categories={WIKI_CATEGORIES}
+          categories={initialContent.categories}
           activeSlug={activeSlug}
           onSelect={setActiveSlug}
         />
@@ -53,11 +58,15 @@ export function WikiShell() {
               )}
             </button>
             <h1 className="truncate text-lg font-semibold tracking-tight text-text-primary">
-              {page.title}
+              {page ? page.title : "문서 없음"}
             </h1>
           </div>
           {/* Key prop ensures the editor completely re-mounts when switching pages */}
-          <WikiEditor key={page.id} page={page} />
+          {page ? (
+            <WikiEditor key={page.id} page={page} editable={isAdmin} />
+          ) : (
+            <div className="p-12 text-center text-text-muted">문서가 없습니다. 관리자 페이지에서 추가해주세요.</div>
+          )}
         </div>
       </div>
     );
