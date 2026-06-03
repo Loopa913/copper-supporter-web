@@ -95,7 +95,7 @@ export function WikiSidebar({
 
   return (
     <nav className="h-full overflow-y-auto p-4" aria-label="위키 목록">
-      <p className="mb-4 px-2 text-xs font-medium text-text-muted">카퍼 위키</p>
+      <p className="mb-4 px-2 text-xs font-medium text-text-muted">유니버스 위키</p>
       <ul className="space-y-0.5">
         {categories.map((cat) => {
           return (

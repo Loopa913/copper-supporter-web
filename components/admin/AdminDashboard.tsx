@@ -6,17 +6,23 @@ import { LogOut } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import type { HomeContent } from "@/lib/cms/types";
 import type { WikiContent } from "@/lib/cms/wiki-content";
+import type { ProtocolContent } from "@/lib/cms/protocol-content";
+import type { ShopContent } from "@/lib/cms/shop-content";
 import { SoftCard } from "@/components/ui/SoftCard";
 import { FadeIn } from "@/components/ui/FadeIn";
 import { HomeCmsEditor } from "@/components/admin/HomeCmsEditor";
 import { RoadmapCmsEditor } from "@/components/admin/RoadmapCmsEditor";
 import { SupporterCmsEditor } from "@/components/admin/SupporterCmsEditor";
 import { WikiCategoryCmsEditor } from "@/components/admin/WikiCategoryCmsEditor";
+import { ProtocolCmsEditor } from "@/components/admin/ProtocolCmsEditor";
+import { ShopCmsEditor } from "@/components/admin/ShopCmsEditor";
 
 type AdminDashboardProps = {
   session: { email: string; role: string };
   homeContent: HomeContent;
   wikiContent: WikiContent;
+  protocolContent: ProtocolContent;
+  shopContent: ShopContent;
   supabaseConnected: boolean;
 };
 
@@ -24,6 +30,8 @@ export function AdminDashboard({
   session,
   homeContent,
   wikiContent,
+  protocolContent,
+  shopContent,
   supabaseConnected,
 }: AdminDashboardProps) {
   const router = useRouter();
@@ -68,10 +76,18 @@ export function AdminDashboard({
             <FadeIn delay={0.3}>
               <SupporterCmsEditor initialData={homeContent} disabled={!supabaseConnected} />
             </FadeIn>
+
+            <FadeIn delay={0.35}>
+              <ProtocolCmsEditor initialData={protocolContent} disabled={!supabaseConnected} />
+            </FadeIn>
+
+            <FadeIn delay={0.4}>
+              <ShopCmsEditor initialData={shopContent} disabled={!supabaseConnected} />
+            </FadeIn>
           </div>
           
           <div className="space-y-5">
-            <FadeIn delay={0.4}>
+            <FadeIn delay={0.5}>
               <WikiCategoryCmsEditor
                 initialCategories={wikiContent.categories}
                 initialPages={wikiContent.pages}

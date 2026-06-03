@@ -3,15 +3,15 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
-import { GOODS_ITEMS } from "@/lib/data/shop";
+import type { GoodsItem } from "@/lib/data/shop";
 import { cn } from "@/lib/utils/cn";
 
 const AUTOPLAY_MS = 3000;
 
-export function GoodsSlider() {
+export function GoodsSlider({ items }: { items: GoodsItem[] }) {
   const [index, setIndex] = useState(0);
-  const total = GOODS_ITEMS.length;
-  const item = GOODS_ITEMS[index];
+  const total = items.length;
+  const item = items[index];
 
   useEffect(() => {
     if (total <= 1) return;
@@ -22,6 +22,8 @@ export function GoodsSlider() {
 
     return () => clearInterval(timer);
   }, [total]);
+
+  if (total === 0) return null;
 
   return (
     <div className="relative mx-auto mt-16 max-w-4xl">
@@ -62,7 +64,7 @@ export function GoodsSlider() {
       </SoftCardShell>
 
       <div className="mt-6 flex items-center justify-center gap-2">
-        {GOODS_ITEMS.map((g, i) => (
+        {items.map((g, i) => (
           <button
             key={g.id}
             type="button"
@@ -81,7 +83,7 @@ export function GoodsSlider() {
 
       {/* 썸네일 프리뷰 */}
       <ul className="mt-8 hidden gap-3 sm:grid sm:grid-cols-4">
-        {GOODS_ITEMS.map((g, i) => (
+        {items.map((g, i) => (
           <li key={g.id}>
             <button
               type="button"

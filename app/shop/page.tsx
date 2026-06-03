@@ -1,5 +1,9 @@
 import { ShopGallery } from "@/components/shop/ShopGallery";
+import { getShopContent } from "@/lib/cms/shop-content";
 
-export default function ShopPage() {
-  return <ShopGallery />;
+export const runtime = "edge";
+
+export default async function ShopPage() {
+  const content = await getShopContent();
+  return <ShopGallery content={content} />;
 }

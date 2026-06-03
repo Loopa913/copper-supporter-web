@@ -3,29 +3,31 @@
 import Link from "next/link";
 import { ExternalLink } from "lucide-react";
 import { motion } from "framer-motion";
-import { SHOP_CTA, SHOP_INTRO } from "@/lib/data/shop";
+import { SHOP_CTA } from "@/lib/data/shop";
 import { GoodsSlider } from "@/components/shop/GoodsSlider";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { FadeIn } from "@/components/ui/FadeIn";
+import type { ShopContent } from "@/lib/cms/shop-content";
 
-export function ShopGallery() {
+export function ShopGallery({ content }: { content: ShopContent }) {
+  const intro = content.intro;
   return (
     <div className="section-white px-5 py-24 sm:px-8 sm:py-28">
       <div className="mx-auto max-w-6xl">
         <SectionHeader
-          eyebrow="굿즈샵"
-          title={SHOP_INTRO.title}
-          description={SHOP_INTRO.description}
+          eyebrow="굿즈 제작 지원"
+          title={intro.title}
+          description={intro.description}
           align="center"
         />
 
         <FadeIn className="mx-auto mt-10 max-w-2xl">
           <p className="soft-card p-6 text-center text-sm font-light leading-loose text-text-secondary">
-            {SHOP_INTRO.supportNote}
+            {intro.supportNote}
           </p>
         </FadeIn>
 
-        <GoodsSlider />
+        <GoodsSlider items={content.goods} />
 
         <FadeIn className="mt-16 text-center">
           <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>

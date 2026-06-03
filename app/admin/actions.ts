@@ -28,4 +28,6 @@ export async function updateSiteContent(section: string, key: string, value: unk
   revalidatePath("/");
   revalidatePath("/admin/dashboard");
   revalidatePath("/wiki");
+  revalidatePath("/protocol");
+  revalidatePath("/shop");
 }

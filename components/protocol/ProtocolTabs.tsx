@@ -2,28 +2,29 @@
 
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { PROTOCOL_TABS, type ProtocolTabKey } from "@/lib/data/protocol";
+import type { ProtocolTabKey } from "@/lib/data/protocol";
 import { FilterChipTabs } from "@/components/protocol/FilterChipTabs";
 import { ProtocolItemGrid } from "@/components/protocol/ProtocolItemGrid";
 import { ProtocolAccordion } from "@/components/protocol/ProtocolAccordion";
 import { SectionHeader } from "@/components/ui/SectionHeader";
+import type { ProtocolContent } from "@/lib/cms/protocol-content";
 
-export function ProtocolTabs() {
+export function ProtocolTabs({ content }: { content: ProtocolContent }) {
   const [active, setActive] = useState<ProtocolTabKey>("quality");
-  const tab = PROTOCOL_TABS[active];
+  const tab = content.tabs[active];
 
   return (
     <div className="section-white px-5 py-24 sm:px-8 sm:py-28">
       <div className="mx-auto max-w-6xl">
         <SectionHeader
-          eyebrow="성장 프로토콜"
-          title="서포터즈 성장 프로토콜"
+          eyebrow="스트리머 지원 프로토콜"
+          title="서포터즈 스트리머 지원 프로토콜"
           description="필터 칩으로 카테고리를 선택하고, 아코디언에서 상세 내용을 확인하세요."
           align="center"
         />
 
         <div className="mt-12">
-          <FilterChipTabs active={active} onChange={setActive} />
+          <FilterChipTabs active={active} onChange={setActive} tabs={content.tabs} />
         </div>
 
         <p className="mt-8 text-center text-sm font-light text-text-secondary">
