@@ -178,13 +178,21 @@ export function ShopCmsEditor({
                   </div>
                   <div className="space-y-1">
                     <label className="text-xs font-medium text-text-secondary">이미지 URL</label>
-                    <input
-                      type="text"
-                      value={item.imageUrl}
-                      onChange={(e) => handleGoodsChange(index, "imageUrl", e.target.value)}
-                      disabled={disabled}
-                      className="input-field text-sm py-1.5"
-                    />
+                    <div className="flex gap-3 items-start">
+                      {item.imageUrl && (
+                        <div className="relative w-12 h-12 rounded overflow-hidden shrink-0 border border-border bg-black/5">
+                          <img src={item.imageUrl} alt="preview" className="object-cover w-full h-full" />
+                        </div>
+                      )}
+                      <input
+                        type="text"
+                        value={item.imageUrl}
+                        onChange={(e) => handleGoodsChange(index, "imageUrl", e.target.value)}
+                        disabled={disabled}
+                        placeholder="https://..."
+                        className="input-field text-sm py-1.5 flex-1"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>

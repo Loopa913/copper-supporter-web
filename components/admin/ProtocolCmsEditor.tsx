@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Loader2, Save } from "lucide-react";
+import { Loader2, Save, Plus, Trash2, ChevronDown, ChevronUp } from "lucide-react";
 import type { ProtocolContent } from "@/lib/cms/protocol-content";
 import { SoftCard } from "@/components/ui/SoftCard";
 import { updateSiteContent } from "@/app/admin/actions";
@@ -17,6 +17,7 @@ export function ProtocolCmsEditor({
   const [data, setData] = useState<ProtocolContent>(initialData);
   const [isSaving, setIsSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [expandedTab, setExpandedTab] = useState<string | null>("quality");
 
   async function handleSave() {
     setIsSaving(true);
@@ -33,13 +34,107 @@ export function ProtocolCmsEditor({
     }
   }
 
-  function handleJsonChange(value: string) {
-    try {
-      const parsed = JSON.parse(value);
-      setData({ tabs: parsed });
-    } catch (e) {
-      // Allow invalid JSON while typing, but it will fail on save if it's not valid
-    }
+  function handleTabChange(tabKey: string, field: string, value: string) {
+    const key = tabKey as ProtocolTabKey;
+    setData((prev) => ({
+      ...prev,
+      tabs: {
+        ...prev.tabs,
+        [key]: { ...prev.tabs[key], [field]: value },
+      },
+    }));
+  }
+
+  function handleItemChange(tabKey: string, index: number, field: string, value: string) {
+    const key = tabKey as ProtocolTabKey;
+    setData((prev) => {
+      const newItems = [...prev.tabs[key].items];
+      newItems[index] = { ...newItems[index], [field]: value };
+      return {
+        ...prev,
+        tabs: {
+          ...prev.tabs,
+          [key]: { ...prev.tabs[key], items: newItems },
+        },
+      };
+    });
+  }
+
+  function addItem(tabKey: string) {
+    const key = tabKey as ProtocolTabKey;
+    setData((prev) => ({
+      ...prev,
+      tabs: {
+        ...prev.tabs,
+        [key]: {
+          ...prev.tabs[key],
+          items: [
+            ...prev.tabs[key].items,
+            { id: Math.random().toString(36).substring(2, 9), title: "", summary: "" },
+          ],
+        },
+      },
+    }));
+  }
+
+  function removeItem(tabKey: string, index: number) {
+    const key = tabKey as ProtocolTabKey;
+    setData((prev) => ({
+      ...prev,
+      tabs: {
+        ...prev.tabs,
+        [key]: {
+          ...prev.tabs[key],
+          items: prev.tabs[key].items.filter((_, i) => i !== index),
+        },
+      },
+    }));
+  }
+
+  function handleDetailChange(tabKey: string, index: number, field: string, value: string) {
+    const key = tabKey as ProtocolTabKey;
+    setData((prev) => {
+      const newDetails = [...prev.tabs[key].details];
+      newDetails[index] = { ...newDetails[index], [field]: value };
+      return {
+        ...prev,
+        tabs: {
+          ...prev.tabs,
+          [key]: { ...prev.tabs[key], details: newDetails },
+        },
+      };
+    });
+  }
+
+  function addDetail(tabKey: string) {
+    const key = tabKey as ProtocolTabKey;
+    setData((prev) => ({
+      ...prev,
+      tabs: {
+        ...prev.tabs,
+        [key]: {
+          ...prev.tabs[key],
+          details: [
+            ...prev.tabs[key].details,
+            { id: Math.random().toString(36).substring(2, 9), title: "", body: "", imageHint: "" },
+          ],
+        },
+      },
+    }));
+  }
+
+  function removeDetail(tabKey: string, index: number) {
+    const key = tabKey as ProtocolTabKey;
+    setData((prev) => ({
+      ...prev,
+      tabs: {
+        ...prev.tabs,
+        [key]: {
+          ...prev.tabs[key],
+          details: prev.tabs[key].details.filter((_, i) => i !== index),
+        },
+      },
+    }));
   }
 
   return (
@@ -50,7 +145,7 @@ export function ProtocolCmsEditor({
             스트리머 지원 프로토콜 편집
           </h2>
           <p className="mt-1 text-sm font-light text-text-secondary">
-            프로토콜 탭(퀄리티, 인지도 등)의 내용을 JSON 형식으로 직접 편집합니다.
+            프로토콜 탭의 내용과 세부 항목들을 직관적으로 편집할 수 있습니다.
           </p>
         </div>
         <button
@@ -73,16 +168,163 @@ export function ProtocolCmsEditor({
       </div>
 
       <div className="space-y-4">
-        <textarea
-          defaultValue={JSON.stringify(data.tabs, null, 2)}
-          onChange={(e) => handleJsonChange(e.target.value)}
-          disabled={disabled}
-          className="input-field min-h-[400px] font-mono text-sm resize-y"
-          spellCheck={false}
-        />
-        <p className="text-xs text-text-muted">
-          * JSON 형식을 엄격하게 지켜주세요. 큰따옴표, 쉼표 누락 시 화면이 깨질 수 있습니다.
-        </p>
+        {Object.entries(data.tabs).map(([tabKey, tab]) => (
+          <div key={tabKey} className="rounded-xl border border-border overflow-hidden">
+            <button
+              type="button"
+              onClick={() => setExpandedTab(expandedTab === tabKey ? null : tabKey)}
+              className="flex w-full items-center justify-between bg-black/[0.02] px-4 py-3 hover:bg-black/[0.04]"
+            >
+              <h3 className="font-medium text-text-primary">{tab.label} ({tabKey})</h3>
+              {expandedTab === tabKey ? <ChevronUp className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
+            </button>
+            
+            {expandedTab === tabKey && (
+              <div className="p-4 space-y-8 bg-white">
+                {/* 탭 기본 정보 */}
+                <div className="space-y-4">
+                  <h4 className="text-sm font-semibold text-copper">기본 정보</h4>
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <div className="space-y-1">
+                      <label className="text-xs font-medium text-text-secondary">탭 이름</label>
+                      <input
+                        type="text"
+                        value={tab.label}
+                        onChange={(e) => handleTabChange(tabKey, "label", e.target.value)}
+                        disabled={disabled}
+                        className="input-field text-sm"
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-xs font-medium text-text-secondary">탭 설명</label>
+                      <input
+                        type="text"
+                        value={tab.description}
+                        onChange={(e) => handleTabChange(tabKey, "description", e.target.value)}
+                        disabled={disabled}
+                        className="input-field text-sm"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* 그리드 아이템 목록 */}
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <h4 className="text-sm font-semibold text-copper">요약 항목 (그리드)</h4>
+                    <button
+                      type="button"
+                      onClick={() => addItem(tabKey)}
+                      disabled={disabled}
+                      className="flex items-center gap-1 text-xs font-medium text-text-secondary hover:text-copper"
+                    >
+                      <Plus className="h-3.5 w-3.5" />
+                      항목 추가
+                    </button>
+                  </div>
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    {tab.items.map((item, index) => (
+                      <div key={item.id} className="relative rounded-lg border border-border p-3">
+                        <button
+                          type="button"
+                          onClick={() => removeItem(tabKey, index)}
+                          disabled={disabled}
+                          className="absolute right-2 top-2 rounded-md p-1 text-text-muted hover:bg-black/5 hover:text-red-500"
+                        >
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </button>
+                        <div className="space-y-2 pr-6">
+                          <div className="space-y-1">
+                            <label className="text-[10px] uppercase text-text-muted">제목</label>
+                            <input
+                              type="text"
+                              value={item.title}
+                              onChange={(e) => handleItemChange(tabKey, index, "title", e.target.value)}
+                              disabled={disabled}
+                              className="input-field text-sm py-1"
+                            />
+                          </div>
+                          <div className="space-y-1">
+                            <label className="text-[10px] uppercase text-text-muted">설명</label>
+                            <input
+                              type="text"
+                              value={item.summary}
+                              onChange={(e) => handleItemChange(tabKey, index, "summary", e.target.value)}
+                              disabled={disabled}
+                              className="input-field text-sm py-1"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* 아코디언 디테일 목록 */}
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <h4 className="text-sm font-semibold text-copper">상세 내용 (아코디언)</h4>
+                    <button
+                      type="button"
+                      onClick={() => addDetail(tabKey)}
+                      disabled={disabled}
+                      className="flex items-center gap-1 text-xs font-medium text-text-secondary hover:text-copper"
+                    >
+                      <Plus className="h-3.5 w-3.5" />
+                      상세 추가
+                    </button>
+                  </div>
+                  <div className="space-y-3">
+                    {tab.details.map((detail, index) => (
+                      <div key={detail.id} className="relative rounded-lg border border-border p-3">
+                        <button
+                          type="button"
+                          onClick={() => removeDetail(tabKey, index)}
+                          disabled={disabled}
+                          className="absolute right-2 top-2 rounded-md p-1 text-text-muted hover:bg-black/5 hover:text-red-500"
+                        >
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </button>
+                        <div className="space-y-3 pr-6">
+                          <div className="space-y-1">
+                            <label className="text-[10px] uppercase text-text-muted">제목</label>
+                            <input
+                              type="text"
+                              value={detail.title}
+                              onChange={(e) => handleDetailChange(tabKey, index, "title", e.target.value)}
+                              disabled={disabled}
+                              className="input-field text-sm py-1"
+                            />
+                          </div>
+                          <div className="space-y-1">
+                            <label className="text-[10px] uppercase text-text-muted">본문</label>
+                            <textarea
+                              value={detail.body}
+                              onChange={(e) => handleDetailChange(tabKey, index, "body", e.target.value)}
+                              disabled={disabled}
+                              className="input-field text-sm py-1 min-h-[60px] resize-y"
+                            />
+                          </div>
+                          <div className="space-y-1">
+                            <label className="text-[10px] uppercase text-text-muted">이미지 힌트 (선택)</label>
+                            <input
+                              type="text"
+                              value={detail.imageHint || ""}
+                              onChange={(e) => handleDetailChange(tabKey, index, "imageHint", e.target.value)}
+                              disabled={disabled}
+                              className="input-field text-sm py-1"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+              </div>
+            )}
+          </div>
+        ))}
       </div>
     </SoftCard>
   );
