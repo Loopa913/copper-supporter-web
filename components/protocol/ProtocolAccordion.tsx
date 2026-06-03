@@ -50,7 +50,7 @@ export function ProtocolAccordion({ details }: ProtocolAccordionProps) {
                     className="overflow-hidden"
                   >
                     <div className="border-t border-border px-6 pb-6 pt-2">
-                      <p className="text-sm font-light leading-loose text-text-secondary">
+                      <p className="text-sm font-light leading-loose text-text-secondary whitespace-pre-wrap">
                         {detail.body}
                       </p>
                       {detail.imageHint && (

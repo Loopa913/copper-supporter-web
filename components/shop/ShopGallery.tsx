@@ -22,7 +22,7 @@ export function ShopGallery({ content }: { content: ShopContent }) {
         />
 
         <FadeIn className="mx-auto mt-10 max-w-2xl">
-          <p className="soft-card p-6 text-center text-sm font-light leading-loose text-text-secondary">
+          <p className="soft-card p-6 text-center text-sm font-light leading-loose text-text-secondary whitespace-pre-wrap">
             {intro.supportNote}
           </p>
         </FadeIn>

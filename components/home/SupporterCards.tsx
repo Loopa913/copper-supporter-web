@@ -30,7 +30,7 @@ export function SupporterCards({ supporters }: SupporterCardsProps) {
                   {member.name}
                 </h4>
                 <p className="mt-1 text-sm font-medium text-copper">{member.role}</p>
-                <p className="mt-4 text-sm font-light leading-loose text-text-secondary">
+                <p className="mt-4 text-sm font-light leading-loose text-text-secondary whitespace-pre-wrap">
                   {member.bio}
                 </p>
               </SoftCard>

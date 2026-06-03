@@ -21,7 +21,7 @@ export function HeroSection({ tagline, heroSummary, videoId }: HeroSectionProps)
           <p className="mx-auto mt-6 max-w-xl text-lg font-light leading-loose text-text-secondary">
             {tagline}
           </p>
-          <p className="soft-card mx-auto mt-8 max-w-2xl p-6 text-left text-sm font-light leading-loose text-text-secondary sm:text-base">
+          <p className="soft-card mx-auto mt-8 max-w-2xl p-6 text-left text-sm font-light leading-loose text-text-secondary sm:text-base whitespace-pre-wrap">
             {heroSummary}
           </p>
           <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
