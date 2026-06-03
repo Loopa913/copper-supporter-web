@@ -3,6 +3,7 @@
 import { useTransition, useCallback } from "react";
 import { useCreateBlockNote } from "@blocknote/react";
 import { BlockNoteView } from "@blocknote/shadcn";
+import * as locales from "@blocknote/core/locales";
 import "@blocknote/core/fonts/inter.css";
 import "@blocknote/shadcn/style.css";
 import type { WikiPage } from "@/lib/data/wiki";
@@ -31,6 +32,7 @@ export function WikiEditor({ page, editable = true }: WikiEditorProps) {
 
   const editor = useCreateBlockNote({
     initialContent: page.content ? JSON.parse(page.content) : undefined,
+    dictionary: locales.ko,
   });
 
   // Automatically save the document 1.5 seconds after the user stops typing
