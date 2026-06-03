@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import dynamic from "next/dynamic";
 import { PanelLeftClose, PanelLeft } from "lucide-react";
 import {
   DEFAULT_WIKI_SLUG,
@@ -8,8 +9,14 @@ import {
   WIKI_PAGES,
 } from "@/lib/data/wiki";
 import { WikiSidebar } from "@/components/wiki/WikiSidebar";
-import { WikiEditor } from "@/components/wiki/WikiEditor";
 import { cn } from "@/lib/utils/cn";
+
+// BlockNote uses browser APIs (like `window`) and must be dynamically imported
+// with SSR disabled to prevent build errors during static generation.
+const WikiEditor = dynamic(
+  () => import("@/components/wiki/WikiEditor").then((mod) => mod.WikiEditor),
+  { ssr: false, loading: () => <div className="p-12 text-center text-text-muted">에디터 로딩중...</div> }
+);
 
 export function WikiShell() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
