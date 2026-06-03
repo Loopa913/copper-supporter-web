@@ -139,6 +139,13 @@ export function SupporterCmsEditor({ initialData, disabled = false }: SupporterC
                     rows={2}
                     className="w-full resize-none rounded-lg border border-border bg-surface-warm px-3 py-1.5 text-sm font-light text-text-secondary"
                   />
+                  <input
+                    type="text"
+                    value={member.studioLink || ""}
+                    onChange={(e) => handleChange(member.id, "studioLink", e.target.value)}
+                    placeholder="스튜디오 (이동할) 링크 URL (예: https://...)"
+                    className="w-full rounded-lg border border-border bg-surface-warm px-3 py-1.5 text-xs text-text-secondary"
+                  />
                 </div>
 
                 <button

@@ -10,7 +10,7 @@ import { SectionHeader } from "@/components/ui/SectionHeader";
 import type { ProtocolContent } from "@/lib/cms/protocol-content";
 
 export function ProtocolTabs({ content }: { content: ProtocolContent }) {
-  const [active, setActive] = useState<ProtocolTabKey>("quality");
+  const [active, setActive] = useState<ProtocolTabKey>("awareness");
   const tab = content.tabs[active];
 
   return (

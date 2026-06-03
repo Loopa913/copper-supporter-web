@@ -23,9 +23,9 @@ export function SupporterCards({ supporters }: SupporterCardsProps) {
       <div className="mt-14">
         <h3 className="mb-6 text-xl font-bold text-center text-text-primary">{title}</h3>
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {groupSupporters.map((member, index) => (
-            <FadeIn key={member.id} delay={delayOffset + index * 0.05}>
-              <SoftCard className="flex flex-col items-center p-8 text-center">
+          {groupSupporters.map((member, index) => {
+            const CardContent = (
+              <SoftCard className="flex flex-col items-center p-8 text-center h-full transition-colors hover:border-copper/30">
                 <h4 className="text-lg font-semibold tracking-tight text-text-primary">
                   {member.name}
                 </h4>
@@ -34,8 +34,22 @@ export function SupporterCards({ supporters }: SupporterCardsProps) {
                   {member.bio}
                 </p>
               </SoftCard>
-            </FadeIn>
-          ))}
+            );
+
+            return (
+              <FadeIn key={member.id} delay={delayOffset + index * 0.05} className="h-full">
+                {member.studioLink ? (
+                  <a href={member.studioLink} target="_blank" rel="noopener noreferrer" className="block h-full cursor-pointer">
+                    {CardContent}
+                  </a>
+                ) : (
+                  <div className="h-full">
+                    {CardContent}
+                  </div>
+                )}
+              </FadeIn>
+            );
+          })}
         </div>
       </div>
     );

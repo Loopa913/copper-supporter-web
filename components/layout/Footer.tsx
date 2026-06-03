@@ -10,10 +10,10 @@ export function Footer() {
         <div className="flex flex-col gap-10 sm:flex-row sm:justify-between">
           <div>
             <p className="text-lg font-semibold tracking-tight text-text-primary">
-              카퍼 서포터즈
+              함께 만드는 스트리머 프로젝트
             </p>
             <p className="mt-3 max-w-md text-sm font-light leading-loose text-text-secondary">
-              함께 만드는 스트리머 프로젝트 공식 홈페이지
+              공식 홈페이지
             </p>
           </div>
           <nav className="flex flex-wrap gap-x-8 gap-y-3" aria-label="푸터 링크">

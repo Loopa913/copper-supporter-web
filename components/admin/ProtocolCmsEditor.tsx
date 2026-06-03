@@ -18,7 +18,7 @@ export function ProtocolCmsEditor({
   const [data, setData] = useState<ProtocolContent>(initialData);
   const [isSaving, setIsSaving] = useState(false);
   const [saved, setSaved] = useState(false);
-  const [expandedTab, setExpandedTab] = useState<string | null>("quality");
+  const [expandedTab, setExpandedTab] = useState<string | null>("awareness");
 
   async function handleSave() {
     setIsSaving(true);

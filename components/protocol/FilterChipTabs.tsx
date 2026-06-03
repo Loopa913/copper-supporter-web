@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils/cn";
 import type { ProtocolTabKey } from "@/lib/data/protocol";
 import type { ProtocolContent } from "@/lib/cms/protocol-content";
 
-const TAB_KEYS: ProtocolTabKey[] = ["quality", "awareness"];
+const TAB_KEYS: ProtocolTabKey[] = ["awareness", "quality"];
 
 type FilterChipTabsProps = {
   active: ProtocolTabKey;
