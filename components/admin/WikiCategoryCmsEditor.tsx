@@ -40,6 +40,28 @@ export function WikiCategoryCmsEditor({
     setCategories([...categories, newCategory]);
   };
 
+  const handleRemoveCategory = (id: string) => {
+    setCategories(categories.filter((c) => c.id !== id));
+    // Remove pages associated with this category
+    const cat = categories.find((c) => c.id === id);
+    if (cat) {
+      setPages(pages.filter((p) => p.categorySlug !== cat.slug));
+    }
+  };
+
+  const handleChangeCategory = (id: string, field: keyof WikiCategory, value: string) => {
+    setCategories(categories.map((c) => {
+      if (c.id !== id) return c;
+      const updatedCat = { ...c, [field]: value };
+      
+      // If slug changed, update all pages that belong to it
+      if (field === "slug" && c.slug !== value) {
+        setPages(pages.map(p => p.categorySlug === c.slug ? { ...p, categorySlug: value } : p));
+      }
+      return updatedCat;
+    }));
+  };
+
   const renderPageEditor = (page: WikiPage, depth: number) => {
     const childPages = pages.filter((p) => p.parentSlug === page.slug);
     const isExpanded = expandedPages[page.id] !== false; // Default true
@@ -107,97 +129,6 @@ export function WikiCategoryCmsEditor({
         </div>
         
         {childPages.length > 0 && isExpanded && (
-          <div className="mt-2 space-y-3">
-            {childPages.map(cp => renderPageEditor(cp, depth + 1))}
-          </div>
-        )}
-      </div>
-    );
-  };
-    const newCategory: WikiCategory = {
-      id: crypto.randomUUID(),
-      title: "새 카테고리",
-      slug: `category-${Date.now()}`,
-      children: [],
-    };
-    setCategories([...categories, newCategory]);
-  };
-
-  const handleRemoveCategory = (id: string) => {
-    setCategories(categories.filter((c) => c.id !== id));
-    // Remove pages associated with this category
-    const cat = categories.find((c) => c.id === id);
-    if (cat) {
-      setPages(pages.filter((p) => p.categorySlug !== cat.slug));
-    }
-  };
-
-  const handleChangeCategory = (id: string, field: keyof WikiCategory, value: string) => {
-    setCategories(categories.map((c) => {
-      if (c.id !== id) return c;
-      const updatedCat = { ...c, [field]: value };
-      
-      // If slug changed, update all pages that belong to it
-      if (field === "slug" && c.slug !== value) {
-        setPages(pages.map(p => p.categorySlug === c.slug ? { ...p, categorySlug: value } : p));
-      }
-      return updatedCat;
-    }));
-  };
-
-  const renderPageEditor = (page: WikiPage, depth: number) => {
-    const childPages = pages.filter((p) => p.parentSlug === page.slug);
-    return (
-      <div key={page.id} className={cn("group flex flex-col gap-2", depth > 0 && "ml-4 mt-3 border-l-2 border-copper/10 pl-4")}>
-        <div className="flex gap-3 items-start">
-          <div className="flex-1 space-y-2">
-            <div className="flex gap-2">
-              <input
-                type="text"
-                value={page.title}
-                onChange={(e) => handleChangePage(page.id, "title", e.target.value)}
-                placeholder="문서 제목"
-                className="w-1/2 rounded-lg border border-border bg-surface-warm px-3 py-1.5 text-sm"
-              />
-              <div className="flex flex-1 items-center gap-2">
-                <span className="text-xs text-text-muted shrink-0">Slug:</span>
-                <input
-                  type="text"
-                  value={page.slug}
-                  onChange={(e) => handleChangePage(page.id, "slug", e.target.value)}
-                  placeholder="page-slug"
-                  className="w-full rounded-lg border border-border bg-surface-warm px-3 py-1.5 text-xs text-text-secondary"
-                />
-              </div>
-            </div>
-            <input
-              type="text"
-              value={page.excerpt}
-              onChange={(e) => handleChangePage(page.id, "excerpt", e.target.value)}
-              placeholder="짧은 요약 (선택)"
-              className="w-full rounded-lg border border-border bg-surface-warm px-3 py-1 text-xs text-text-secondary"
-            />
-          </div>
-          
-          <button
-            type="button"
-            onClick={() => handleAddSubPage(page.slug, page.categorySlug)}
-            className="mt-1 p-1 text-copper opacity-0 transition-opacity hover:text-copper-dark group-hover:opacity-100 shrink-0"
-            title="하위 문서 추가"
-          >
-            <Plus className="h-4 w-4" />
-          </button>
-          <button
-            type="button"
-            onClick={() => handleRemovePage(page.id)}
-            className="mt-1 p-1 text-red-400 opacity-0 transition-opacity hover:text-red-600 group-hover:opacity-100 shrink-0"
-            title="문서 삭제"
-          >
-            <Trash2 className="h-4 w-4" />
-          </button>
-        </div>
-        
-        {childPages.length > 0 && (
           <div className="mt-2 space-y-3">
             {childPages.map(cp => renderPageEditor(cp, depth + 1))}
           </div>
