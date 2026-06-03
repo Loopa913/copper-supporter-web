@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { ExternalLink } from "lucide-react";
 import { motion } from "framer-motion";
-import { SHOP_CTA } from "@/lib/data/shop";
 import { GoodsSlider } from "@/components/shop/GoodsSlider";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { FadeIn } from "@/components/ui/FadeIn";
@@ -11,6 +10,7 @@ import type { ShopContent } from "@/lib/cms/shop-content";
 
 export function ShopGallery({ content }: { content: ShopContent }) {
   const intro = content.intro;
+  const cta = content.cta;
   return (
     <div className="section-white px-5 py-24 sm:px-8 sm:py-28">
       <div className="mx-auto max-w-6xl">
@@ -32,12 +32,12 @@ export function ShopGallery({ content }: { content: ShopContent }) {
         <FadeIn className="mt-16 text-center">
           <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
             <Link
-              href={SHOP_CTA.href}
+              href={cta.href}
               target="_blank"
               rel="noopener noreferrer"
               className="btn-copper inline-flex gap-2 px-10 py-4 text-base"
             >
-              {SHOP_CTA.label}
+              {cta.label}
               <ExternalLink className="h-5 w-5" />
             </Link>
           </motion.div>

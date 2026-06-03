@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
 import type { GoodsItem } from "@/lib/data/shop";
 import { cn } from "@/lib/utils/cn";
@@ -38,13 +37,10 @@ export function GoodsSlider({ items }: { items: GoodsItem[] }) {
               transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
               className="absolute inset-0"
             >
-              <Image
+              <img
                 src={item.imageUrl}
                 alt={item.name}
-                fill
-                className="object-cover"
-                sizes="(max-width: 768px) 100vw, 896px"
-                priority={index === 0}
+                className="absolute inset-0 h-full w-full object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
               <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-10">
@@ -94,12 +90,10 @@ export function GoodsSlider({ items }: { items: GoodsItem[] }) {
               )}
             >
               <div className="relative aspect-square overflow-hidden rounded-xl bg-surface-warm">
-                <Image
+                <img
                   src={g.imageUrl}
                   alt=""
-                  fill
-                  className="object-cover"
-                  sizes="120px"
+                  className="absolute inset-0 h-full w-full object-cover"
                 />
               </div>
               <p className="mt-2 truncate px-1 pb-1 text-left text-xs font-medium text-text-secondary">

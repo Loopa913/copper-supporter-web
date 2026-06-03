@@ -24,6 +24,7 @@ export function ShopCmsEditor({
     try {
       await updateSiteContent("shop", "intro", data.intro);
       await updateSiteContent("shop", "goods", data.goods);
+      await updateSiteContent("shop", "cta", data.cta);
       setSaved(true);
       setTimeout(() => setSaved(false), 3000);
     } catch (error) {
@@ -38,6 +39,13 @@ export function ShopCmsEditor({
     setData((prev) => ({
       ...prev,
       intro: { ...prev.intro, [key]: value },
+    }));
+  }
+
+  function handleCtaChange(key: keyof typeof data.cta, value: string) {
+    setData((prev) => ({
+      ...prev,
+      cta: { ...prev.cta, [key]: value },
     }));
   }
 
@@ -126,6 +134,33 @@ export function ShopCmsEditor({
                 onChange={(e) => handleIntroChange("supportNote", e.target.value)}
                 disabled={disabled}
                 className="input-field min-h-[60px] resize-y"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="space-y-4 rounded-xl bg-black/[0.02] p-4">
+          <h3 className="font-medium">하단 이동 링크 (CTA 버튼)</h3>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="space-y-1">
+              <label className="text-xs font-medium text-text-secondary">버튼 텍스트</label>
+              <input
+                type="text"
+                value={data.cta.label}
+                onChange={(e) => handleCtaChange("label", e.target.value)}
+                disabled={disabled}
+                className="input-field"
+              />
+            </div>
+            <div className="space-y-1">
+              <label className="text-xs font-medium text-text-secondary">이동할 링크 URL</label>
+              <input
+                type="text"
+                value={data.cta.href}
+                onChange={(e) => handleCtaChange("href", e.target.value)}
+                disabled={disabled}
+                placeholder="https://..."
+                className="input-field"
               />
             </div>
           </div>

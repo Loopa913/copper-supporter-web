@@ -1,16 +1,18 @@
-import { SHOP_INTRO, GOODS_ITEMS, type GoodsItem } from "@/lib/data/shop";
+import { SHOP_INTRO, GOODS_ITEMS, SHOP_CTA, type GoodsItem } from "@/lib/data/shop";
 import type { SiteContentRow } from "@/lib/cms/types";
 import { createClientIfConfigured } from "@/lib/supabase/server";
 
 export type ShopContent = {
   intro: typeof SHOP_INTRO;
   goods: GoodsItem[];
+  cta: typeof SHOP_CTA;
 };
 
 export function getDefaultShopContent(): ShopContent {
   return {
     intro: SHOP_INTRO,
     goods: GOODS_ITEMS,
+    cta: SHOP_CTA,
   };
 }
 
@@ -45,5 +47,6 @@ export async function getShopContent(): Promise<ShopContent> {
   return {
     intro: parseJsonValue(map.get("intro"), defaults.intro),
     goods: parseJsonValue(map.get("goods"), defaults.goods),
+    cta: parseJsonValue(map.get("cta"), defaults.cta),
   };
 }
