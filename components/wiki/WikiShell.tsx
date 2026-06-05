@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 import { PanelLeftClose, PanelLeft, Settings } from "lucide-react";
 import type { WikiContent } from "@/lib/cms/wiki-content";
@@ -28,6 +28,13 @@ export function WikiShell({ isAdmin = false, initialContent }: WikiShellProps) {
   const defaultSlug = initialContent.categories.length > 0 ? initialContent.categories[0].slug : "";
   const [activeSlug, setActiveSlug] = useState(defaultSlug);
   
+  useEffect(() => {
+    // Hide sidebar on mobile by default
+    if (window.innerWidth < 768) {
+      setSidebarOpen(false);
+    }
+  }, []);
+  
   let page = initialContent.pages.find((p) => p.slug === activeSlug);
   
   if (!page) {
@@ -44,12 +51,42 @@ export function WikiShell({ isAdmin = false, initialContent }: WikiShellProps) {
     }
   }
 
+  // Flatten items for navigation
+  const flatItems: { title: string; slug: string }[] = [];
+  const addPages = (parentId: string | null, categorySlug: string) => {
+    const childPages = initialContent.pages.filter(
+      (p) => p.categorySlug === categorySlug && (p.parentSlug || null) === parentId
+    );
+    for (const child of childPages) {
+      flatItems.push({ title: child.title, slug: child.slug });
+      addPages(child.slug, categorySlug);
+    }
+  };
+  for (const cat of initialContent.categories) {
+    flatItems.push({ title: cat.title, slug: cat.slug });
+    addPages(null, cat.slug);
+  }
+
+  const currentIndex = flatItems.findIndex((item) => item.slug === activeSlug);
+  const prevItem = currentIndex > 0 ? flatItems[currentIndex - 1] : null;
+  const nextItem = currentIndex < flatItems.length - 1 && currentIndex !== -1 ? flatItems[currentIndex + 1] : null;
+
   return (
-    <div className="font-wiki flex min-h-[calc(100vh-72px)] bg-white">
+    <div className="font-wiki flex min-h-[calc(100vh-72px)] bg-white relative">
+      {/* Mobile Backdrop */}
+      {sidebarOpen && (
+        <div 
+          className="absolute inset-0 z-10 bg-black/20 md:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
       <aside
         className={cn(
-          "shrink-0 border-r border-border bg-[#FBFBFA] transition-all duration-300 ease-in-out flex flex-col",
-          sidebarOpen ? "w-64" : "w-0 overflow-hidden border-0"
+          "absolute inset-y-0 left-0 z-20 flex h-full flex-col border-r border-border bg-[#FBFBFA] transition-all duration-300 ease-in-out md:static md:h-auto md:shrink-0",
+          sidebarOpen
+            ? "translate-x-0 w-64 shadow-2xl md:shadow-none"
+            : "-translate-x-full w-64 overflow-hidden border-0 md:translate-x-0 md:w-0"
         )}
       >
         <div className="flex-1 overflow-y-auto">
@@ -60,6 +97,9 @@ export function WikiShell({ isAdmin = false, initialContent }: WikiShellProps) {
             onSelect={(slug) => {
               setActiveSlug(slug);
               setIsEditingStructure(false);
+              if (window.innerWidth < 768) {
+                setSidebarOpen(false);
+              }
             }}
           />
         </div>
@@ -98,19 +138,62 @@ export function WikiShell({ isAdmin = false, initialContent }: WikiShellProps) {
           </div>
           
           {/* Main Content Area */}
-          <div className="flex-1 overflow-y-auto">
-            {isEditingStructure ? (
-              <div className="mx-auto w-full max-w-[800px] p-8">
-                <WikiCategoryCmsEditor
-                  initialCategories={initialContent.categories}
-                  initialPages={initialContent.pages}
-                  disabled={!isAdmin}
-                />
+          <div className="flex-1 overflow-y-auto flex flex-col relative">
+            <div className="flex-1">
+              {isEditingStructure ? (
+                <div className="mx-auto w-full max-w-[800px] p-8">
+                  <WikiCategoryCmsEditor
+                    initialCategories={initialContent.categories}
+                    initialPages={initialContent.pages}
+                    disabled={!isAdmin}
+                  />
+                </div>
+              ) : page ? (
+                <WikiEditor key={page.id} page={page} editable={isAdmin} />
+              ) : (
+                <div className="p-12 text-center text-text-muted">문서가 없습니다. 관리자 페이지에서 추가해주세요.</div>
+              )}
+            </div>
+            
+            {/* Previous / Next Navigation */}
+            {!isEditingStructure && page && (
+              <div className="mt-8 border-t border-border bg-[#FBFBFA]/50 px-5 py-8 md:bg-transparent md:py-12">
+                <div className="mx-auto flex w-full max-w-[800px] items-center justify-between gap-4 md:px-[50px]">
+                  {prevItem ? (
+                    <button
+                      type="button"
+                      onClick={() => setActiveSlug(prevItem.slug)}
+                      className="group flex flex-1 flex-col items-start rounded-xl border border-border bg-white p-4 text-left transition-colors hover:border-copper/30 hover:bg-copper/[0.02]"
+                    >
+                      <span className="text-[11px] font-medium tracking-wide text-text-muted transition-colors group-hover:text-copper/70">
+                        이전 문서
+                      </span>
+                      <span className="mt-1.5 line-clamp-2 text-sm font-semibold tracking-tight text-text-primary transition-colors group-hover:text-copper">
+                        {prevItem.title}
+                      </span>
+                    </button>
+                  ) : (
+                    <div className="flex-1" />
+                  )}
+                  
+                  {nextItem ? (
+                    <button
+                      type="button"
+                      onClick={() => setActiveSlug(nextItem.slug)}
+                      className="group flex flex-1 flex-col items-end rounded-xl border border-border bg-white p-4 text-right transition-colors hover:border-copper/30 hover:bg-copper/[0.02]"
+                    >
+                      <span className="text-[11px] font-medium tracking-wide text-text-muted transition-colors group-hover:text-copper/70">
+                        다음 문서
+                      </span>
+                      <span className="mt-1.5 line-clamp-2 text-sm font-semibold tracking-tight text-text-primary transition-colors group-hover:text-copper">
+                        {nextItem.title}
+                      </span>
+                    </button>
+                  ) : (
+                    <div className="flex-1" />
+                  )}
+                </div>
               </div>
-            ) : page ? (
-              <WikiEditor key={page.id} page={page} editable={isAdmin} />
-            ) : (
-              <div className="p-12 text-center text-text-muted">문서가 없습니다. 관리자 페이지에서 추가해주세요.</div>
             )}
           </div>
         </div>
