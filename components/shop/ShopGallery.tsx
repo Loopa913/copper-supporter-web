@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { GoodsSlider } from "@/components/shop/GoodsSlider";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { FadeIn } from "@/components/ui/FadeIn";
+import { PageNavigation } from "@/components/ui/PageNavigation";
 import type { ShopContent } from "@/lib/cms/shop-content";
 
 export function ShopGallery({ content }: { content: ShopContent }) {
@@ -42,6 +43,11 @@ export function ShopGallery({ content }: { content: ShopContent }) {
             </Link>
           </motion.div>
         </FadeIn>
+
+        <PageNavigation 
+          prev={{ title: "스트리머 지원 프로토콜", href: "/protocol" }}
+          next={{ title: "유니버스 위키", href: "/wiki" }}
+        />
       </div>
     </div>
   );

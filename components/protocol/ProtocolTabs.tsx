@@ -7,6 +7,7 @@ import { FilterChipTabs } from "@/components/protocol/FilterChipTabs";
 import { ProtocolItemGrid } from "@/components/protocol/ProtocolItemGrid";
 import { ProtocolAccordion } from "@/components/protocol/ProtocolAccordion";
 import { SectionHeader } from "@/components/ui/SectionHeader";
+import { PageNavigation } from "@/components/ui/PageNavigation";
 import type { ProtocolContent } from "@/lib/cms/protocol-content";
 
 export function ProtocolTabs({ content }: { content: ProtocolContent }) {
@@ -52,6 +53,11 @@ export function ProtocolTabs({ content }: { content: ProtocolContent }) {
             <ProtocolAccordion details={tab.details} />
           </motion.div>
         </AnimatePresence>
+
+        <PageNavigation 
+          prev={{ title: "프로젝트 소개", href: "/" }}
+          next={{ title: "굿즈 제작 지원", href: "/shop" }}
+        />
       </div>
     </div>
   );
