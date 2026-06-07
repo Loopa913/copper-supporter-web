@@ -46,7 +46,7 @@ export function ShopGallery({ content }: { content: ShopContent }) {
 
         <PageNavigation 
           prev={{ title: "스트리머 지원 프로토콜", href: "/protocol" }}
-          next={{ title: "유니버스 위키", href: "/wiki" }}
+          next={{ title: "유니버스 위키", href: "/wiki", caption: "카퍼 유니버스 세계관 및 카퍼플래닛 위키 보기" }}
         />
       </div>
     </div>

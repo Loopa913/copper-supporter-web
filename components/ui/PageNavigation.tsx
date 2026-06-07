@@ -1,8 +1,11 @@
 import Link from "next/link";
+import { ArrowLeft, ArrowRight } from "lucide-react";
+import { cn } from "@/lib/utils/cn";
 
 export type PageNavItem = {
   title: string;
   href: string;
+  caption?: string;
 };
 
 type PageNavigationProps = {
@@ -15,37 +18,43 @@ export function PageNavigation({ prev, next }: PageNavigationProps) {
 
   return (
     <div className="mt-16 border-t border-border pt-8 md:pt-12 pb-8">
-      <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4">
+      <div className="mx-auto flex w-full max-w-6xl flex-col sm:flex-row items-center justify-between gap-4">
         {prev ? (
           <Link
             href={prev.href}
-            className="group flex flex-1 flex-col items-start rounded-xl border border-border bg-white p-4 text-left transition-colors hover:border-copper/30 hover:bg-copper/[0.02] shadow-sm"
+            className="group flex w-full sm:flex-1 items-center gap-4 rounded-full border border-border bg-white px-6 py-4 sm:px-8 transition-all duration-300 ease-in-out hover:-translate-y-0.5 hover:border-copper/30 hover:shadow-md"
           >
-            <span className="text-[11px] font-medium tracking-wide text-text-muted transition-colors group-hover:text-copper/70">
-              이전 페이지
-            </span>
-            <span className="mt-1.5 line-clamp-2 text-sm font-semibold tracking-tight text-text-primary transition-colors group-hover:text-copper">
-              {prev.title}
-            </span>
+            <ArrowLeft className="h-5 w-5 shrink-0 text-text-muted transition-colors group-hover:text-copper" />
+            <div className="flex flex-col items-start min-w-0 flex-1">
+              <span className="truncate w-full text-[11px] sm:text-xs font-medium tracking-wide text-text-muted transition-colors group-hover:text-copper/70">
+                {prev.caption || "이전 페이지"}
+              </span>
+              <span className="truncate w-full mt-0.5 text-sm sm:text-base font-semibold tracking-tight text-text-primary transition-colors group-hover:text-copper">
+                {prev.title}
+              </span>
+            </div>
           </Link>
         ) : (
-          <div className="flex-1" />
+          <div className="hidden sm:block flex-1" />
         )}
         
         {next ? (
           <Link
             href={next.href}
-            className="group flex flex-1 flex-col items-end rounded-xl border border-border bg-white p-4 text-right transition-colors hover:border-copper/30 hover:bg-copper/[0.02] shadow-sm"
+            className="group flex w-full sm:flex-1 items-center justify-end gap-4 rounded-full border border-border bg-white px-6 py-4 sm:px-8 transition-all duration-300 ease-in-out hover:-translate-y-0.5 hover:border-copper/30 hover:shadow-md"
           >
-            <span className="text-[11px] font-medium tracking-wide text-text-muted transition-colors group-hover:text-copper/70">
-              다음 페이지
-            </span>
-            <span className="mt-1.5 line-clamp-2 text-sm font-semibold tracking-tight text-text-primary transition-colors group-hover:text-copper">
-              {next.title}
-            </span>
+            <div className="flex flex-col items-end min-w-0 flex-1 text-right">
+              <span className="truncate w-full text-[11px] sm:text-xs font-medium tracking-wide text-text-muted transition-colors group-hover:text-copper/70">
+                {next.caption || "다음 페이지"}
+              </span>
+              <span className="truncate w-full mt-0.5 text-sm sm:text-base font-semibold tracking-tight text-text-primary transition-colors group-hover:text-copper">
+                {next.title}
+              </span>
+            </div>
+            <ArrowRight className="h-5 w-5 shrink-0 text-text-muted transition-colors group-hover:text-copper" />
           </Link>
         ) : (
-          <div className="flex-1" />
+          <div className="hidden sm:block flex-1" />
         )}
       </div>
     </div>
