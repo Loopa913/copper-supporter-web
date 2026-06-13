@@ -105,6 +105,24 @@ export function ProtocolCmsEditor({
     }));
   }
 
+  function moveItem(tabKey: string, index: number, direction: "up" | "down") {
+    const key = tabKey as ProtocolTabKey;
+    setData((prev) => {
+      const items = [...prev.tabs[key].items];
+      const targetIndex = direction === "up" ? index - 1 : index + 1;
+      if (targetIndex < 0 || targetIndex >= items.length) return prev;
+
+      [items[index], items[targetIndex]] = [items[targetIndex], items[index]];
+      return {
+        ...prev,
+        tabs: {
+          ...prev.tabs,
+          [key]: { ...prev.tabs[key], items },
+        },
+      };
+    });
+  }
+
   function handleDetailChange(tabKey: string, index: number, field: string, value: string) {
     const key = tabKey as ProtocolTabKey;
     setData((prev) => {
@@ -444,7 +462,10 @@ export function ProtocolCmsEditor({
                 {/* 그리드 아이템 목록 */}
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <h4 className="text-sm font-semibold text-copper">요약 항목 (그리드)</h4>
+                    <div>
+                      <h4 className="text-sm font-semibold text-copper">요약 항목 (그리드)</h4>
+                      <p className="mt-0.5 text-[11px] text-text-muted">왼쪽 화살표로 표시 순서를 변경할 수 있습니다.</p>
+                    </div>
                     <button
                       type="button"
                       onClick={() => addItem(tabKey)}
@@ -455,9 +476,30 @@ export function ProtocolCmsEditor({
                       항목 추가
                     </button>
                   </div>
-                  <div className="grid gap-3 sm:grid-cols-2">
+                  <div className="space-y-3">
                     {tab.items.map((item, index) => (
-                      <div key={item.id} className="relative rounded-lg border border-border p-3">
+                      <div key={item.id} className="relative flex gap-3 rounded-lg border border-border p-3">
+                        <div className="flex shrink-0 flex-col items-center gap-1 pt-1">
+                          <button
+                            type="button"
+                            onClick={() => moveItem(tabKey, index, "up")}
+                            disabled={disabled || index === 0}
+                            className="rounded-md p-1 text-text-muted hover:bg-black/5 hover:text-copper disabled:cursor-not-allowed disabled:opacity-30"
+                            title="위로 이동"
+                          >
+                            <ChevronUp className="h-4 w-4" />
+                          </button>
+                          <span className="text-[10px] font-medium text-text-muted">{index + 1}</span>
+                          <button
+                            type="button"
+                            onClick={() => moveItem(tabKey, index, "down")}
+                            disabled={disabled || index === tab.items.length - 1}
+                            className="rounded-md p-1 text-text-muted hover:bg-black/5 hover:text-copper disabled:cursor-not-allowed disabled:opacity-30"
+                            title="아래로 이동"
+                          >
+                            <ChevronDown className="h-4 w-4" />
+                          </button>
+                        </div>
                         <button
                           type="button"
                           onClick={() => removeItem(tabKey, index)}
@@ -466,7 +508,7 @@ export function ProtocolCmsEditor({
                         >
                           <Trash2 className="h-3.5 w-3.5" />
                         </button>
-                        <div className="space-y-2 pr-6">
+                        <div className="min-w-0 flex-1 space-y-2 pr-6">
                           <div className="space-y-1">
                             <label className="text-[10px] uppercase text-text-muted">제목</label>
                             <input
