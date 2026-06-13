@@ -13,10 +13,11 @@ const statusDot: Record<RoadmapEvent["status"], string> = {
 };
 
 type ModernRoadmapProps = {
+  description?: string;
   events: RoadmapEvent[];
 };
 
-export function ModernRoadmap({ events }: ModernRoadmapProps) {
+export function ModernRoadmap({ description = "카퍼 포인트와 부드러운 연결선으로 이어지는 모던 타임라인입니다.", events }: ModernRoadmapProps) {
   return (
     <section
       id="roadmap"
@@ -25,8 +26,8 @@ export function ModernRoadmap({ events }: ModernRoadmapProps) {
       <div className="mx-auto max-w-4xl">
         <SectionHeader
           eyebrow="일정"
-          title="서포터즈 로드맵"
-          description="카퍼 포인트와 부드러운 연결선으로 이어지는 모던 타임라인입니다."
+          title="프로젝트 로드맵"
+          description={description}
           align="center"
         />
 

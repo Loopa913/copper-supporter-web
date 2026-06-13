@@ -24,6 +24,8 @@ export const HERO_SUMMARY = `카퍼 서포터즈는 스트리머의 퀄리티와
 협력 프로젝트입니다. 정기 간담회, 로드맵 공유, 굿즈·위키·마크 서버까지
 한곳에서 투명하게 운영됩니다.`;
 
+export const ROADMAP_DESCRIPTION = "카퍼 포인트와 부드러운 연결선으로 이어지는 모던 타임라인입니다.";
+
 export const ROADMAP_EVENTS: RoadmapEvent[] = [
   {
     id: "1",

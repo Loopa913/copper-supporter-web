@@ -17,7 +17,8 @@ export function RoadmapCmsEditor({ initialData, disabled = false }: RoadmapCmsEd
   const [isPending, startTransition] = useTransition();
   const [isSaved, setIsSaved] = useState(false);
 
-  // 로컬 상태로 로드맵 배열 관리
+  // 로컬 상태로 로드맵 설명 및 배열 관리
+  const [description, setDescription] = useState(initialData.roadmapDescription);
   const [events, setEvents] = useState<RoadmapEvent[]>(initialData.roadmapEvents);
 
   const handleAddEvent = () => {
@@ -44,7 +45,7 @@ export function RoadmapCmsEditor({ initialData, disabled = false }: RoadmapCmsEd
 
     startTransition(async () => {
       try {
-        // 객체나 배열은 JSON 형태로 문자열화해서 저장해야 데이터베이스에서 잘 인식합니다.
+        await updateSiteContent("roadmap", "description", description);
         await updateSiteContent("roadmap", "events", JSON.stringify(events));
         setIsSaved(true);
         setTimeout(() => setIsSaved(false), 2000);
@@ -90,6 +91,17 @@ export function RoadmapCmsEditor({ initialData, disabled = false }: RoadmapCmsEd
       </div>
 
       <div className="p-6">
+        <div className="mb-6 space-y-2">
+          <label className="text-sm font-medium text-text-secondary">로드맵 설명</label>
+          <textarea
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            disabled={disabled}
+            placeholder="카퍼 포인트와 부드러운 연결선으로 이어지는 모던 타임라인입니다."
+            className="w-full rounded-lg border border-border bg-surface-warm px-4 py-3 text-sm font-light text-text-primary whitespace-pre-wrap resize-y min-h-[80px]"
+          />
+        </div>
+
         {events.length === 0 ? (
           <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-border py-12 text-text-muted">
             <p className="text-sm font-light">등록된 일정이 없습니다.</p>

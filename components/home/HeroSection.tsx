@@ -24,14 +24,6 @@ export function HeroSection({ tagline, heroSummary, videoId }: HeroSectionProps)
           <p className="soft-card mx-auto mt-8 max-w-2xl p-6 text-left text-sm font-light leading-loose text-text-secondary sm:text-base whitespace-pre-wrap">
             {heroSummary}
           </p>
-          <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-            <a href="#roadmap" className="btn-copper">
-              일정 보기
-            </a>
-            <a href="#supporters" className="btn-ghost">
-              서포터즈
-            </a>
-          </div>
         </FadeIn>
 
         <FadeIn delay={0.15} className="mt-16">

@@ -10,6 +10,7 @@ export type HomeContent = {
   tagline: string;
   heroSummary: string;
   videoId: string;
+  roadmapDescription: string;
   roadmapEvents: RoadmapEvent[];
   supporters: Supporter[];
 };

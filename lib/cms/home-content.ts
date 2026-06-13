@@ -1,6 +1,7 @@
 import {
   HERO_SUMMARY,
   PROJECT_TAGLINE,
+  ROADMAP_DESCRIPTION,
   ROADMAP_EVENTS,
   SUPPORTERS,
 } from "@/lib/data/home";
@@ -14,6 +15,7 @@ export function getDefaultHomeContent(): HomeContent {
     tagline: PROJECT_TAGLINE,
     heroSummary: HERO_SUMMARY,
     videoId: DEFAULT_VIDEO_ID,
+    roadmapDescription: ROADMAP_DESCRIPTION,
     roadmapEvents: ROADMAP_EVENTS,
     supporters: SUPPORTERS,
   };
@@ -39,6 +41,7 @@ function mergeRows(rows: SiteContentRow[]): HomeContent {
     tagline: parseJsonValue(map.get("hero:tagline"), defaults.tagline),
     heroSummary: parseJsonValue(map.get("hero:summary"), defaults.heroSummary),
     videoId: parseJsonValue(map.get("hero:video_id"), defaults.videoId),
+    roadmapDescription: parseJsonValue(map.get("roadmap:description"), defaults.roadmapDescription),
     roadmapEvents: parseJsonValue(
       map.get("roadmap:events"),
       defaults.roadmapEvents
