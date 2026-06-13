@@ -20,6 +20,7 @@ export function ProjectIntro({ content }: ProjectIntroProps) {
       <ModernRoadmap description={content.roadmapDescription} events={content.roadmapEvents} />
       <SupporterCards 
         supporters={content.supporters} 
+        supporterSectionDescription={content.supporterSectionDescription}
         supporterDescription={content.supporterDescription} 
         seedPlayerDescription={content.seedPlayerDescription} 
       />

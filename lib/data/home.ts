@@ -80,6 +80,7 @@ export const ROADMAP_EVENTS: RoadmapEvent[] = [
 
 export const SUPPORTERS_DESCRIPTION = "서포터즈 그룹에 대한 설명입니다.";
 export const SEED_PLAYERS_DESCRIPTION = "시드 플레이어 그룹에 대한 설명입니다.";
+export const SUPPORTER_SECTION_DESCRIPTION = "스트리머 프로젝트와 함께하는 그룹 멤버들입니다.";
 
 export const SUPPORTERS: Supporter[] = [
   {

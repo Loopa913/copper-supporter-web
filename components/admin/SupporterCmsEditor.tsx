@@ -18,6 +18,7 @@ export function SupporterCmsEditor({ initialData, disabled = false }: SupporterC
   const [isPending, startTransition] = useTransition();
   const [isSaved, setIsSaved] = useState(false);
 
+  const [supporterSectionDescription, setSupporterSectionDescription] = useState(initialData.supporterSectionDescription);
   const [supporterDescription, setSupporterDescription] = useState(initialData.supporterDescription);
   const [seedPlayerDescription, setSeedPlayerDescription] = useState(initialData.seedPlayerDescription);
   const [supporters, setSupporters] = useState<Supporter[]>(initialData.supporters);
@@ -46,6 +47,7 @@ export function SupporterCmsEditor({ initialData, disabled = false }: SupporterC
 
     startTransition(async () => {
       try {
+        await updateSiteContent("supporters", "sectionDescription", supporterSectionDescription);
         await updateSiteContent("supporters", "supporterDescription", supporterDescription);
         await updateSiteContent("supporters", "seedPlayerDescription", seedPlayerDescription);
         await updateSiteContent("supporters", "list", JSON.stringify(supporters));
@@ -93,6 +95,17 @@ export function SupporterCmsEditor({ initialData, disabled = false }: SupporterC
       </div>
 
       <div className="p-6">
+        <div className="mb-8 space-y-2">
+          <label className="text-sm font-medium text-text-secondary">전체 섹션 설명</label>
+          <textarea
+            value={supporterSectionDescription}
+            onChange={(e) => setSupporterSectionDescription(e.target.value)}
+            disabled={disabled}
+            placeholder="스트리머 프로젝트와 함께하는 그룹 멤버들입니다."
+            className="w-full rounded-lg border border-border bg-surface-warm px-4 py-3 text-sm font-light text-text-primary whitespace-pre-wrap resize-y min-h-[60px]"
+          />
+        </div>
+
         <div className="mb-8 grid gap-6 sm:grid-cols-2">
           <div className="space-y-2">
             <label className="text-sm font-medium text-text-secondary">서포터즈 그룹 설명</label>

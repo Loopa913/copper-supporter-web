@@ -11,6 +11,24 @@ export type ProtocolDetail = {
   imageHint?: string;
 };
 
+export const RECRUITING_BOX_TEXT = "멤버 모집은 정기 간담회 안내를 통해 진행됩니다.";
+export const RECRUITING_BOX_LINK = "";
+export const PROTOCOL_DESCRIPTION = "필터 칩으로 카테고리를 선택하고, 아코디언에서 상세 내용을 확인하세요.";
+
+export type ProcessCard = {
+  id: string;
+  title: string;
+  description: string;
+};
+
+export const PROTOCOL_PROCESS_CARDS: ProcessCard[] = [
+  { id: "p1", title: "[ 디스코드 입장 ]", description: "카퍼 커뮤니티에 가장 먼저 합류하는 단계입니다." },
+  { id: "p2", title: "[ 일반 스트리머 ]", description: "자유롭게 컨텐츠와 이벤트에 참여할 수 있습니다." },
+  { id: "p3", title: "[ 프로젝트 지원자 ]", description: "스트리머 프로젝트의 정식 멤버로 지원합니다." },
+  { id: "p4", title: "[ 서포터즈 ]", description: "4단계 프로세스를 거쳐 퀄리티와 인지도를 높입니다." },
+  { id: "p5", title: "[ 시드 플레이어 ]", description: "4단계 프로세스와 함께 미디어, 기획 등 핵심 역할을 수행합니다." },
+];
+
 export const PROTOCOL_TABS = {
   awareness: {
     label: "스트리머 인지도",

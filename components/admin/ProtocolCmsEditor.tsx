@@ -25,6 +25,10 @@ export function ProtocolCmsEditor({
     setSaved(false);
     try {
       await updateSiteContent("protocol", "processImageUrl", data.processImageUrl);
+      await updateSiteContent("protocol", "recruitingBoxText", data.recruitingBoxText);
+      await updateSiteContent("protocol", "recruitingBoxLink", data.recruitingBoxLink);
+      await updateSiteContent("protocol", "protocolDescription", data.protocolDescription);
+      await updateSiteContent("protocol", "processCards", data.processCards);
       await updateSiteContent("protocol", "tabs", data.tabs);
       setSaved(true);
       setTimeout(() => setSaved(false), 3000);
@@ -139,6 +143,31 @@ export function ProtocolCmsEditor({
     }));
   }
 
+  function addProcessCard() {
+    setData((prev) => ({
+      ...prev,
+      processCards: [
+        ...prev.processCards,
+        { id: Math.random().toString(36).substring(2, 9), title: "", description: "" },
+      ],
+    }));
+  }
+
+  function removeProcessCard(index: number) {
+    setData((prev) => ({
+      ...prev,
+      processCards: prev.processCards.filter((_, i) => i !== index),
+    }));
+  }
+
+  function handleProcessCardChange(index: number, field: "title" | "description", value: string) {
+    setData((prev) => {
+      const newCards = [...prev.processCards];
+      newCards[index] = { ...newCards[index], [field]: value };
+      return { ...prev, processCards: newCards };
+    });
+  }
+
   return (
     <SoftCard interactive={false} className="p-6 md:p-8">
       <div className="mb-6 flex items-center justify-between">
@@ -170,7 +199,98 @@ export function ProtocolCmsEditor({
       </div>
 
       <div className="space-y-4">
-        {/* 프로세스 이미지 설정 추가 */}
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div className="space-y-4 rounded-xl border border-border bg-white p-4">
+            <h3 className="text-sm font-semibold text-copper">프로토콜 전체 설명글</h3>
+            <textarea
+              value={data.protocolDescription}
+              onChange={(e) => setData({ ...data, protocolDescription: e.target.value })}
+              disabled={disabled}
+              placeholder="필터 칩으로 카테고리를 선택하고, 아코디언에서 상세 내용을 확인하세요."
+              className="w-full rounded-lg border border-border bg-surface-warm px-3 py-2 text-sm font-light text-text-primary whitespace-pre-wrap resize-y min-h-[60px]"
+            />
+          </div>
+
+          <div className="space-y-4 rounded-xl border border-border bg-white p-4">
+            <h3 className="text-sm font-semibold text-copper">하단 간담회 이동 박스</h3>
+            <div className="space-y-3">
+              <div className="space-y-1">
+                <label className="text-xs font-medium text-text-secondary">안내 문구</label>
+                <input
+                  type="text"
+                  value={data.recruitingBoxText}
+                  onChange={(e) => setData({ ...data, recruitingBoxText: e.target.value })}
+                  disabled={disabled}
+                  className="input-field text-sm"
+                />
+              </div>
+              <div className="space-y-1">
+                <label className="text-xs font-medium text-text-secondary">클릭 시 이동할 링크 (선택)</label>
+                <input
+                  type="text"
+                  value={data.recruitingBoxLink}
+                  onChange={(e) => setData({ ...data, recruitingBoxLink: e.target.value })}
+                  disabled={disabled}
+                  placeholder="https://..."
+                  className="input-field text-sm"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="rounded-xl border border-border bg-white p-4 space-y-4">
+          <div className="flex items-center justify-between">
+            <h3 className="text-sm font-semibold text-copper">프로세스 순서도 카드</h3>
+            <button
+              type="button"
+              onClick={addProcessCard}
+              disabled={disabled}
+              className="flex items-center gap-1 text-xs font-medium text-text-secondary hover:text-copper"
+            >
+              <Plus className="h-3.5 w-3.5" />
+              카드 추가
+            </button>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {data.processCards.map((card, index) => (
+              <div key={card.id} className="relative rounded-lg border border-border p-3">
+                <button
+                  type="button"
+                  onClick={() => removeProcessCard(index)}
+                  disabled={disabled}
+                  className="absolute right-2 top-2 rounded-md p-1 text-text-muted hover:bg-black/5 hover:text-red-500"
+                >
+                  <Trash2 className="h-3.5 w-3.5" />
+                </button>
+                <div className="space-y-2 pr-6">
+                  <div className="space-y-1">
+                    <label className="text-[10px] uppercase text-text-muted">카드 제목</label>
+                    <input
+                      type="text"
+                      value={card.title}
+                      onChange={(e) => handleProcessCardChange(index, "title", e.target.value)}
+                      disabled={disabled}
+                      placeholder="예: [ 디스코드 입장 ]"
+                      className="input-field text-sm py-1 font-semibold"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-[10px] uppercase text-text-muted">세부 내용</label>
+                    <textarea
+                      value={card.description}
+                      onChange={(e) => handleProcessCardChange(index, "description", e.target.value)}
+                      disabled={disabled}
+                      rows={2}
+                      className="input-field text-sm py-1 resize-y"
+                    />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
         <div className="rounded-xl border border-border overflow-hidden bg-white p-4">
           <h3 className="text-sm font-semibold text-copper mb-4">상단 프로세스 이미지 (URL 또는 업로드)</h3>
           <ImageUpload

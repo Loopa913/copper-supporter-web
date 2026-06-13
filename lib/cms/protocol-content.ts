@@ -1,14 +1,22 @@
-import { PROTOCOL_TABS, type ProtocolTabKey } from "@/lib/data/protocol";
+import { PROTOCOL_TABS, type ProtocolTabKey, RECRUITING_BOX_TEXT, RECRUITING_BOX_LINK, PROTOCOL_DESCRIPTION, PROTOCOL_PROCESS_CARDS, type ProcessCard } from "@/lib/data/protocol";
 import { createClientIfConfigured } from "@/lib/supabase/server";
 
 export type ProtocolContent = {
   processImageUrl: string | null;
+  recruitingBoxText: string;
+  recruitingBoxLink: string;
+  protocolDescription: string;
+  processCards: ProcessCard[];
   tabs: typeof PROTOCOL_TABS;
 };
 
 export function getDefaultProtocolContent(): ProtocolContent {
   return {
     processImageUrl: null,
+    recruitingBoxText: RECRUITING_BOX_TEXT,
+    recruitingBoxLink: RECRUITING_BOX_LINK,
+    protocolDescription: PROTOCOL_DESCRIPTION,
+    processCards: PROTOCOL_PROCESS_CARDS,
     tabs: PROTOCOL_TABS,
   };
 }
@@ -43,6 +51,10 @@ export async function getProtocolContent(): Promise<ProtocolContent> {
 
   return {
     processImageUrl: parseJsonValue(map.get("processImageUrl"), defaults.processImageUrl),
+    recruitingBoxText: parseJsonValue(map.get("recruitingBoxText"), defaults.recruitingBoxText),
+    recruitingBoxLink: parseJsonValue(map.get("recruitingBoxLink"), defaults.recruitingBoxLink),
+    protocolDescription: parseJsonValue(map.get("protocolDescription"), defaults.protocolDescription),
+    processCards: parseJsonValue(map.get("processCards"), defaults.processCards),
     tabs: parseJsonValue(map.get("tabs"), defaults.tabs),
   };
 }
