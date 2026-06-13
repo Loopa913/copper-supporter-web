@@ -43,7 +43,7 @@ export function GoodsSlider({ items }: { items: GoodsItem[] }) {
   return (
     <div className="relative mx-auto mt-16 max-w-4xl">
       <SoftCardShell>
-        <div className="relative aspect-square overflow-hidden bg-black/5 sm:aspect-[16/9] md:aspect-[21/9]">
+        <div className="relative aspect-square overflow-hidden bg-surface-warm">
           <AnimatePresence mode="wait" initial={false}>
             <motion.div
               key={item.id}
@@ -53,18 +53,10 @@ export function GoodsSlider({ items }: { items: GoodsItem[] }) {
               transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
               className="absolute inset-0 overflow-hidden"
             >
-              {/* 배경 블러 효과 (화면이 넓을 때 빈 공간을 예쁘게 채워줌) */}
-              <img
-                src={currentUrl}
-                alt=""
-                className="absolute inset-0 h-full w-full object-cover blur-3xl opacity-30 scale-110"
-              />
-              
-              {/* 메인 이미지 (잘리지 않게 object-contain 사용) */}
               <img
                 src={currentUrl}
                 alt={item.name}
-                className="absolute inset-0 h-full w-full object-contain p-4 sm:p-8"
+                className="absolute inset-0 h-full w-full object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
               
