@@ -22,9 +22,10 @@ export function ShopCmsEditor({
     setIsSaving(true);
     setSaved(false);
     try {
-      await updateSiteContent("shop", "intro", data.intro);
-      await updateSiteContent("shop", "goods", data.goods);
-      await updateSiteContent("shop", "cta", data.cta);
+      const safeData = JSON.parse(JSON.stringify(data));
+      await updateSiteContent("shop", "intro", safeData.intro);
+      await updateSiteContent("shop", "goods", safeData.goods);
+      await updateSiteContent("shop", "cta", safeData.cta);
       setSaved(true);
       setTimeout(() => setSaved(false), 3000);
     } catch (error) {

@@ -24,13 +24,17 @@ export function ProtocolCmsEditor({
     setIsSaving(true);
     setSaved(false);
     try {
-      await updateSiteContent("protocol", "processImageUrl", data.processImageUrl);
-      await updateSiteContent("protocol", "recruitingBoxText", data.recruitingBoxText);
-      await updateSiteContent("protocol", "recruitingBoxLink", data.recruitingBoxLink);
-      await updateSiteContent("protocol", "processSectionDescription", data.processSectionDescription);
-      await updateSiteContent("protocol", "protocolSectionDescription", data.protocolSectionDescription);
-      await updateSiteContent("protocol", "processTracks", data.processTracks);
-      await updateSiteContent("protocol", "tabs", data.tabs);
+      // Next.js Server Action으로 데이터를 보낼 때 undefined 값이 있으면 에러가 발생하므로,
+      // JSON.parse(JSON.stringify())를 사용하여 undefined 값을 안전하게 제거합니다.
+      const safeData = JSON.parse(JSON.stringify(data));
+
+      await updateSiteContent("protocol", "processImageUrl", safeData.processImageUrl);
+      await updateSiteContent("protocol", "recruitingBoxText", safeData.recruitingBoxText);
+      await updateSiteContent("protocol", "recruitingBoxLink", safeData.recruitingBoxLink);
+      await updateSiteContent("protocol", "processSectionDescription", safeData.processSectionDescription);
+      await updateSiteContent("protocol", "protocolSectionDescription", safeData.protocolSectionDescription);
+      await updateSiteContent("protocol", "processTracks", safeData.processTracks);
+      await updateSiteContent("protocol", "tabs", safeData.tabs);
       setSaved(true);
       setTimeout(() => setSaved(false), 3000);
     } catch (error) {
