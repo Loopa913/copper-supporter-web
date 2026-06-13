@@ -176,7 +176,7 @@ export function ProtocolCmsEditor({
         ...newTracks[trackIndex],
         steps: [
           ...newTracks[trackIndex].steps,
-          { id: Math.random().toString(36).substring(2, 9), title: "" }
+          { id: Math.random().toString(36).substring(2, 9), title: "", description: "" }
         ]
       };
       return { ...prev, processTracks: newTracks };
@@ -194,11 +194,11 @@ export function ProtocolCmsEditor({
     });
   }
 
-  function handleStepChange(trackIndex: number, stepIndex: number, value: string) {
+  function handleStepChange(trackIndex: number, stepIndex: number, field: "title" | "description", value: string) {
     setData((prev) => {
       const newTracks = [...prev.processTracks];
       const newSteps = [...newTracks[trackIndex].steps];
-      newSteps[stepIndex] = { ...newSteps[stepIndex], title: value };
+      newSteps[stepIndex] = { ...newSteps[stepIndex], [field]: value };
       newTracks[trackIndex] = { ...newTracks[trackIndex], steps: newSteps };
       return { ...prev, processTracks: newTracks };
     });
@@ -349,23 +349,33 @@ export function ProtocolCmsEditor({
                       </button>
                     </div>
                     {track.steps.map((step, sIdx) => (
-                      <div key={step.id} className="flex items-center gap-2">
-                        <input
-                          type="text"
-                          value={step.title}
-                          onChange={(e) => handleStepChange(tIdx, sIdx, e.target.value)}
+                      <div key={step.id} className="flex flex-col gap-2 bg-white p-3 rounded border border-border/50">
+                        <div className="flex items-start justify-between gap-2">
+                          <input
+                            type="text"
+                            value={step.title}
+                            onChange={(e) => handleStepChange(tIdx, sIdx, "title", e.target.value)}
+                            disabled={disabled}
+                            placeholder="스텝 제목 (예: 튜토리얼 진행)"
+                            className="input-field text-sm py-1 flex-1 font-medium"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => removeStep(tIdx, sIdx)}
+                            disabled={disabled}
+                            className="p-1 text-text-muted hover:text-red-500 shrink-0"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </button>
+                        </div>
+                        <textarea
+                          value={step.description || ""}
+                          onChange={(e) => handleStepChange(tIdx, sIdx, "description", e.target.value)}
                           disabled={disabled}
-                          placeholder="스텝 내용 (예: 튜토리얼 진행)"
-                          className="input-field text-sm py-1 flex-1"
+                          placeholder="상세 설명 (선택사항)"
+                          rows={2}
+                          className="input-field text-sm py-1 resize-y"
                         />
-                        <button
-                          type="button"
-                          onClick={() => removeStep(tIdx, sIdx)}
-                          disabled={disabled}
-                          className="p-1 text-text-muted hover:text-red-500"
-                        >
-                          <Trash2 className="h-3 w-3" />
-                        </button>
                       </div>
                     ))}
                   </div>
