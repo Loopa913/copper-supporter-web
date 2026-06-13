@@ -33,8 +33,8 @@ export function ProtocolCmsEditor({
       await updateSiteContent("protocol", "recruitingBoxLink", safeData.recruitingBoxLink);
       await updateSiteContent("protocol", "processSectionDescription", safeData.processSectionDescription);
       await updateSiteContent("protocol", "protocolSectionDescription", safeData.protocolSectionDescription);
-      await updateSiteContent("protocol", "processTracks", safeData.processTracks);
-      await updateSiteContent("protocol", "tabs", safeData.tabs);
+      await updateSiteContent("protocol", "processTracks", JSON.stringify(safeData.processTracks));
+      await updateSiteContent("protocol", "tabs", JSON.stringify(safeData.tabs));
       setSaved(true);
       setTimeout(() => setSaved(false), 3000);
     } catch (error) {

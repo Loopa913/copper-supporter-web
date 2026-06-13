@@ -23,9 +23,9 @@ export function ShopCmsEditor({
     setSaved(false);
     try {
       const safeData = JSON.parse(JSON.stringify(data));
-      await updateSiteContent("shop", "intro", safeData.intro);
-      await updateSiteContent("shop", "goods", safeData.goods);
-      await updateSiteContent("shop", "cta", safeData.cta);
+      await updateSiteContent("shop", "intro", JSON.stringify(safeData.intro));
+      await updateSiteContent("shop", "goods", JSON.stringify(safeData.goods));
+      await updateSiteContent("shop", "cta", JSON.stringify(safeData.cta));
       setSaved(true);
       setTimeout(() => setSaved(false), 3000);
     } catch (error) {
