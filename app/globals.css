@@ -31,6 +31,8 @@
     line-height: 1.7;
     min-height: 100vh;
     background-color: #ffffff;
+    word-break: keep-all;
+    overflow-wrap: break-word;
   }
 
   h1,
