@@ -355,7 +355,7 @@ export function ProtocolCmsEditor({
                           value={step.title}
                           onChange={(e) => handleStepChange(tIdx, sIdx, e.target.value)}
                           disabled={disabled}
-                          placeholder="스텝 내용 (예: 1. 튜토리얼 진행)"
+                          placeholder="스텝 내용 (예: 튜토리얼 진행)"
                           className="input-field text-sm py-1 flex-1"
                         />
                         <button

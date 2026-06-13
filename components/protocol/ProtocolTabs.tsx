@@ -9,12 +9,18 @@ import { ProtocolItemGrid } from "@/components/protocol/ProtocolItemGrid";
 import { ProtocolAccordion } from "@/components/protocol/ProtocolAccordion";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { PageNavigation } from "@/components/ui/PageNavigation";
+import { SoftCard } from "@/components/ui/SoftCard";
 import { FadeIn } from "@/components/ui/FadeIn";
+import { cn } from "@/lib/utils/cn";
 import type { ProtocolContent } from "@/lib/cms/protocol-content";
 
 export function ProtocolTabs({ content }: { content: ProtocolContent }) {
   const [active, setActive] = useState<ProtocolTabKey>("awareness");
   const tab = content.tabs[active];
+
+  // 트랙(Track)용 상태
+  const [activeTrackId, setActiveTrackId] = useState<string>(content.processTracks?.[0]?.id || "");
+  const activeTrack = content.processTracks?.find(t => t.id === activeTrackId) || content.processTracks?.[0];
 
   return (
     <div className="section-white px-5 py-24 sm:px-8 sm:py-28">
@@ -40,32 +46,64 @@ export function ProtocolTabs({ content }: { content: ProtocolContent }) {
 
           {/* 프로세스 순서도 다중 트랙 영역 */}
           {content.processTracks && content.processTracks.length > 0 && (
-            <div className="flex flex-col gap-8 lg:flex-row lg:items-start lg:justify-center">
-              {content.processTracks.map((track) => (
-                <div key={track.id} className="flex flex-col items-center flex-1 w-full max-w-sm mx-auto">
-                  <div className="mb-4 text-sm font-semibold text-copper/80 tracking-widest h-5">
-                    {track.parentGroup ? `[ ${track.parentGroup} ]` : ""}
-                  </div>
-                  <div className="soft-card w-full px-6 py-4 text-center mb-6 border-copper/30 bg-copper/5">
-                    <h3 className="text-lg font-bold text-copper tracking-tight">{track.title}</h3>
-                  </div>
-                  
-                  <div className="flex flex-col gap-4 w-full">
-                    {track.steps.map((step, stepIdx) => (
-                      <div key={step.id} className="flex flex-col items-center">
-                        <div className="soft-card w-full px-6 py-4 text-center transition-all hover:border-copper/40 flex items-center justify-center min-h-[80px]">
-                          <p className="text-sm font-medium text-text-primary whitespace-pre-wrap leading-relaxed">
-                            {step.title}
-                          </p>
-                        </div>
-                        {stepIdx < track.steps.length - 1 && (
-                          <ArrowDown className="mt-4 text-copper/40 h-5 w-5 animate-pulse" />
+            <div className="flex flex-col items-center">
+              {/* 트랙 필터 칩 */}
+              <div className="mb-12 flex flex-wrap items-center justify-center gap-2">
+                {content.processTracks.map((track) => {
+                  const isActive = activeTrack?.id === track.id;
+                  return (
+                    <button
+                      key={track.id}
+                      onClick={() => setActiveTrackId(track.id)}
+                      className={cn(
+                        "chip",
+                        isActive && "chip-active"
+                      )}
+                    >
+                      {track.title}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* 활성화된 트랙의 스텝 (로드맵 스타일 넓은 카드) */}
+              {activeTrack && activeTrack.steps && activeTrack.steps.length > 0 && (
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={activeTrack.id}
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -8 }}
+                    transition={{ duration: 0.3 }}
+                    className="w-full max-w-3xl space-y-6 text-left relative"
+                  >
+                    {activeTrack.steps.map((step, idx) => (
+                      <div key={step.id} className="relative">
+                        {/* 연결선 (마지막 항목 제외) */}
+                        {idx < activeTrack.steps.length - 1 && (
+                          <div className="absolute left-8 top-16 bottom-[-24px] w-px bg-copper/30 sm:left-10" />
                         )}
+                        
+                        <SoftCard className="relative z-10 flex flex-col sm:flex-row gap-6 p-6 sm:p-8 transition-colors hover:border-copper/30">
+                          <div className="flex shrink-0 items-center justify-center h-16 w-16 sm:h-20 sm:w-20 rounded-full bg-copper-muted border-2 border-copper/20 shadow-inner">
+                            <span className="text-xl sm:text-2xl font-bold text-copper">{idx + 1}</span>
+                          </div>
+                          <div className="flex-1 space-y-2 flex flex-col justify-center">
+                            <h4 className="text-lg sm:text-xl font-bold tracking-tight text-text-primary">
+                              {step.title}
+                            </h4>
+                            {step.description && (
+                              <p className="text-sm sm:text-base font-light leading-relaxed text-text-secondary whitespace-pre-wrap">
+                                {step.description}
+                              </p>
+                            )}
+                          </div>
+                        </SoftCard>
                       </div>
                     ))}
-                  </div>
-                </div>
-              ))}
+                  </motion.div>
+                </AnimatePresence>
+              )}
             </div>
           )}
         </div>
