@@ -1,6 +1,7 @@
 "use client";
 
-import { Users } from "lucide-react";
+import { useState } from "react";
+import { Users, ChevronDown } from "lucide-react";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { SoftCard } from "@/components/ui/SoftCard";
 import { FadeIn } from "@/components/ui/FadeIn";
@@ -14,21 +15,39 @@ type SupporterCardsProps = {
 };
 
 export function SupporterCards({ supporters, supporterDescription = "서포터즈 그룹에 대한 설명입니다.", seedPlayerDescription = "시드 플레이어 그룹에 대한 설명입니다." }: SupporterCardsProps) {
+  const [visibleSupporters, setVisibleSupporters] = useState(6);
+  const [visibleSeedPlayers, setVisibleSeedPlayers] = useState(6);
+
   // 그룹별 필터링 (명시되지 않은 경우 기본값으로 서포터즈에 포함)
   const regularSupporters = supporters.filter(s => !s.group || s.group === "서포터즈");
   const seedPlayers = supporters.filter(s => s.group === "시드 플레이어");
 
-  const renderGroup = (title: string, description: string, groupSupporters: Supporter[], delayOffset: number) => {
+  const renderGroup = (
+    title: string, 
+    description: string, 
+    groupSupporters: Supporter[], 
+    visibleCount: number, 
+    setVisibleCount: React.Dispatch<React.SetStateAction<number>>, 
+    delayOffset: number
+  ) => {
     if (groupSupporters.length === 0) return null;
+    
+    const visibleMembers = groupSupporters.slice(0, visibleCount);
+    const hasMore = visibleCount < groupSupporters.length;
     
     return (
       <div className="mt-14">
         <h3 className="mb-2 text-xl font-bold text-center text-text-primary">{title}</h3>
         <p className="mb-6 text-sm text-center text-text-secondary whitespace-pre-wrap">{description}</p>
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {groupSupporters.map((member, index) => {
+          {visibleMembers.map((member, index) => {
             const CardContent = (
               <SoftCard className="flex flex-col items-center p-8 text-center h-full transition-colors hover:border-copper/30">
+                {member.imageUrl && (
+                  <div className="mb-4 h-20 w-20 shrink-0 overflow-hidden rounded-full border-2 border-border/50 bg-surface-warm shadow-sm">
+                    <img src={member.imageUrl} alt={member.name} className="h-full w-full object-cover" />
+                  </div>
+                )}
                 <h4 className="text-lg font-semibold tracking-tight text-text-primary">
                   {member.name}
                 </h4>
@@ -54,6 +73,18 @@ export function SupporterCards({ supporters, supporterDescription = "서포터�
             );
           })}
         </div>
+        
+        {hasMore && (
+          <div className="mt-8 flex justify-center">
+            <button
+              onClick={() => setVisibleCount(prev => prev + 6)}
+              className="btn-ghost flex items-center gap-2 px-6 py-2.5 text-sm"
+            >
+              멤버 더보기
+              <ChevronDown className="h-4 w-4" />
+            </button>
+          </div>
+        )}
       </div>
     );
   };
@@ -71,8 +102,8 @@ export function SupporterCards({ supporters, supporterDescription = "서포터�
           align="center"
         />
 
-        {renderGroup("서포터즈", supporterDescription, regularSupporters, 0)}
-        {renderGroup("시드 플레이어", seedPlayerDescription, seedPlayers, regularSupporters.length * 0.05)}
+        {renderGroup("서포터즈", supporterDescription, regularSupporters, visibleSupporters, setVisibleSupporters, 0)}
+        {renderGroup("시드 플레이어", seedPlayerDescription, seedPlayers, visibleSeedPlayers, setVisibleSeedPlayers, regularSupporters.length * 0.05)}
 
         <FadeIn className="mt-16">
           <div className="soft-card flex items-center justify-center gap-2 border-dashed py-8 text-sm font-light text-text-muted">

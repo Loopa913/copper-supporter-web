@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { ImageUpload } from "@/components/ui/ImageUpload";
 import { Loader2, Save, Check, Plus, Trash2, GripVertical } from "lucide-react";
 import type { HomeContent } from "@/lib/cms/types";
 import type { Supporter } from "@/lib/data/home";
@@ -173,6 +174,14 @@ export function SupporterCmsEditor({ initialData, disabled = false }: SupporterC
                     placeholder="스튜디오 (이동할) 링크 URL (예: https://...)"
                     className="w-full rounded-lg border border-border bg-surface-warm px-3 py-1.5 text-xs text-text-secondary"
                   />
+                  <div className="space-y-1">
+                    <label className="text-[11px] font-medium text-text-secondary">프로필 사진 (선택)</label>
+                    <ImageUpload
+                      value={member.imageUrl || ""}
+                      onChange={(url) => handleChange(member.id, "imageUrl", url)}
+                      disabled={disabled}
+                    />
+                  </div>
                 </div>
 
                 <button

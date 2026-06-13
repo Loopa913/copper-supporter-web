@@ -15,6 +15,7 @@ export type Supporter = {
   group?: "서포터즈" | "시드 플레이어";
   avatarColor?: string;
   studioLink?: string;
+  imageUrl?: string;
 };
 
 export const PROJECT_TAGLINE =
