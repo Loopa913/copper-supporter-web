@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { Loader2, Save, Check, Plus, Trash2, FolderPlus, FileText, ChevronRight } from "lucide-react";
-import { updateSiteContent } from "@/app/admin/actions";
+import { updateSiteContent, updateSiteContentBatch } from "@/app/admin/actions";
 import { SoftCard } from "@/components/ui/SoftCard";
 import { cn } from "@/lib/utils/cn";
 import type { WikiCategory, WikiPage } from "@/lib/data/wiki";
@@ -192,8 +192,10 @@ export function WikiCategoryCmsEditor({
 
     startTransition(async () => {
       try {
-        await updateSiteContent("wiki", "categories", JSON.stringify(categories));
-        await updateSiteContent("wiki", "pages", JSON.stringify(pages));
+        await updateSiteContentBatch([
+          { section: "wiki", key: "categories", value: categories },
+          { section: "wiki", key: "pages", value: pages }
+        ]);
         setIsSaved(true);
         setTimeout(() => setIsSaved(false), 2000);
       } catch (error) {

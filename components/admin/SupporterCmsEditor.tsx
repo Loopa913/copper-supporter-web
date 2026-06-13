@@ -5,7 +5,7 @@ import { ImageUpload } from "@/components/ui/ImageUpload";
 import { Loader2, Save, Check, Plus, Trash2, GripVertical } from "lucide-react";
 import type { HomeContent } from "@/lib/cms/types";
 import type { Supporter } from "@/lib/data/home";
-import { updateSiteContent } from "@/app/admin/actions";
+import { updateSiteContent, updateSiteContentBatch } from "@/app/admin/actions";
 import { SoftCard } from "@/components/ui/SoftCard";
 import { cn } from "@/lib/utils/cn";
 
@@ -47,10 +47,12 @@ export function SupporterCmsEditor({ initialData, disabled = false }: SupporterC
 
     startTransition(async () => {
       try {
-        await updateSiteContent("supporters", "sectionDescription", supporterSectionDescription);
-        await updateSiteContent("supporters", "supporterDescription", supporterDescription);
-        await updateSiteContent("supporters", "seedPlayerDescription", seedPlayerDescription);
-        await updateSiteContent("supporters", "list", JSON.stringify(supporters));
+        await updateSiteContentBatch([
+          { section: "supporters", key: "sectionDescription", value: supporterSectionDescription },
+          { section: "supporters", key: "supporterDescription", value: supporterDescription },
+          { section: "supporters", key: "seedPlayerDescription", value: seedPlayerDescription },
+          { section: "supporters", key: "list", value: supporters }
+        ]);
         setIsSaved(true);
         setTimeout(() => setIsSaved(false), 2000);
       } catch (error) {

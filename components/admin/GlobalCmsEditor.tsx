@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Loader2, Save } from "lucide-react";
 import type { GlobalConfig } from "@/lib/cms/global-config";
 import { SoftCard } from "@/components/ui/SoftCard";
-import { updateSiteContent } from "@/app/admin/actions";
+import { updateSiteContent, updateSiteContentBatch } from "@/app/admin/actions";
 import { ImageUpload } from "@/components/ui/ImageUpload";
 
 export function GlobalCmsEditor({
@@ -22,7 +22,9 @@ export function GlobalCmsEditor({
     setIsSaving(true);
     setSaved(false);
     try {
-      await updateSiteContent("global", "logoUrl", data.logoUrl);
+      await updateSiteContentBatch([
+        { section: "global", key: "logoUrl", value: data.logoUrl }
+      ]);
       setSaved(true);
       setTimeout(() => setSaved(false), 3000);
     } catch (error) {

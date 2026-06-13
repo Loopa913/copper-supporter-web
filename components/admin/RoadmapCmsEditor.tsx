@@ -4,7 +4,7 @@ import { useState, useTransition } from "react";
 import { Loader2, Save, Check, Plus, Trash2, GripVertical } from "lucide-react";
 import type { HomeContent } from "@/lib/cms/types";
 import type { RoadmapEvent } from "@/lib/data/home";
-import { updateSiteContent } from "@/app/admin/actions";
+import { updateSiteContent, updateSiteContentBatch } from "@/app/admin/actions";
 import { SoftCard } from "@/components/ui/SoftCard";
 import { cn } from "@/lib/utils/cn";
 
@@ -45,8 +45,10 @@ export function RoadmapCmsEditor({ initialData, disabled = false }: RoadmapCmsEd
 
     startTransition(async () => {
       try {
-        await updateSiteContent("roadmap", "description", description);
-        await updateSiteContent("roadmap", "events", JSON.stringify(events));
+        await updateSiteContentBatch([
+          { section: "roadmap", key: "description", value: description },
+          { section: "roadmap", key: "events", value: events }
+        ]);
         setIsSaved(true);
         setTimeout(() => setIsSaved(false), 2000);
       } catch (error) {

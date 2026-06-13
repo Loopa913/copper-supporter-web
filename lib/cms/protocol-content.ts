@@ -24,7 +24,7 @@ export function getDefaultProtocolContent(): ProtocolContent {
 }
 
 function parseJsonValue<T>(value: unknown, fallback: T): T {
-  if (value === null || value === undefined) return fallback;
+  if (value === null || value === undefined || value === "") return fallback;
   if (typeof value === "string") {
     try {
       return JSON.parse(value) as T;

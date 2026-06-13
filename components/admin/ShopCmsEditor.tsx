@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Loader2, Plus, Trash2, Save } from "lucide-react";
 import type { ShopContent } from "@/lib/cms/shop-content";
 import { SoftCard } from "@/components/ui/SoftCard";
-import { updateSiteContent } from "@/app/admin/actions";
+import { updateSiteContent, updateSiteContentBatch } from "@/app/admin/actions";
 import { ImageUpload } from "@/components/ui/ImageUpload";
 
 export function ShopCmsEditor({
@@ -23,9 +23,11 @@ export function ShopCmsEditor({
     setSaved(false);
     try {
       const safeData = JSON.parse(JSON.stringify(data));
-      await updateSiteContent("shop", "intro", JSON.stringify(safeData.intro));
-      await updateSiteContent("shop", "goods", JSON.stringify(safeData.goods));
-      await updateSiteContent("shop", "cta", JSON.stringify(safeData.cta));
+      await updateSiteContentBatch([
+        { section: "shop", key: "intro", value: safeData.intro },
+        { section: "shop", key: "goods", value: safeData.goods },
+        { section: "shop", key: "cta", value: safeData.cta }
+      ]);
       setSaved(true);
       setTimeout(() => setSaved(false), 3000);
     } catch (error) {

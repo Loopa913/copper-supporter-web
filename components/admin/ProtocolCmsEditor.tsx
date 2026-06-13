@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Loader2, Save, Plus, Trash2, ChevronDown, ChevronUp } from "lucide-react";
 import type { ProtocolContent } from "@/lib/cms/protocol-content";
 import { SoftCard } from "@/components/ui/SoftCard";
-import { updateSiteContent } from "@/app/admin/actions";
+import { updateSiteContent, updateSiteContentBatch } from "@/app/admin/actions";
 import type { ProtocolTabKey } from "@/lib/data/protocol";
 import { ImageUpload } from "@/components/ui/ImageUpload";
 
@@ -28,13 +28,16 @@ export function ProtocolCmsEditor({
       // JSON.parse(JSON.stringify())를 사용하여 undefined 값을 안전하게 제거합니다.
       const safeData = JSON.parse(JSON.stringify(data));
 
-      await updateSiteContent("protocol", "processImageUrl", safeData.processImageUrl);
-      await updateSiteContent("protocol", "recruitingBoxText", safeData.recruitingBoxText);
-      await updateSiteContent("protocol", "recruitingBoxLink", safeData.recruitingBoxLink);
-      await updateSiteContent("protocol", "processSectionDescription", safeData.processSectionDescription);
-      await updateSiteContent("protocol", "protocolSectionDescription", safeData.protocolSectionDescription);
-      await updateSiteContent("protocol", "processTracks", JSON.stringify(safeData.processTracks));
-      await updateSiteContent("protocol", "tabs", JSON.stringify(safeData.tabs));
+      await updateSiteContentBatch([
+        { section: "protocol", key: "processImageUrl", value: safeData.processImageUrl },
+        { section: "protocol", key: "recruitingBoxText", value: safeData.recruitingBoxText },
+        { section: "protocol", key: "recruitingBoxLink", value: safeData.recruitingBoxLink },
+        { section: "protocol", key: "processSectionDescription", value: safeData.processSectionDescription },
+        { section: "protocol", key: "protocolSectionDescription", value: safeData.protocolSectionDescription },
+        { section: "protocol", key: "processTracks", value: safeData.processTracks },
+        { section: "protocol", key: "tabs", value: safeData.tabs }
+      ]);
+
       setSaved(true);
       setTimeout(() => setSaved(false), 3000);
     } catch (error) {

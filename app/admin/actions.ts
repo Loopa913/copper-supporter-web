@@ -31,3 +31,35 @@ export async function updateSiteContent(section: string, key: string, value: unk
   revalidatePath("/protocol");
   revalidatePath("/shop");
 }
+
+export async function updateSiteContentBatch(updates: { section: string; key: string; value: unknown }[]) {
+  const session = await requireAdmin();
+  if (!session) throw new Error("Unauthorized");
+
+  const supabase = await createClientIfConfigured();
+  if (!supabase) throw new Error("Supabase is not configured");
+
+  // Ensure no Javascript `null` is passed directly if we want to avoid NOT NULL violations,
+  // but if the column allows JSON null, supabase-js might still send SQL NULL.
+  // To be safe, we'll replace nulls with empty strings or handle them gracefully.
+  const safeUpdates = updates.map(u => ({
+    section: u.section,
+    key: u.key,
+    value: u.value === null ? "" : u.value
+  }));
+
+  const { error } = await supabase
+    .from("site_content")
+    .upsert(safeUpdates, { onConflict: "section,key" });
+
+  if (error) {
+    console.error("Error updating site content batch:", error);
+    throw new Error("Failed to update content batch");
+  }
+
+  revalidatePath("/");
+  revalidatePath("/admin/dashboard");
+  revalidatePath("/wiki");
+  revalidatePath("/protocol");
+  revalidatePath("/shop");
+}
