@@ -24,6 +24,14 @@
 @layer base {
   html {
     scroll-behavior: smooth;
+    /* 화면 너비가 1024px 미만일 때 전체 스케일을 비율대로 축소하여 줄바꿈 방지 */
+    font-size: 1.5625vw;
+  }
+
+  @media (min-width: 1024px) {
+    html {
+      font-size: 16px;
+    }
   }
 
   body {
