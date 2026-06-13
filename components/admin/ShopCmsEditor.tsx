@@ -49,7 +49,7 @@ export function ShopCmsEditor({
     }));
   }
 
-  function handleGoodsChange(index: number, key: keyof typeof data.goods[0], value: string) {
+  function handleGoodsChange(index: number, key: keyof typeof data.goods[0], value: any) {
     setData((prev) => {
       const newGoods = [...prev.goods];
       newGoods[index] = { ...newGoods[index], [key]: value };
@@ -62,7 +62,7 @@ export function ShopCmsEditor({
       ...prev,
       goods: [
         ...prev.goods,
-        { id: Math.random().toString(36).substr(2, 9), name: "", description: "", imageUrl: "" },
+        { id: Math.random().toString(36).substr(2, 9), name: "", description: "", imageUrls: [] },
       ],
     }));
   }
@@ -213,12 +213,52 @@ export function ShopCmsEditor({
                     />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-xs font-medium text-text-secondary">이미지 (URL 또는 업로드)</label>
-                    <ImageUpload
-                      value={item.imageUrl}
-                      onChange={(url) => handleGoodsChange(index, "imageUrl", url)}
-                      disabled={disabled}
-                    />
+                    <div className="flex items-center justify-between">
+                      <label className="text-xs font-medium text-text-secondary">이미지 (최대 10장)</label>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const urls = item.imageUrls?.length ? item.imageUrls : (item.imageUrl ? [item.imageUrl] : []);
+                          if (urls.length < 10) {
+                            handleGoodsChange(index, "imageUrls", [...urls, ""]);
+                          }
+                        }}
+                        disabled={disabled || (item.imageUrls?.length || (item.imageUrl ? 1 : 0)) >= 10}
+                        className="text-[11px] font-medium text-copper hover:underline disabled:opacity-50"
+                      >
+                        + 사진 추가
+                      </button>
+                    </div>
+                    <div className="space-y-2">
+                      {(item.imageUrls?.length ? item.imageUrls : (item.imageUrl ? [item.imageUrl] : [""])).map((url, imgIndex) => (
+                        <div key={imgIndex} className="relative">
+                          <ImageUpload
+                            value={url}
+                            onChange={(newUrl) => {
+                              const urls = item.imageUrls?.length ? [...item.imageUrls] : (item.imageUrl ? [item.imageUrl] : [""]);
+                              urls[imgIndex] = newUrl;
+                              handleGoodsChange(index, "imageUrls", urls);
+                              // clean up imageUrl if exists
+                              if (item.imageUrl) handleGoodsChange(index, "imageUrl", "");
+                            }}
+                            disabled={disabled}
+                          />
+                          {(item.imageUrls?.length || (item.imageUrl ? 1 : 0)) > 1 && (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const urls = item.imageUrls?.length ? [...item.imageUrls] : (item.imageUrl ? [item.imageUrl] : [""]);
+                                urls.splice(imgIndex, 1);
+                                handleGoodsChange(index, "imageUrls", urls);
+                              }}
+                              className="absolute -right-2 -top-2 rounded-full bg-white p-1 text-red-500 shadow-md border border-border hover:bg-red-50"
+                            >
+                              <Trash2 className="h-3 w-3" />
+                            </button>
+                          )}
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </div>
               </div>

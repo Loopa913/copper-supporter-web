@@ -2,7 +2,8 @@ export type GoodsItem = {
   id: string;
   name: string;
   description: string;
-  imageUrl: string;
+  imageUrl?: string;
+  imageUrls?: string[];
 };
 
 export const SHOP_INTRO = {

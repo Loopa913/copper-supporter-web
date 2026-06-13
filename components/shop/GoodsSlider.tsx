@@ -9,18 +9,34 @@ const AUTOPLAY_MS = 3000;
 
 export function GoodsSlider({ items }: { items: GoodsItem[] }) {
   const [index, setIndex] = useState(0);
+  const [imgIndex, setImgIndex] = useState(0);
+  
   const total = items.length;
   const item = items[index];
 
+  const urls = item?.imageUrls?.length ? item.imageUrls : (item?.imageUrl ? [item.imageUrl] : []);
+  const currentUrl = urls[imgIndex] || "";
+
   useEffect(() => {
-    if (total <= 1) return;
+    setImgIndex(0);
+  }, [index]);
+
+  useEffect(() => {
+    if (total <= 1 && urls.length <= 1) return;
 
     const timer = setInterval(() => {
-      setIndex((i) => (i + 1) % total);
+      setImgIndex((prevImgIndex) => {
+        if (prevImgIndex + 1 < urls.length) {
+          return prevImgIndex + 1;
+        } else {
+          setIndex((i) => (i + 1) % total);
+          return 0;
+        }
+      });
     }, AUTOPLAY_MS);
 
     return () => clearInterval(timer);
-  }, [total]);
+  }, [total, urls.length]);
 
   if (total === 0) return null;
 
@@ -38,11 +54,31 @@ export function GoodsSlider({ items }: { items: GoodsItem[] }) {
               className="absolute inset-0"
             >
               <img
-                src={item.imageUrl}
+                src={currentUrl}
                 alt={item.name}
                 className="absolute inset-0 h-full w-full object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+              
+              {urls.length > 1 && (
+                <div className="absolute top-4 right-4 flex gap-1.5 z-10 rounded-full bg-black/20 p-1.5 backdrop-blur-sm">
+                  {urls.map((_, idx) => (
+                    <button
+                      key={idx}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setImgIndex(idx);
+                      }}
+                      className={cn(
+                        "h-1.5 rounded-full transition-all duration-300",
+                        idx === imgIndex ? "w-4 bg-white" : "w-1.5 bg-white/40 hover:bg-white/70"
+                      )}
+                      aria-label={`${item.name} 사진 ${idx + 1} 보기`}
+                    />
+                  ))}
+                </div>
+              )}
+
               <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-10">
                 <p className="text-xs font-medium text-white/80">
                   {index + 1} / {total}
@@ -91,7 +127,7 @@ export function GoodsSlider({ items }: { items: GoodsItem[] }) {
             >
               <div className="relative aspect-square overflow-hidden rounded-xl bg-surface-warm">
                 <img
-                  src={g.imageUrl}
+                  src={g.imageUrls?.length ? g.imageUrls[0] : (g.imageUrl || "")}
                   alt=""
                   className="absolute inset-0 h-full w-full object-cover"
                 />
