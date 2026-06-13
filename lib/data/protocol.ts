@@ -13,20 +13,52 @@ export type ProtocolDetail = {
 
 export const RECRUITING_BOX_TEXT = "멤버 모집은 정기 간담회 안내를 통해 진행됩니다.";
 export const RECRUITING_BOX_LINK = "";
-export const PROTOCOL_DESCRIPTION = "필터 칩으로 카테고리를 선택하고, 아코디언에서 상세 내용을 확인하세요.";
 
-export type ProcessCard = {
+export const PROCESS_SECTION_DESCRIPTION = "스트리머 프로젝트와 함께하는 성장 프로세스입니다.";
+export const PROTOCOL_SECTION_DESCRIPTION = "필터 칩으로 카테고리를 선택하고, 아코디언에서 상세 내용을 확인하세요.";
+
+export type ProcessTrackStep = {
   id: string;
   title: string;
-  description: string;
 };
 
-export const PROTOCOL_PROCESS_CARDS: ProcessCard[] = [
-  { id: "p1", title: "[ 디스코드 입장 ]", description: "카퍼 커뮤니티에 가장 먼저 합류하는 단계입니다." },
-  { id: "p2", title: "[ 일반 스트리머 ]", description: "자유롭게 컨텐츠와 이벤트에 참여할 수 있습니다." },
-  { id: "p3", title: "[ 프로젝트 지원자 ]", description: "스트리머 프로젝트의 정식 멤버로 지원합니다." },
-  { id: "p4", title: "[ 서포터즈 ]", description: "4단계 프로세스를 거쳐 퀄리티와 인지도를 높입니다." },
-  { id: "p5", title: "[ 시드 플레이어 ]", description: "4단계 프로세스와 함께 미디어, 기획 등 핵심 역할을 수행합니다." },
+export type ProcessTrack = {
+  id: string;
+  title: string;
+  parentGroup?: string;
+  steps: ProcessTrackStep[];
+};
+
+export const PROTOCOL_PROCESS_TRACKS: ProcessTrack[] = [
+  {
+    id: "t1",
+    title: "일반 스트리머",
+    steps: [
+      { id: "s1-1", title: "- 컨텐츠 / 이벤트 참여" }
+    ],
+  },
+  {
+    id: "t2",
+    parentGroup: "프로젝트 지원자",
+    title: "서포터즈",
+    steps: [
+      { id: "s2-1", title: "1. 튜토리얼 및 가이드라인 진행" },
+      { id: "s2-2", title: "2. 성장협약서 작성" },
+      { id: "s2-3", title: "3. 체크리스트 및 활동 보고서 진행" },
+      { id: "s2-4", title: "4. 로열티 및 프로젝트 지원 계약서 작성" },
+    ],
+  },
+  {
+    id: "t3",
+    parentGroup: "프로젝트 지원자",
+    title: "시드 플레이어",
+    steps: [
+      { id: "s3-1", title: "1. 튜토리얼 및 시드 퀘스트 진행" },
+      { id: "s3-2", title: "2. 컨텐츠 지원안내" },
+      { id: "s3-3", title: "3. 컨텐츠 활동 진행" },
+      { id: "s3-4", title: "4. 서포터즈 성장 지원" },
+    ],
+  },
 ];
 
 export const PROTOCOL_TABS = {

@@ -19,14 +19,15 @@ export function ProtocolTabs({ content }: { content: ProtocolContent }) {
   return (
     <div className="section-white px-5 py-24 sm:px-8 sm:py-28">
       <div className="mx-auto max-w-6xl">
+        {/* Section 1: 프로젝트 프로세스 */}
         <SectionHeader
           eyebrow="스트리머 지원 프로토콜"
           title="프로젝트 프로세스"
-          description={content.protocolDescription}
+          description={content.processSectionDescription}
           align="center"
         />
 
-        <div className="mt-12 mb-16 text-center">
+        <div className="mt-12 mb-24 text-center">
           {content.processImageUrl && (
             <div className="mb-12 flex justify-center">
               <img
@@ -37,46 +38,67 @@ export function ProtocolTabs({ content }: { content: ProtocolContent }) {
             </div>
           )}
 
-          {/* 프로세스 순서도 카드 영역 */}
-          {content.processCards && content.processCards.length > 0 && (
-            <div className="mb-16 flex flex-col items-center gap-4">
-              {content.processCards.map((card, idx) => (
-                <div key={card.id} className="flex flex-col items-center">
-                  <div className="soft-card px-8 py-5 text-center transition-all hover:border-copper/40">
-                    <h3 className="text-lg font-bold text-text-primary tracking-tight">{card.title}</h3>
-                    {card.description && (
-                      <p className="mt-2 text-sm text-text-secondary whitespace-pre-wrap leading-relaxed max-w-sm">
-                        {card.description}
-                      </p>
-                    )}
+          {/* 프로세스 순서도 다중 트랙 영역 */}
+          {content.processTracks && content.processTracks.length > 0 && (
+            <div className="flex flex-col gap-8 lg:flex-row lg:items-start lg:justify-center">
+              {content.processTracks.map((track) => (
+                <div key={track.id} className="flex flex-col items-center flex-1 w-full max-w-sm mx-auto">
+                  <div className="mb-4 text-sm font-semibold text-copper/80 tracking-widest h-5">
+                    {track.parentGroup ? `[ ${track.parentGroup} ]` : ""}
                   </div>
-                  {idx < content.processCards.length - 1 && (
-                    <ArrowDown className="mt-4 text-copper/40 h-6 w-6 animate-pulse" />
-                  )}
+                  <div className="soft-card w-full px-6 py-4 text-center mb-6 border-copper/30 bg-copper/5">
+                    <h3 className="text-lg font-bold text-copper tracking-tight">{track.title}</h3>
+                  </div>
+                  
+                  <div className="flex flex-col gap-4 w-full">
+                    {track.steps.map((step, stepIdx) => (
+                      <div key={step.id} className="flex flex-col items-center">
+                        <div className="soft-card w-full px-6 py-4 text-center transition-all hover:border-copper/40 flex items-center justify-center min-h-[80px]">
+                          <p className="text-sm font-medium text-text-primary whitespace-pre-wrap leading-relaxed">
+                            {step.title}
+                          </p>
+                        </div>
+                        {stepIdx < track.steps.length - 1 && (
+                          <ArrowDown className="mt-4 text-copper/40 h-5 w-5 animate-pulse" />
+                        )}
+                      </div>
+                    ))}
+                  </div>
                 </div>
               ))}
             </div>
           )}
-
-          <FilterChipTabs active={active} onChange={setActive} tabs={content.tabs} />
         </div>
 
-        <p className="mt-8 text-center text-sm font-light text-text-secondary">
-          {tab.description}
-        </p>
+        {/* Section 2: 스트리머 지원 프로토콜 */}
+        <div className="pt-24 border-t border-border/50">
+          <SectionHeader
+            title="스트리머 지원 프로토콜"
+            description={content.protocolSectionDescription}
+            align="center"
+          />
 
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={active}
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.3 }}
-          >
-            <ProtocolItemGrid items={tab.items} />
-            <ProtocolAccordion details={tab.details} />
-          </motion.div>
-        </AnimatePresence>
+          <div className="mt-12 text-center">
+            <FilterChipTabs active={active} onChange={setActive} tabs={content.tabs} />
+          </div>
+
+          <p className="mt-8 text-center text-sm font-light text-text-secondary">
+            {tab.description}
+          </p>
+
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={active}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.3 }}
+            >
+              <ProtocolItemGrid items={tab.items} />
+              <ProtocolAccordion details={tab.details} />
+            </motion.div>
+          </AnimatePresence>
+        </div>
 
         <FadeIn className="mt-20">
           {content.recruitingBoxLink ? (

@@ -1,12 +1,13 @@
-import { PROTOCOL_TABS, type ProtocolTabKey, RECRUITING_BOX_TEXT, RECRUITING_BOX_LINK, PROTOCOL_DESCRIPTION, PROTOCOL_PROCESS_CARDS, type ProcessCard } from "@/lib/data/protocol";
+import { PROTOCOL_TABS, type ProtocolTabKey, RECRUITING_BOX_TEXT, RECRUITING_BOX_LINK, PROCESS_SECTION_DESCRIPTION, PROTOCOL_SECTION_DESCRIPTION, PROTOCOL_PROCESS_TRACKS, type ProcessTrack, type ProcessTrackStep } from "@/lib/data/protocol";
 import { createClientIfConfigured } from "@/lib/supabase/server";
 
 export type ProtocolContent = {
   processImageUrl: string | null;
   recruitingBoxText: string;
   recruitingBoxLink: string;
-  protocolDescription: string;
-  processCards: ProcessCard[];
+  processSectionDescription: string;
+  protocolSectionDescription: string;
+  processTracks: ProcessTrack[];
   tabs: typeof PROTOCOL_TABS;
 };
 
@@ -15,8 +16,9 @@ export function getDefaultProtocolContent(): ProtocolContent {
     processImageUrl: null,
     recruitingBoxText: RECRUITING_BOX_TEXT,
     recruitingBoxLink: RECRUITING_BOX_LINK,
-    protocolDescription: PROTOCOL_DESCRIPTION,
-    processCards: PROTOCOL_PROCESS_CARDS,
+    processSectionDescription: PROCESS_SECTION_DESCRIPTION,
+    protocolSectionDescription: PROTOCOL_SECTION_DESCRIPTION,
+    processTracks: PROTOCOL_PROCESS_TRACKS,
     tabs: PROTOCOL_TABS,
   };
 }
@@ -53,8 +55,9 @@ export async function getProtocolContent(): Promise<ProtocolContent> {
     processImageUrl: parseJsonValue(map.get("processImageUrl"), defaults.processImageUrl),
     recruitingBoxText: parseJsonValue(map.get("recruitingBoxText"), defaults.recruitingBoxText),
     recruitingBoxLink: parseJsonValue(map.get("recruitingBoxLink"), defaults.recruitingBoxLink),
-    protocolDescription: parseJsonValue(map.get("protocolDescription"), defaults.protocolDescription),
-    processCards: parseJsonValue(map.get("processCards"), defaults.processCards),
+    processSectionDescription: parseJsonValue(map.get("processSectionDescription"), defaults.processSectionDescription),
+    protocolSectionDescription: parseJsonValue(map.get("protocolSectionDescription"), defaults.protocolSectionDescription),
+    processTracks: parseJsonValue(map.get("processTracks"), defaults.processTracks),
     tabs: parseJsonValue(map.get("tabs"), defaults.tabs),
   };
 }
