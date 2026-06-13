@@ -41,7 +41,7 @@ export function GoodsSlider({ items }: { items: GoodsItem[] }) {
   if (total === 0) return null;
 
   return (
-    <div className="relative mx-auto mt-16 max-w-4xl">
+    <div className="relative mx-auto mt-16 max-w-2xl">
       <SoftCardShell>
         <div className="relative aspect-square overflow-hidden bg-surface-warm">
           <AnimatePresence mode="wait" initial={false}>
