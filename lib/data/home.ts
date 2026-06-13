@@ -77,6 +77,9 @@ export const ROADMAP_EVENTS: RoadmapEvent[] = [
   },
 ];
 
+export const SUPPORTERS_DESCRIPTION = "서포터즈 그룹에 대한 설명입니다.";
+export const SEED_PLAYERS_DESCRIPTION = "시드 플레이어 그룹에 대한 설명입니다.";
+
 export const SUPPORTERS: Supporter[] = [
   {
     id: "1",

@@ -18,7 +18,11 @@ export function ProjectIntro({ content }: ProjectIntroProps) {
         videoId={content.videoId}
       />
       <ModernRoadmap description={content.roadmapDescription} events={content.roadmapEvents} />
-      <SupporterCards supporters={content.supporters} />
+      <SupporterCards 
+        supporters={content.supporters} 
+        supporterDescription={content.supporterDescription} 
+        seedPlayerDescription={content.seedPlayerDescription} 
+      />
       <div className="px-5 pb-16 sm:px-8 bg-[#FBFBFA]/30">
         <PageNavigation next={{ title: "스트리머 지원 프로토콜", href: "/protocol" }} />
       </div>

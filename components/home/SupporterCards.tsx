@@ -9,19 +9,22 @@ import { cn } from "@/lib/utils/cn";
 
 type SupporterCardsProps = {
   supporters: Supporter[];
+  supporterDescription?: string;
+  seedPlayerDescription?: string;
 };
 
-export function SupporterCards({ supporters }: SupporterCardsProps) {
+export function SupporterCards({ supporters, supporterDescription = "서포터즈 그룹에 대한 설명입니다.", seedPlayerDescription = "시드 플레이어 그룹에 대한 설명입니다." }: SupporterCardsProps) {
   // 그룹별 필터링 (명시되지 않은 경우 기본값으로 서포터즈에 포함)
   const regularSupporters = supporters.filter(s => !s.group || s.group === "서포터즈");
   const seedPlayers = supporters.filter(s => s.group === "시드 플레이어");
 
-  const renderGroup = (title: string, groupSupporters: Supporter[], delayOffset: number) => {
+  const renderGroup = (title: string, description: string, groupSupporters: Supporter[], delayOffset: number) => {
     if (groupSupporters.length === 0) return null;
     
     return (
       <div className="mt-14">
-        <h3 className="mb-6 text-xl font-bold text-center text-text-primary">{title}</h3>
+        <h3 className="mb-2 text-xl font-bold text-center text-text-primary">{title}</h3>
+        <p className="mb-6 text-sm text-center text-text-secondary whitespace-pre-wrap">{description}</p>
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {groupSupporters.map((member, index) => {
             const CardContent = (
@@ -68,8 +71,8 @@ export function SupporterCards({ supporters }: SupporterCardsProps) {
           align="center"
         />
 
-        {renderGroup("서포터즈", regularSupporters, 0)}
-        {renderGroup("시드 플레이어", seedPlayers, regularSupporters.length * 0.05)}
+        {renderGroup("서포터즈", supporterDescription, regularSupporters, 0)}
+        {renderGroup("시드 플레이어", seedPlayerDescription, seedPlayers, regularSupporters.length * 0.05)}
 
         <FadeIn className="mt-16">
           <div className="soft-card flex items-center justify-center gap-2 border-dashed py-8 text-sm font-light text-text-muted">

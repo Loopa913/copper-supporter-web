@@ -12,6 +12,8 @@ export type HomeContent = {
   videoId: string;
   roadmapDescription: string;
   roadmapEvents: RoadmapEvent[];
+  supporterDescription: string;
+  seedPlayerDescription: string;
   supporters: Supporter[];
 };
 

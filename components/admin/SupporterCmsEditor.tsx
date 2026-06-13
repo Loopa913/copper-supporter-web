@@ -17,6 +17,8 @@ export function SupporterCmsEditor({ initialData, disabled = false }: SupporterC
   const [isPending, startTransition] = useTransition();
   const [isSaved, setIsSaved] = useState(false);
 
+  const [supporterDescription, setSupporterDescription] = useState(initialData.supporterDescription);
+  const [seedPlayerDescription, setSeedPlayerDescription] = useState(initialData.seedPlayerDescription);
   const [supporters, setSupporters] = useState<Supporter[]>(initialData.supporters);
 
   const handleAdd = () => {
@@ -43,6 +45,8 @@ export function SupporterCmsEditor({ initialData, disabled = false }: SupporterC
 
     startTransition(async () => {
       try {
+        await updateSiteContent("supporters", "supporterDescription", supporterDescription);
+        await updateSiteContent("supporters", "seedPlayerDescription", seedPlayerDescription);
         await updateSiteContent("supporters", "list", JSON.stringify(supporters));
         setIsSaved(true);
         setTimeout(() => setIsSaved(false), 2000);
@@ -88,6 +92,29 @@ export function SupporterCmsEditor({ initialData, disabled = false }: SupporterC
       </div>
 
       <div className="p-6">
+        <div className="mb-8 grid gap-6 sm:grid-cols-2">
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-text-secondary">서포터즈 그룹 설명</label>
+            <textarea
+              value={supporterDescription}
+              onChange={(e) => setSupporterDescription(e.target.value)}
+              disabled={disabled}
+              placeholder="서포터즈 그룹에 대한 설명입니다."
+              className="w-full rounded-lg border border-border bg-surface-warm px-4 py-3 text-sm font-light text-text-primary whitespace-pre-wrap resize-y min-h-[60px]"
+            />
+          </div>
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-text-secondary">시드 플레이어 그룹 설명</label>
+            <textarea
+              value={seedPlayerDescription}
+              onChange={(e) => setSeedPlayerDescription(e.target.value)}
+              disabled={disabled}
+              placeholder="시드 플레이어 그룹에 대한 설명입니다."
+              className="w-full rounded-lg border border-border bg-surface-warm px-4 py-3 text-sm font-light text-text-primary whitespace-pre-wrap resize-y min-h-[60px]"
+            />
+          </div>
+        </div>
+
         {supporters.length === 0 ? (
           <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-border py-12 text-text-muted">
             <p className="text-sm font-light">등록된 멤버가 없습니다.</p>

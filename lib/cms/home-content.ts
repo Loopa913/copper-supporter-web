@@ -3,6 +3,8 @@ import {
   PROJECT_TAGLINE,
   ROADMAP_DESCRIPTION,
   ROADMAP_EVENTS,
+  SUPPORTERS_DESCRIPTION,
+  SEED_PLAYERS_DESCRIPTION,
   SUPPORTERS,
 } from "@/lib/data/home";
 import type { HomeContent, SiteContentRow } from "@/lib/cms/types";
@@ -17,6 +19,8 @@ export function getDefaultHomeContent(): HomeContent {
     videoId: DEFAULT_VIDEO_ID,
     roadmapDescription: ROADMAP_DESCRIPTION,
     roadmapEvents: ROADMAP_EVENTS,
+    supporterDescription: SUPPORTERS_DESCRIPTION,
+    seedPlayerDescription: SEED_PLAYERS_DESCRIPTION,
     supporters: SUPPORTERS,
   };
 }
@@ -46,6 +50,8 @@ function mergeRows(rows: SiteContentRow[]): HomeContent {
       map.get("roadmap:events"),
       defaults.roadmapEvents
     ),
+    supporterDescription: parseJsonValue(map.get("supporters:supporterDescription"), defaults.supporterDescription),
+    seedPlayerDescription: parseJsonValue(map.get("supporters:seedPlayerDescription"), defaults.seedPlayerDescription),
     supporters: parseJsonValue(map.get("supporters:list"), defaults.supporters),
   };
 }
