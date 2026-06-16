@@ -128,8 +128,8 @@ export function WikiEditor({
 
   const wikiButtonSlashItem = useMemo(
     () => ({
-      title: "문서 이동 버튼",
-      subtext: "본문에 다른 위키 문서로 이동하는 버튼을 추가합니다",
+      title: "페이지 링크",
+      subtext: "다른 위키 문서로 이동하는 노션 스타일 링크 박스",
       aliases: ["버튼", "링크", "이동", "페이지"],
       group: "위키",
       onItemClick: () => {
@@ -139,7 +139,7 @@ export function WikiEditor({
             {
               type: "wikiButton",
               props: {
-                label: "문서 보기",
+                label: "",
                 targetSlug: "",
                 targetTitle: "",
               },

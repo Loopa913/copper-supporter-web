@@ -105,6 +105,10 @@
     @apply font-medium text-copper underline decoration-copper/30 underline-offset-2 transition-colors hover:text-copper-dark hover:decoration-copper;
     cursor: pointer;
   }
+
+  .wiki-blocknote [data-content-type="none"] button:disabled {
+    pointer-events: none;
+  }
 }
 
 @layer utilities {

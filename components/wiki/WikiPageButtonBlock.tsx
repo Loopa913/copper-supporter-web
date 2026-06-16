@@ -1,5 +1,6 @@
 "use client";
 
+import { FileText, ChevronRight } from "lucide-react";
 import { useWikiEditorContext } from "@/components/wiki/WikiEditorContext";
 import { cn } from "@/lib/utils/cn";
 
@@ -33,7 +34,7 @@ export function WikiPageButtonBlock({ block, editor }: WikiPageButtonBlockProps)
   const resolvedTitle =
     targetTitle || navItems.find((item) => item.slug === targetSlug)?.title || "";
 
-  const buttonLabel = label.trim() || resolvedTitle || "문서 보기";
+  const subtitle = label.trim();
 
   function updateProps(next: Partial<typeof block.props>) {
     editor.updateBlock(block.id, {
@@ -45,7 +46,7 @@ export function WikiPageButtonBlock({ block, editor }: WikiPageButtonBlockProps)
   }
 
   return (
-    <div contentEditable={false} className="my-6 not-prose" data-content-type="none">
+    <div contentEditable={false} className="my-3 not-prose w-full max-w-xl" data-content-type="none">
       <button
         type="button"
         onClick={() => {
@@ -53,25 +54,50 @@ export function WikiPageButtonBlock({ block, editor }: WikiPageButtonBlockProps)
         }}
         disabled={!targetSlug}
         className={cn(
-          "inline-flex items-center justify-center rounded-full border border-copper/20 px-8 py-3 text-sm font-medium transition-all duration-300",
+          "group flex w-full items-center gap-3 rounded-lg border px-4 py-3 text-left transition-all duration-200",
           targetSlug
-            ? "bg-copper text-white hover:-translate-y-0.5 hover:bg-copper-dark hover:shadow-md"
-            : "cursor-not-allowed bg-copper/40 text-white/80"
+            ? "border-border/80 bg-[#F7F6F3] hover:border-copper/25 hover:bg-[#EFEEEA] hover:shadow-sm"
+            : "cursor-not-allowed border-dashed border-border bg-surface-warm/60"
         )}
       >
-        {buttonLabel}
+        <span
+          className={cn(
+            "flex h-9 w-9 shrink-0 items-center justify-center rounded-md border",
+            targetSlug
+              ? "border-border/60 bg-white text-text-secondary group-hover:text-copper"
+              : "border-border/40 bg-white/70 text-text-muted"
+          )}
+        >
+          <FileText className="h-4 w-4" />
+        </span>
+
+        <span className="min-w-0 flex-1">
+          <span
+            className={cn(
+              "block truncate text-sm font-medium tracking-tight",
+              targetSlug ? "text-text-primary group-hover:text-copper" : "text-text-muted"
+            )}
+          >
+            {resolvedTitle || "이동할 문서를 선택하세요"}
+          </span>
+          {targetSlug && subtitle && (
+            <span className="mt-0.5 block truncate text-xs font-light text-text-muted">
+              {subtitle}
+            </span>
+          )}
+          {targetSlug && !subtitle && (
+            <span className="mt-0.5 block text-xs font-light text-text-muted">위키 문서</span>
+          )}
+        </span>
+
+        {targetSlug && (
+          <ChevronRight className="h-4 w-4 shrink-0 text-text-muted transition-transform group-hover:translate-x-0.5 group-hover:text-copper" />
+        )}
       </button>
 
       {editable && (
-        <div className="mt-3 space-y-2 rounded-xl border border-dashed border-border bg-surface-warm/80 p-3">
-          <p className="text-[10px] font-medium text-text-muted">버튼 설정 (관리자만 보임)</p>
-          <input
-            type="text"
-            value={label}
-            onChange={(event) => updateProps({ label: event.target.value })}
-            placeholder="버튼 문구 (비우면 문서 제목 사용)"
-            className="input-field text-sm"
-          />
+        <div className="mt-2 space-y-2 rounded-lg border border-dashed border-border/70 bg-white/80 p-3">
+          <p className="text-[10px] font-medium text-text-muted">페이지 링크 설정 (관리자만 보임)</p>
           <select
             value={targetSlug}
             onChange={(event) => {
@@ -88,6 +114,13 @@ export function WikiPageButtonBlock({ block, editor }: WikiPageButtonBlockProps)
               </option>
             ))}
           </select>
+          <input
+            type="text"
+            value={label}
+            onChange={(event) => updateProps({ label: event.target.value })}
+            placeholder="부가 설명 (선택, 예: 세계관 소개)"
+            className="input-field text-sm"
+          />
         </div>
       )}
     </div>

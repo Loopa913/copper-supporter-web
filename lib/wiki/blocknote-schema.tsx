@@ -6,7 +6,7 @@ export const WikiPageButton = createReactBlockSpec(
   {
     type: "wikiButton",
     propSchema: {
-      label: { default: "문서 보기" },
+      label: { default: "" },
       targetSlug: { default: "" },
       targetTitle: { default: "" },
     },
