@@ -1,12 +1,13 @@
 "use client";
 
-import { useCallback, useTransition } from "react";
+import { useCallback, useEffect, useMemo, useRef, useTransition } from "react";
 import {
   useCreateBlockNote,
   getDefaultReactSlashMenuItems,
   SuggestionMenuController,
 } from "@blocknote/react";
 import { BlockNoteView } from "@blocknote/shadcn";
+import type { PartialBlock } from "@blocknote/core";
 import * as locales from "@blocknote/core/locales";
 import "@blocknote/core/fonts/inter.css";
 import "@blocknote/shadcn/style.css";
@@ -18,6 +19,7 @@ import {
   toWikiHref,
   type WikiNavItem,
 } from "@/lib/wiki/nav-items";
+import { sanitizeWikiInitialContent } from "@/lib/wiki/sanitize-content";
 
 function debounce<T extends (...args: Parameters<T>) => void>(func: T, wait: number) {
   let timeout: ReturnType<typeof setTimeout>;
@@ -51,6 +53,12 @@ export function WikiEditor({
   editable = true,
 }: WikiEditorProps) {
   const [isPending, startTransition] = useTransition();
+  const cleanedLegacyBlocksRef = useRef(false);
+
+  const { blocks: initialBlocks, wasSanitized } = useMemo(
+    () => sanitizeWikiInitialContent(page.content),
+    [page.content]
+  );
 
   const handleWikiLinkClick = useCallback(
     (event: MouseEvent) => {
@@ -73,7 +81,7 @@ export function WikiEditor({
 
   const editor = useCreateBlockNote(
     {
-      initialContent: page.content ? JSON.parse(page.content) : undefined,
+      initialContent: initialBlocks as PartialBlock[] | undefined,
       dictionary: locales.ko,
       links: {
         HTMLAttributes: {
@@ -86,8 +94,21 @@ export function WikiEditor({
         },
       },
     },
-    [page.id, handleWikiLinkClick]
+    [page.id, handleWikiLinkClick, initialBlocks]
   );
+
+  useEffect(() => {
+    if (!editable || !wasSanitized || cleanedLegacyBlocksRef.current) return;
+    cleanedLegacyBlocksRef.current = true;
+
+    startTransition(async () => {
+      try {
+        await saveWikiPageContent(page.id, JSON.stringify(editor.document));
+      } catch (error) {
+        console.error("Failed to clean legacy wiki blocks:", error);
+      }
+    });
+  }, [editable, wasSanitized, page.id, editor]);
 
   const debouncedSave = useCallback(
     debounce(async (documentJson: string) => {
