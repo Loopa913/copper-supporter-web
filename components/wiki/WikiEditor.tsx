@@ -9,6 +9,11 @@ import {
 import { BlockNoteView } from "@blocknote/shadcn";
 import type { PartialBlock } from "@blocknote/core";
 import * as locales from "@blocknote/core/locales";
+import {
+  getMultiColumnSlashMenuItems,
+  multiColumnDropCursor,
+  locales as multiColumnLocales,
+} from "@blocknote/xl-multi-column";
 import "@blocknote/core/fonts/inter.css";
 import "@blocknote/shadcn/style.css";
 import type { WikiPage } from "@/lib/data/wiki";
@@ -85,7 +90,14 @@ export function WikiEditor({
     {
       schema: wikiBlockNoteSchema,
       initialContent: initialBlocks as PartialBlock[] | undefined,
-      dictionary: locales.ko,
+      dropCursor: multiColumnDropCursor,
+      dictionary: {
+        ...locales.ko,
+        slash_menu: {
+          ...locales.ko.slash_menu,
+          ...multiColumnLocales.ko.slash_menu,
+        },
+      },
       links: {
         HTMLAttributes: {
           class: "wiki-internal-link",
@@ -156,8 +168,12 @@ export function WikiEditor({
   const getSlashMenuItems = useCallback(
     async (query: string) => {
       const defaultItems = getDefaultReactSlashMenuItems(editor);
+      const multiColumnItems = editable ? getMultiColumnSlashMenuItems(editor) : [];
       const customItems = editable ? [wikiButtonSlashItem] : [];
-      return filterMenuItems([...customItems, ...defaultItems], query);
+      return filterMenuItems(
+        [...customItems, ...multiColumnItems, ...defaultItems],
+        query
+      );
     },
     [editor, editable, wikiButtonSlashItem]
   );
@@ -181,7 +197,7 @@ export function WikiEditor({
 
   return (
     <WikiEditorContext.Provider value={{ navItems, onNavigate, editable }}>
-      <FadeIn className="relative mx-auto w-full max-w-[800px] flex-1 px-4 py-12 sm:px-12">
+      <FadeIn className="relative mx-auto w-full max-w-6xl flex-1 px-4 py-12 sm:px-12">
         {isPending && (
           <div className="absolute top-4 right-12 animate-pulse text-xs text-text-muted">
             저장 중...

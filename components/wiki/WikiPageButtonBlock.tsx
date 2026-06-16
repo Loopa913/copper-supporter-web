@@ -46,7 +46,7 @@ export function WikiPageButtonBlock({ block, editor }: WikiPageButtonBlockProps)
   }
 
   return (
-    <div contentEditable={false} className="my-3 not-prose w-full max-w-xl" data-content-type="none">
+    <div contentEditable={false} className="my-3 not-prose w-full" data-content-type="none">
       <button
         type="button"
         onClick={() => {

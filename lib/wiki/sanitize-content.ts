@@ -13,6 +13,8 @@ const SUPPORTED_BLOCK_TYPES = new Set([
   "audio",
   "file",
   "wikiButton",
+  "columnList",
+  "column",
 ]);
 
 const REMOVED_BLOCK_TYPES = new Set<string>([]);
@@ -25,7 +27,12 @@ type RawBlock = {
   children?: RawBlock[];
 };
 
-function sanitizeBlockList(blocks: RawBlock[]): { blocks: RawBlock[]; wasSanitized: boolean } {
+type SanitizeContext = "root" | "columnList" | "column";
+
+function sanitizeBlockList(
+  blocks: RawBlock[],
+  context: SanitizeContext = "root"
+): { blocks: RawBlock[]; wasSanitized: boolean } {
   let wasSanitized = false;
   const sanitized: RawBlock[] = [];
 
@@ -37,6 +44,11 @@ function sanitizeBlockList(blocks: RawBlock[]): { blocks: RawBlock[]; wasSanitiz
 
     const type = block.type || "";
 
+    if (context === "columnList" && type !== "column") {
+      wasSanitized = true;
+      continue;
+    }
+
     if (REMOVED_BLOCK_TYPES.has(type) || !SUPPORTED_BLOCK_TYPES.has(type)) {
       wasSanitized = true;
       continue;
@@ -45,7 +57,10 @@ function sanitizeBlockList(blocks: RawBlock[]): { blocks: RawBlock[]; wasSanitiz
     const next: RawBlock = { ...block };
 
     if (Array.isArray(block.children) && block.children.length > 0) {
-      const childResult = sanitizeBlockList(block.children);
+      const childContext: SanitizeContext =
+        type === "columnList" ? "columnList" : type === "column" ? "column" : context;
+
+      const childResult = sanitizeBlockList(block.children, childContext);
       next.children = childResult.blocks;
       if (childResult.wasSanitized) wasSanitized = true;
     }

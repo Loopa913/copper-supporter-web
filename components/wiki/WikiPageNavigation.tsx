@@ -17,7 +17,7 @@ export function WikiPageNavigation({ prev, next, onNavigate }: WikiPageNavigatio
 
   return (
     <div className="mt-8 border-t border-border bg-[#FBFBFA]/50 px-5 py-8 md:bg-transparent md:py-12">
-      <div className="mx-auto flex w-full max-w-[800px] flex-col items-stretch justify-between gap-4 sm:flex-row md:px-[50px]">
+      <div className="mx-auto flex w-full max-w-6xl flex-col items-stretch justify-between gap-4 sm:flex-row md:px-[50px]">
         {prev ? (
           <button
             type="button"
