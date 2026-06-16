@@ -41,7 +41,8 @@ export function GoodsSlider({ items }: { items: GoodsItem[] }) {
   if (total === 0) return null;
 
   return (
-    <div className="relative mx-auto mt-16 max-w-2xl">
+    <div className="relative mx-auto mt-16">
+      <div className="mx-auto max-w-2xl">
       <SoftCardShell>
         <div className="relative aspect-square overflow-hidden bg-surface-warm">
           <AnimatePresence mode="wait" initial={false}>
@@ -112,9 +113,10 @@ export function GoodsSlider({ items }: { items: GoodsItem[] }) {
           />
         ))}
       </div>
+      </div>
 
-      {/* 썸네일 프리뷰 */}
-      <ul className="mt-8 hidden gap-3 sm:grid sm:grid-cols-4">
+      {/* 썸네일 프리뷰 — 5열 그리드 */}
+      <ul className="mx-auto mt-8 hidden max-w-5xl gap-3 sm:grid sm:grid-cols-5">
         {items.map((g, i) => (
           <li key={g.id}>
             <button
