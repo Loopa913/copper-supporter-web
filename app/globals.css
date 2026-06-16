@@ -99,6 +99,12 @@
   .font-wiki {
     @apply font-pretendard font-normal leading-loose tracking-tight text-text-secondary;
   }
+
+  .wiki-blocknote .wiki-internal-link,
+  .wiki-blocknote a[href^="wiki:"] {
+    @apply font-medium text-copper underline decoration-copper/30 underline-offset-2 transition-colors hover:text-copper-dark hover:decoration-copper;
+    cursor: pointer;
+  }
 }
 
 @layer utilities {

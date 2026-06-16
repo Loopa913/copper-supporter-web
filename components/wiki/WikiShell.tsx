@@ -7,6 +7,7 @@ import type { WikiContent } from "@/lib/cms/wiki-content";
 import { WikiSidebar } from "@/components/wiki/WikiSidebar";
 import { WikiCategoryCmsEditor } from "@/components/admin/WikiCategoryCmsEditor";
 import { cn } from "@/lib/utils/cn";
+import { buildWikiNavItems } from "@/lib/wiki/nav-items";
 
 // BlockNote uses browser APIs (like `window`) and must be dynamically imported
 // with SSR disabled to prevent build errors during static generation.
@@ -27,13 +28,33 @@ export function WikiShell({ isAdmin = false, initialContent }: WikiShellProps) {
   // Provide a safe fallback slug if none is available
   const defaultSlug = initialContent.categories.length > 0 ? initialContent.categories[0].slug : "";
   const [activeSlug, setActiveSlug] = useState(defaultSlug);
+  const navItems = buildWikiNavItems(initialContent.categories, initialContent.pages);
+  const handleNavigate = (slug: string) => {
+    setActiveSlug(slug);
+    setIsEditingStructure(false);
+    if (window.innerWidth < 768) {
+      setSidebarOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    const hashSlug = window.location.hash.replace(/^#/, "");
+    if (hashSlug && navItems.some((item) => item.slug === hashSlug)) {
+      setActiveSlug(hashSlug);
+    }
+  }, [navItems]);
   
   useEffect(() => {
-    // Hide sidebar on mobile by default
     if (window.innerWidth < 768) {
       setSidebarOpen(false);
     }
   }, []);
+
+  useEffect(() => {
+    if (!activeSlug) return;
+    const nextUrl = `${window.location.pathname}${window.location.search}#${activeSlug}`;
+    window.history.replaceState(null, "", nextUrl);
+  }, [activeSlug]);
   
   let page = initialContent.pages.find((p) => p.slug === activeSlug);
   
@@ -52,20 +73,7 @@ export function WikiShell({ isAdmin = false, initialContent }: WikiShellProps) {
   }
 
   // Flatten items for navigation
-  const flatItems: { title: string; slug: string }[] = [];
-  const addPages = (parentId: string | null, categorySlug: string) => {
-    const childPages = initialContent.pages.filter(
-      (p) => p.categorySlug === categorySlug && (p.parentSlug || null) === parentId
-    );
-    for (const child of childPages) {
-      flatItems.push({ title: child.title, slug: child.slug });
-      addPages(child.slug, categorySlug);
-    }
-  };
-  for (const cat of initialContent.categories) {
-    flatItems.push({ title: cat.title, slug: cat.slug });
-    addPages(null, cat.slug);
-  }
+  const flatItems = navItems;
 
   const currentIndex = flatItems.findIndex((item) => item.slug === activeSlug);
   const prevItem = currentIndex > 0 ? flatItems[currentIndex - 1] : null;
@@ -149,7 +157,13 @@ export function WikiShell({ isAdmin = false, initialContent }: WikiShellProps) {
                   />
                 </div>
               ) : page ? (
-                <WikiEditor key={page.id} page={page} editable={isAdmin} />
+                <WikiEditor
+                  key={page.id}
+                  page={page}
+                  navItems={navItems}
+                  onNavigate={handleNavigate}
+                  editable={isAdmin}
+                />
               ) : (
                 <div className="p-12 text-center text-text-muted">문서가 없습니다. 관리자 페이지에서 추가해주세요.</div>
               )}
