@@ -8,7 +8,7 @@ import { WikiSidebar } from "@/components/wiki/WikiSidebar";
 import { WikiCategoryCmsEditor } from "@/components/admin/WikiCategoryCmsEditor";
 import { WikiPageNavigation } from "@/components/wiki/WikiPageNavigation";
 import { cn } from "@/lib/utils/cn";
-import { buildWikiNavItems, resolveWikiFooterNav } from "@/lib/wiki/nav-items";
+import { buildWikiNavItems } from "@/lib/wiki/nav-items";
 
 const WikiEditor = dynamic(
   () => import("@/components/wiki/WikiEditor").then((mod) => mod.WikiEditor),
@@ -78,13 +78,9 @@ export function WikiShell({ isAdmin = false, initialContent }: WikiShellProps) {
   }
 
   const currentIndex = navItems.findIndex((item) => item.slug === activeSlug);
-  const fallbackPrev = currentIndex > 0 ? navItems[currentIndex - 1] : null;
-  const fallbackNext =
+  const prevItem = currentIndex > 0 ? navItems[currentIndex - 1] : null;
+  const nextItem =
     currentIndex < navItems.length - 1 && currentIndex !== -1 ? navItems[currentIndex + 1] : null;
-
-  const footerNav = page
-    ? resolveWikiFooterNav(page, navItems, fallbackPrev, fallbackNext)
-    : { prev: null, next: null };
 
   return (
     <div className="font-wiki relative flex min-h-[calc(100vh-72px)] bg-white">
@@ -168,8 +164,8 @@ export function WikiShell({ isAdmin = false, initialContent }: WikiShellProps) {
 
           {!isEditingStructure && page && (
             <WikiPageNavigation
-              prev={footerNav.prev}
-              next={footerNav.next}
+              prev={prevItem ? { slug: prevItem.slug, title: prevItem.title } : null}
+              next={nextItem ? { slug: nextItem.slug, title: nextItem.title } : null}
               onNavigate={handleNavigate}
             />
           )}

@@ -12,9 +12,10 @@ const SUPPORTED_BLOCK_TYPES = new Set([
   "video",
   "audio",
   "file",
+  "wikiButton",
 ]);
 
-const REMOVED_BLOCK_TYPES = new Set(["wikiButton"]);
+const REMOVED_BLOCK_TYPES = new Set<string>([]);
 
 type RawBlock = {
   id?: string;
@@ -23,17 +24,6 @@ type RawBlock = {
   content?: unknown;
   children?: RawBlock[];
 };
-
-function wikiButtonToParagraph(block: RawBlock): RawBlock | null {
-  const props = block.props as { label?: string; targetTitle?: string } | undefined;
-  const label = props?.label?.trim() || props?.targetTitle?.trim();
-  if (!label) return null;
-
-  return {
-    type: "paragraph",
-    content: [{ type: "text", text: `[이동 버튼: ${label}]`, styles: {} }],
-  };
-}
 
 function sanitizeBlockList(blocks: RawBlock[]): { blocks: RawBlock[]; wasSanitized: boolean } {
   let wasSanitized = false;
@@ -49,11 +39,6 @@ function sanitizeBlockList(blocks: RawBlock[]): { blocks: RawBlock[]; wasSanitiz
 
     if (REMOVED_BLOCK_TYPES.has(type) || !SUPPORTED_BLOCK_TYPES.has(type)) {
       wasSanitized = true;
-
-      if (type === "wikiButton") {
-        const fallback = wikiButtonToParagraph(block);
-        if (fallback) sanitized.push(fallback);
-      }
       continue;
     }
 

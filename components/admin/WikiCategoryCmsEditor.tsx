@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition, useMemo } from "react";
+import { useState, useTransition } from "react";
 import { Loader2, Save, Check, Plus, Trash2, FolderPlus, FileText, ChevronRight } from "lucide-react";
 import { updateSiteContent, updateSiteContentBatch } from "@/app/admin/actions";
 import { SoftCard } from "@/components/ui/SoftCard";
@@ -23,14 +23,6 @@ export function WikiCategoryCmsEditor({
 
   const [categories, setCategories] = useState<WikiCategory[]>(initialCategories);
   const [pages, setPages] = useState<WikiPage[]>(initialPages);
-  
-  const allNavOptions = useMemo(() => {
-    const items = categories.map((category) => ({ slug: category.slug, title: category.title }));
-    for (const wikiPage of pages) {
-      items.push({ slug: wikiPage.slug, title: wikiPage.title });
-    }
-    return items;
-  }, [categories, pages]);
   
   const [expandedPages, setExpandedPages] = useState<Record<string, boolean>>({});
 
@@ -116,59 +108,6 @@ export function WikiCategoryCmsEditor({
               placeholder="짧은 요약 (선택)"
               className="w-full rounded-lg border border-border bg-surface-warm px-3 py-1 text-xs text-text-secondary"
             />
-            <div className="rounded-lg border border-dashed border-border bg-white p-3 space-y-3">
-              <p className="text-[11px] font-medium text-copper">하단 이동 버튼 (선택)</p>
-              <div className="grid gap-3 sm:grid-cols-2">
-                <div className="space-y-2">
-                  <label className="text-[10px] font-medium text-text-muted">이전 버튼</label>
-                  <input
-                    type="text"
-                    value={page.footerPrev?.caption || ""}
-                    onChange={(e) => handleFooterNavChange(page.id, "prev", "caption", e.target.value)}
-                    placeholder="캡션 (예: 이전 문서)"
-                    className="w-full rounded-lg border border-border bg-surface-warm px-3 py-1.5 text-xs"
-                  />
-                  <select
-                    value={page.footerPrev?.targetSlug || ""}
-                    onChange={(e) => handleFooterNavChange(page.id, "prev", "targetSlug", e.target.value)}
-                    className="w-full rounded-lg border border-border bg-surface-warm px-3 py-1.5 text-xs"
-                  >
-                    <option value="">자동 (목록 순서)</option>
-                    {allNavOptions
-                      .filter((option) => option.slug !== page.slug)
-                      .map((option) => (
-                        <option key={option.slug} value={option.slug}>
-                          {option.title}
-                        </option>
-                      ))}
-                  </select>
-                </div>
-                <div className="space-y-2">
-                  <label className="text-[10px] font-medium text-text-muted">다음 버튼</label>
-                  <input
-                    type="text"
-                    value={page.footerNext?.caption || ""}
-                    onChange={(e) => handleFooterNavChange(page.id, "next", "caption", e.target.value)}
-                    placeholder="캡션 (예: 다음 문서)"
-                    className="w-full rounded-lg border border-border bg-surface-warm px-3 py-1.5 text-xs"
-                  />
-                  <select
-                    value={page.footerNext?.targetSlug || ""}
-                    onChange={(e) => handleFooterNavChange(page.id, "next", "targetSlug", e.target.value)}
-                    className="w-full rounded-lg border border-border bg-surface-warm px-3 py-1.5 text-xs"
-                  >
-                    <option value="">자동 (목록 순서)</option>
-                    {allNavOptions
-                      .filter((option) => option.slug !== page.slug)
-                      .map((option) => (
-                        <option key={option.slug} value={option.slug}>
-                          {option.title}
-                        </option>
-                      ))}
-                  </select>
-                </div>
-              </div>
-            </div>
           </div>
           
           <button
@@ -246,30 +185,6 @@ export function WikiCategoryCmsEditor({
       }
       return updated;
     });
-  };
-
-  const handleFooterNavChange = (
-    pageId: string,
-    side: "prev" | "next",
-    field: "targetSlug" | "caption",
-    value: string
-  ) => {
-    setPages((prev) =>
-      prev.map((page) => {
-        if (page.id !== pageId) return page;
-
-        const key = side === "prev" ? "footerPrev" : "footerNext";
-        const current = page[key] || { targetSlug: "", caption: "" };
-        const nextValue = { ...current, [field]: value };
-
-        if (!nextValue.targetSlug && !nextValue.caption) {
-          const { [key]: _, ...rest } = page;
-          return rest as WikiPage;
-        }
-
-        return { ...page, [key]: nextValue };
-      })
-    );
   };
 
   const handleSave = () => {
