@@ -1,3 +1,8 @@
+export type WikiFooterNavLink = {
+  targetSlug: string;
+  caption?: string;
+};
+
 export type WikiCategory = {
   id: string;
   title: string;
@@ -15,6 +20,8 @@ export type WikiPage = {
   parentSlug?: string;
   excerpt: string;
   content?: string;
+  footerPrev?: WikiFooterNavLink;
+  footerNext?: WikiFooterNavLink;
 };
 
 export const WIKI_CATEGORIES: WikiCategory[] = [

@@ -49,3 +49,34 @@ export function getWikiSlugFromHref(href: string): string | null {
 export function toWikiHref(slug: string): string {
   return `wiki:${slug}`;
 }
+
+export function resolveWikiFooterNav(
+  page: { footerPrev?: { targetSlug: string; caption?: string }; footerNext?: { targetSlug: string; caption?: string } },
+  navItems: WikiNavItem[],
+  fallbackPrev: WikiNavItem | null,
+  fallbackNext: WikiNavItem | null
+) {
+  const titleOf = (slug: string) => navItems.find((item) => item.slug === slug)?.title || slug;
+
+  const prev = page.footerPrev?.targetSlug
+    ? {
+        slug: page.footerPrev.targetSlug,
+        title: titleOf(page.footerPrev.targetSlug),
+        caption: page.footerPrev.caption,
+      }
+    : fallbackPrev
+      ? { slug: fallbackPrev.slug, title: fallbackPrev.title, caption: "이전 문서" }
+      : null;
+
+  const next = page.footerNext?.targetSlug
+    ? {
+        slug: page.footerNext.targetSlug,
+        title: titleOf(page.footerNext.targetSlug),
+        caption: page.footerNext.caption,
+      }
+    : fallbackNext
+      ? { slug: fallbackNext.slug, title: fallbackNext.title, caption: "다음 문서" }
+      : null;
+
+  return { prev, next };
+}

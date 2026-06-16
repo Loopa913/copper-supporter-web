@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo, useTransition } from "react";
+import { useCallback, useTransition } from "react";
 import {
   useCreateBlockNote,
   getDefaultReactSlashMenuItems,
@@ -13,8 +13,6 @@ import "@blocknote/shadcn/style.css";
 import type { WikiPage } from "@/lib/data/wiki";
 import { FadeIn } from "@/components/ui/FadeIn";
 import { saveWikiPageContent } from "@/app/wiki/actions";
-import { WikiEditorContext } from "@/components/wiki/WikiEditorContext";
-import { wikiBlockNoteSchema } from "@/lib/wiki/blocknote-schema";
 import {
   getWikiSlugFromHref,
   toWikiHref,
@@ -65,8 +63,7 @@ export function WikiEditor({
       const slug = getWikiSlugFromHref(href);
       if (!slug) return;
 
-      const exists = navItems.some((item) => item.slug === slug);
-      if (!exists) return;
+      if (!navItems.some((item) => item.slug === slug)) return;
 
       event.preventDefault();
       onNavigate(slug);
@@ -76,7 +73,6 @@ export function WikiEditor({
 
   const editor = useCreateBlockNote(
     {
-      schema: wikiBlockNoteSchema,
       initialContent: page.content ? JSON.parse(page.content) : undefined,
       dictionary: locales.ko,
       links: {
@@ -106,45 +102,14 @@ export function WikiEditor({
     [page.id]
   );
 
-  const wikiButtonSlashItem = useMemo(
-    () => ({
-      title: "위키 페이지 버튼",
-      subtext: "다른 위키 페이지로 이동하는 버튼을 추가합니다",
-      aliases: ["버튼", "링크", "페이지", "이동"],
-      group: "위키",
-      onItemClick: () => {
-        const cursor = editor.getTextCursorPosition();
-        editor.insertBlocks(
-          [
-            {
-              type: "wikiButton",
-              props: {
-                label: "페이지로 이동",
-                targetSlug: "",
-                targetTitle: "",
-              },
-            },
-          ],
-          cursor.block,
-          "after"
-        );
-      },
-    }),
+  const getSlashMenuItems = useCallback(
+    async (query: string) => filterMenuItems(getDefaultReactSlashMenuItems(editor), query),
     [editor]
   );
 
-  const getSlashMenuItems = useCallback(
-    async (query: string) => {
-      const defaultItems = getDefaultReactSlashMenuItems(editor);
-      const customItems = editable ? [wikiButtonSlashItem] : [];
-      return filterMenuItems([...customItems, ...defaultItems], query);
-    },
-    [editor, editable, wikiButtonSlashItem]
-  );
-
   const getMentionMenuItems = useCallback(
-    async (query: string) => {
-      return filterMenuItems(
+    async (query: string) =>
+      filterMenuItems(
         navItems.map((item) => ({
           title: item.title,
           subtext: item.slug,
@@ -155,46 +120,45 @@ export function WikiEditor({
           },
         })),
         query
-      );
-    },
+      ),
     [editor, navItems]
   );
 
   return (
-    <WikiEditorContext.Provider value={{ navItems, onNavigate, editable }}>
-      <FadeIn className="relative mx-auto w-full max-w-[800px] flex-1 px-4 py-12 sm:px-12">
-        {isPending && (
-          <div className="absolute top-4 right-12 animate-pulse text-xs text-text-muted">
-            저장 중...
-          </div>
-        )}
-
-        <div className="mb-8 px-[50px]">
-          <h1 className="text-4xl font-bold tracking-tight text-text-primary">{page.title}</h1>
-          {page.excerpt && (
-            <p className="mt-4 text-sm font-light text-text-muted">{page.excerpt}</p>
-          )}
+    <FadeIn className="relative mx-auto w-full max-w-[800px] flex-1 px-4 py-12 sm:px-12">
+      {isPending && (
+        <div className="absolute top-4 right-12 animate-pulse text-xs text-text-muted">
+          저장 중...
         </div>
+      )}
 
-        <BlockNoteView
-          editor={editor}
-          editable={editable}
-          theme="light"
-          className="font-pretendard wiki-blocknote"
-          slashMenu={false}
-          onChange={() => {
-            if (!editable) return;
-            debouncedSave(JSON.stringify(editor.document));
-          }}
-        >
-          <SuggestionMenuController triggerCharacter="/" getItems={getSlashMenuItems} />
+      <div className="mb-8 px-[50px]">
+        <h1 className="text-4xl font-bold tracking-tight text-text-primary">{page.title}</h1>
+        {page.excerpt && (
+          <p className="mt-4 text-sm font-light text-text-muted">{page.excerpt}</p>
+        )}
+      </div>
+
+      <BlockNoteView
+        editor={editor}
+        editable={editable}
+        theme="light"
+        className="font-pretendard wiki-blocknote"
+        slashMenu={false}
+        onChange={() => {
+          if (!editable) return;
+          debouncedSave(JSON.stringify(editor.document));
+        }}
+      >
+        <SuggestionMenuController triggerCharacter="/" getItems={getSlashMenuItems} />
+        {editable && (
           <SuggestionMenuController
             triggerCharacter="@"
             getItems={getMentionMenuItems}
             minQueryLength={0}
           />
-        </BlockNoteView>
-      </FadeIn>
-    </WikiEditorContext.Provider>
+        )}
+      </BlockNoteView>
+    </FadeIn>
   );
 }
