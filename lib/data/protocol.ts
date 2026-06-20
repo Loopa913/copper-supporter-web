@@ -11,6 +11,19 @@ export type ProtocolDetail = {
   imageHint?: string;
 };
 
+export function isProtocolImageUrl(value?: string): boolean {
+  if (!value?.trim()) return false;
+  return /^https?:\/\//i.test(value.trim());
+}
+
+export function getVisibleProtocolDetails(details: ProtocolDetail[]): ProtocolDetail[] {
+  return details.filter((detail) => detail.title.trim() || detail.body.trim());
+}
+
+export function hasProtocolDetailContent(details: ProtocolDetail[]): boolean {
+  return getVisibleProtocolDetails(details).length > 0;
+}
+
 export const RECRUITING_BOX_TEXT = "멤버 모집은 정기 간담회 안내를 통해 진행됩니다.";
 export const RECRUITING_BOX_LINK = "";
 

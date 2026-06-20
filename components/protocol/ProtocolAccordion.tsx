@@ -1,9 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
-import type { ProtocolDetail } from "@/lib/data/protocol";
+import {
+  getVisibleProtocolDetails,
+  hasProtocolDetailContent,
+  isProtocolImageUrl,
+  type ProtocolDetail,
+} from "@/lib/data/protocol";
 import { cn } from "@/lib/utils/cn";
 
 type ProtocolAccordionProps = {
@@ -11,7 +16,12 @@ type ProtocolAccordionProps = {
 };
 
 export function ProtocolAccordion({ details }: ProtocolAccordionProps) {
-  const [openId, setOpenId] = useState<string | null>(details[0]?.id ?? null);
+  const visibleDetails = useMemo(() => getVisibleProtocolDetails(details), [details]);
+  const [openId, setOpenId] = useState<string | null>(visibleDetails[0]?.id ?? null);
+
+  if (!hasProtocolDetailContent(details)) {
+    return null;
+  }
 
   return (
     <div className="mt-16">
@@ -19,8 +29,9 @@ export function ProtocolAccordion({ details }: ProtocolAccordionProps) {
         상세 안내
       </h3>
       <ul className="mt-6 space-y-3">
-        {details.map((detail) => {
+        {visibleDetails.map((detail) => {
           const isOpen = openId === detail.id;
+          const imageUrl = isProtocolImageUrl(detail.imageHint) ? detail.imageHint!.trim() : null;
 
           return (
             <li key={detail.id} className="soft-card overflow-hidden">
@@ -50,13 +61,19 @@ export function ProtocolAccordion({ details }: ProtocolAccordionProps) {
                     className="overflow-hidden"
                   >
                     <div className="border-t border-border px-6 pb-6 pt-2">
-                      <p className="text-sm font-light leading-loose text-text-secondary whitespace-pre-wrap">
-                        {detail.body}
-                      </p>
-                      {detail.imageHint && (
-                        <p className="mt-4 rounded-2xl border border-dashed border-border bg-surface-warm px-4 py-10 text-center text-xs font-light text-text-muted">
-                          {detail.imageHint}
+                      {detail.body.trim() && (
+                        <p className="text-sm font-light leading-loose text-text-secondary whitespace-pre-wrap">
+                          {detail.body}
                         </p>
+                      )}
+                      {imageUrl && (
+                        <div className={cn(detail.body.trim() && "mt-4")}>
+                          <img
+                            src={imageUrl}
+                            alt={detail.title || "상세 안내 이미지"}
+                            className="max-h-[420px] w-full rounded-2xl border border-border object-contain"
+                          />
+                        </div>
                       )}
                     </div>
                   </motion.div>

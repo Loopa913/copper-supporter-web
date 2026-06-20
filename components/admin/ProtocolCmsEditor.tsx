@@ -580,14 +580,28 @@ export function ProtocolCmsEditor({
                               className="input-field text-sm py-1 min-h-[60px] resize-y"
                             />
                           </div>
-                          <div className="space-y-1">
-                            <label className="text-[10px] uppercase text-text-muted">이미지 힌트 (선택)</label>
-                            <ImageUpload
-                              value={detail.imageHint || ""}
-                              onChange={(url) => handleDetailChange(tabKey, index, "imageHint", url)}
-                              disabled={disabled}
-                            />
-                          </div>
+                          {tabKey === "quality" && (
+                            <div className="space-y-1">
+                              <div className="flex items-center justify-between gap-2">
+                                <label className="text-[10px] uppercase text-text-muted">이미지 (선택)</label>
+                                {detail.imageHint && (
+                                  <button
+                                    type="button"
+                                    onClick={() => handleDetailChange(tabKey, index, "imageHint", "")}
+                                    disabled={disabled}
+                                    className="text-[10px] font-medium text-text-muted transition-colors hover:text-red-500"
+                                  >
+                                    이미지 삭제
+                                  </button>
+                                )}
+                              </div>
+                              <ImageUpload
+                                value={detail.imageHint || ""}
+                                onChange={(url) => handleDetailChange(tabKey, index, "imageHint", url)}
+                                disabled={disabled}
+                              />
+                            </div>
+                          )}
                         </div>
                       </div>
                     ))}
