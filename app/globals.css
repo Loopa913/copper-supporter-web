@@ -109,6 +109,40 @@
   .wiki-blocknote [data-content-type="none"] button:disabled {
     pointer-events: none;
   }
+
+  .wiki-blocknote .bn-editor {
+    padding-inline: 12px;
+  }
+
+  @media (min-width: 640px) {
+    .wiki-blocknote .bn-editor {
+      padding-inline: 28px;
+    }
+  }
+
+  @media (min-width: 768px) {
+    .wiki-blocknote .bn-editor {
+      padding-inline: 54px;
+    }
+  }
+
+  @media (max-width: 767px) {
+    .wiki-blocknote .bn-block-column-list {
+      flex-direction: column;
+    }
+
+    .wiki-blocknote .bn-block-column {
+      flex: none;
+      width: 100%;
+      padding-inline: 0;
+      padding-block: 8px;
+    }
+
+    .wiki-blocknote .bn-block-column:first-child,
+    .wiki-blocknote .bn-block-column:last-child {
+      padding-inline: 0;
+    }
+  }
 }
 
 @layer utilities {

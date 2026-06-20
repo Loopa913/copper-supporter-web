@@ -74,14 +74,14 @@ export function WikiPageButtonBlock({ block, editor }: WikiPageButtonBlockProps)
         <span className="min-w-0 flex-1">
           <span
             className={cn(
-              "block truncate text-sm font-medium tracking-tight",
+              "block break-words text-sm font-medium leading-snug tracking-tight",
               targetSlug ? "text-text-primary group-hover:text-copper" : "text-text-muted"
             )}
           >
             {resolvedTitle || "이동할 문서를 선택하세요"}
           </span>
           {targetSlug && subtitle && (
-            <span className="mt-0.5 block truncate text-xs font-light text-text-muted">
+            <span className="mt-0.5 block break-words text-xs font-light leading-snug text-text-muted">
               {subtitle}
             </span>
           )}

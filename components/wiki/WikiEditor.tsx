@@ -197,15 +197,17 @@ export function WikiEditor({
 
   return (
     <WikiEditorContext.Provider value={{ navItems, onNavigate, editable }}>
-      <FadeIn className="relative mx-auto w-full max-w-6xl flex-1 px-4 py-12 sm:px-12">
+      <FadeIn className="relative mx-auto w-full max-w-6xl flex-1 px-4 py-8 sm:px-8 sm:py-12 md:px-12">
         {isPending && (
-          <div className="absolute top-4 right-12 animate-pulse text-xs text-text-muted">
+          <div className="absolute top-4 right-4 animate-pulse text-xs text-text-muted sm:right-12">
             저장 중...
           </div>
         )}
 
-        <div className="mb-8 px-[50px]">
-          <h1 className="text-4xl font-bold tracking-tight text-text-primary">{page.title}</h1>
+        <div className="mb-6 px-0 md:mb-8 md:px-12">
+          <h1 className="text-2xl font-bold tracking-tight text-text-primary sm:text-3xl md:text-4xl">
+            {page.title}
+          </h1>
           {page.excerpt && (
             <p className="mt-4 text-sm font-light text-text-muted">{page.excerpt}</p>
           )}
