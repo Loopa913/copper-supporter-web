@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { Loader2, Save, Check, Plus, Trash2, FolderPlus, FileText, ChevronRight } from "lucide-react";
+import { Loader2, Save, Check, Plus, Trash2, FolderPlus, FileText, ChevronRight, ChevronUp, ChevronDown } from "lucide-react";
 import { updateSiteContent, updateSiteContentBatch } from "@/app/admin/actions";
 import { SoftCard } from "@/components/ui/SoftCard";
 import { cn } from "@/lib/utils/cn";
@@ -50,6 +50,16 @@ export function WikiCategoryCmsEditor({
     if (cat) {
       setPages(pages.filter((p) => p.categorySlug !== cat.slug));
     }
+  };
+
+  const moveCategory = (index: number, direction: "up" | "down") => {
+    setCategories((prev) => {
+      const next = [...prev];
+      const targetIndex = direction === "up" ? index - 1 : index + 1;
+      if (targetIndex < 0 || targetIndex >= next.length) return prev;
+      [next[index], next[targetIndex]] = [next[targetIndex], next[index]];
+      return next;
+    });
   };
 
   const handleChangeCategory = (id: string, field: keyof WikiCategory, value: string) => {
@@ -213,7 +223,7 @@ export function WikiCategoryCmsEditor({
             위키 카테고리 및 문서 구조 관리
           </h2>
           <p className="mt-1 text-xs font-light text-text-muted">
-            사이드바에 표시될 카테고리와 문서를 추가하거나 삭제합니다. 문서 본문 편집은 위키 페이지에서 직접 가능합니다.
+            사이드바에 표시될 카테고리와 문서를 추가하거나 삭제합니다. 왼쪽 화살표로 카테고리 순서를 변경할 수 있습니다.
           </p>
         </div>
         <button
@@ -240,11 +250,33 @@ export function WikiCategoryCmsEditor({
       </div>
 
       <div className="p-6 space-y-6">
-        {categories.map((cat) => {
+        {categories.map((cat, index) => {
           const categoryPages = pages.filter((p) => p.categorySlug === cat.slug);
           return (
             <div key={cat.id} className="rounded-xl border border-border bg-white p-5 shadow-sm">
               <div className="flex items-start gap-4">
+                <div className="flex shrink-0 flex-col items-center gap-1 pt-1">
+                  <button
+                    type="button"
+                    onClick={() => moveCategory(index, "up")}
+                    disabled={disabled || index === 0}
+                    className="rounded-md p-1 text-text-muted hover:bg-black/5 hover:text-copper disabled:cursor-not-allowed disabled:opacity-30"
+                    title="위로 이동"
+                  >
+                    <ChevronUp className="h-4 w-4" />
+                  </button>
+                  <span className="text-[10px] font-medium text-text-muted">{index + 1}</span>
+                  <button
+                    type="button"
+                    onClick={() => moveCategory(index, "down")}
+                    disabled={disabled || index === categories.length - 1}
+                    className="rounded-md p-1 text-text-muted hover:bg-black/5 hover:text-copper disabled:cursor-not-allowed disabled:opacity-30"
+                    title="아래로 이동"
+                  >
+                    <ChevronDown className="h-4 w-4" />
+                  </button>
+                </div>
+
                 <div className="flex-1 space-y-3">
                   <div className="flex flex-col sm:flex-row gap-3">
                     <input

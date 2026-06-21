@@ -35,9 +35,6 @@ export function WikiShell({ isAdmin = false, initialContent }: WikiShellProps) {
   const handleNavigate = (slug: string) => {
     setActiveSlug(slug);
     setIsEditingStructure(false);
-    if (window.innerWidth < 768) {
-      setSidebarOpen(false);
-    }
   };
 
   useEffect(() => {
@@ -45,10 +42,7 @@ export function WikiShell({ isAdmin = false, initialContent }: WikiShellProps) {
     if (hashSlug && navItems.some((item) => item.slug === hashSlug)) {
       setActiveSlug(hashSlug);
     }
-    if (window.innerWidth < 768) {
-      setSidebarOpen(false);
-    }
-  }, []);
+  }, [navItems]);
 
   useEffect(() => {
     if (!activeSlug) return;
@@ -84,19 +78,10 @@ export function WikiShell({ isAdmin = false, initialContent }: WikiShellProps) {
 
   return (
     <div className="font-wiki relative flex min-h-[calc(100vh-72px)] bg-white">
-      {sidebarOpen && (
-        <div
-          className="absolute inset-0 z-10 bg-black/20 md:hidden"
-          onClick={() => setSidebarOpen(false)}
-        />
-      )}
-
       <aside
         className={cn(
-          "absolute inset-y-0 left-0 z-20 flex h-full flex-col border-r border-border bg-[#FBFBFA] transition-all duration-300 ease-in-out md:static md:h-auto md:shrink-0",
-          sidebarOpen
-            ? "w-64 translate-x-0 shadow-2xl md:shadow-none"
-            : "w-64 -translate-x-full overflow-hidden border-0 md:w-0 md:translate-x-0"
+          "flex h-auto shrink-0 flex-col border-r border-border bg-[#FBFBFA] transition-all duration-300 ease-in-out",
+          sidebarOpen ? "w-64" : "w-0 overflow-hidden border-0"
         )}
       >
         <div className="flex-1 overflow-y-auto">
@@ -108,7 +93,7 @@ export function WikiShell({ isAdmin = false, initialContent }: WikiShellProps) {
           />
         </div>
 
-        {isAdmin && (
+        {isAdmin && sidebarOpen && (
           <div className="border-t border-border p-4">
             <button
               type="button"

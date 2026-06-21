@@ -16,46 +16,46 @@ export function WikiPageNavigation({ prev, next, onNavigate }: WikiPageNavigatio
   if (!prev && !next) return null;
 
   return (
-    <div className="mt-8 border-t border-border bg-[#FBFBFA]/50 px-4 py-8 sm:px-5 md:bg-transparent md:py-12">
-      <div className="mx-auto flex w-full max-w-6xl flex-col items-stretch justify-between gap-3 sm:gap-4 sm:flex-row md:px-12">
+    <div className="mt-8 border-t border-border px-5 py-12">
+      <div className="mx-auto flex w-full max-w-6xl flex-row items-stretch justify-between gap-4 px-12">
         {prev ? (
           <button
             type="button"
             onClick={() => onNavigate(prev.slug)}
-            className="group flex w-full flex-1 items-center gap-3 rounded-xl border border-border bg-white px-4 py-3.5 text-left transition-all duration-300 ease-in-out hover:-translate-y-0.5 hover:border-copper/30 hover:shadow-md sm:gap-4 sm:rounded-full sm:px-8 sm:py-4"
+            className="group flex w-full flex-1 items-center gap-4 rounded-full border border-border bg-white px-8 py-4 text-left transition-all duration-300 ease-in-out hover:-translate-y-0.5 hover:border-copper/30 hover:shadow-md"
           >
             <ArrowLeft className="h-5 w-5 shrink-0 text-text-muted transition-colors group-hover:text-copper" />
             <div className="min-w-0 flex-1">
-              <span className="block text-[11px] font-medium tracking-wide text-text-muted transition-colors group-hover:text-copper/70 sm:text-xs">
+              <span className="block truncate text-xs font-medium tracking-wide text-text-muted transition-colors group-hover:text-copper/70">
                 {prev.caption || "이전 문서"}
               </span>
-              <span className="mt-0.5 block break-words text-sm font-semibold leading-snug tracking-tight text-text-primary transition-colors group-hover:text-copper sm:truncate sm:text-base">
+              <span className="mt-0.5 block truncate text-base font-semibold tracking-tight text-text-primary transition-colors group-hover:text-copper">
                 {prev.title}
               </span>
             </div>
           </button>
         ) : (
-          <div className="hidden flex-1 sm:block" />
+          <div className="flex-1" />
         )}
 
         {next ? (
           <button
             type="button"
             onClick={() => onNavigate(next.slug)}
-            className="group flex w-full flex-1 items-center gap-3 rounded-xl border border-border bg-white px-4 py-3.5 text-left transition-all duration-300 ease-in-out hover:-translate-y-0.5 hover:border-copper/30 hover:shadow-md sm:justify-end sm:gap-4 sm:rounded-full sm:px-8 sm:py-4 sm:text-right"
+            className="group flex w-full flex-1 items-center justify-end gap-4 rounded-full border border-border bg-white px-8 py-4 text-right transition-all duration-300 ease-in-out hover:-translate-y-0.5 hover:border-copper/30 hover:shadow-md"
           >
             <div className="min-w-0 flex-1">
-              <span className="block text-[11px] font-medium tracking-wide text-text-muted transition-colors group-hover:text-copper/70 sm:text-xs">
+              <span className="block truncate text-xs font-medium tracking-wide text-text-muted transition-colors group-hover:text-copper/70">
                 {next.caption || "다음 문서"}
               </span>
-              <span className="mt-0.5 block break-words text-sm font-semibold leading-snug tracking-tight text-text-primary transition-colors group-hover:text-copper sm:truncate sm:text-base">
+              <span className="mt-0.5 block truncate text-base font-semibold tracking-tight text-text-primary transition-colors group-hover:text-copper">
                 {next.title}
               </span>
             </div>
             <ArrowRight className="h-5 w-5 shrink-0 text-text-muted transition-colors group-hover:text-copper" />
           </button>
         ) : (
-          <div className="hidden flex-1 sm:block" />
+          <div className="flex-1" />
         )}
       </div>
     </div>
