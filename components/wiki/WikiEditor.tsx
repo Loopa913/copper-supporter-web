@@ -17,8 +17,8 @@ import {
 import "@blocknote/core/fonts/inter.css";
 import "@blocknote/shadcn/style.css";
 import type { WikiPage } from "@/lib/data/wiki";
-import { FadeIn } from "@/components/ui/FadeIn";
 import { saveWikiPageContent } from "@/app/wiki/actions";
+import { WIKI_BLOCKNOTE_PORTAL_ELEMENTS } from "@/lib/wiki/blocknote-portals";
 import { WikiEditorContext } from "@/components/wiki/WikiEditorContext";
 import { wikiBlockNoteSchema } from "@/lib/wiki/blocknote-schema";
 import {
@@ -197,7 +197,7 @@ export function WikiEditor({
 
   return (
     <WikiEditorContext.Provider value={{ navItems, onNavigate, editable }}>
-      <FadeIn className="relative mx-auto w-full max-w-6xl flex-1 px-12 py-12">
+      <div className="wiki-editor-shell relative mx-auto w-full max-w-6xl flex-1 px-12 py-12">
         {isPending && (
           <div className="absolute top-4 right-12 animate-pulse text-xs text-text-muted">
             저장 중...
@@ -217,21 +217,27 @@ export function WikiEditor({
           theme="light"
           className="font-pretendard wiki-blocknote"
           slashMenu={false}
+          portalElements={WIKI_BLOCKNOTE_PORTAL_ELEMENTS}
           onChange={() => {
             if (!editable) return;
             debouncedSave(JSON.stringify(editor.document));
           }}
         >
-          <SuggestionMenuController triggerCharacter="/" getItems={getSlashMenuItems} />
+          <SuggestionMenuController
+            triggerCharacter="/"
+            getItems={getSlashMenuItems}
+            portalElement={null}
+          />
           {editable && (
             <SuggestionMenuController
               triggerCharacter="@"
               getItems={getMentionMenuItems}
               minQueryLength={0}
+              portalElement={null}
             />
           )}
         </BlockNoteView>
-      </FadeIn>
+      </div>
     </WikiEditorContext.Provider>
   );
 }
