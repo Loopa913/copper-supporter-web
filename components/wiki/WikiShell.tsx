@@ -77,14 +77,14 @@ export function WikiShell({ isAdmin = false, initialContent }: WikiShellProps) {
     currentIndex < navItems.length - 1 && currentIndex !== -1 ? navItems[currentIndex + 1] : null;
 
   return (
-    <div className="font-wiki relative flex min-h-[calc(100vh-72px)] bg-white">
+    <div className="font-wiki relative flex min-h-[calc(100vh-72px)] bg-white overflow-visible">
       <aside
         className={cn(
           "flex h-auto shrink-0 flex-col border-r border-border bg-[#FBFBFA] transition-all duration-300 ease-in-out",
           sidebarOpen ? "w-64" : "w-0 overflow-hidden border-0"
         )}
       >
-        <div className="flex-1 overflow-y-auto">
+        <div className="flex-1 overflow-visible">
           <WikiSidebar
             categories={initialContent.categories}
             pages={initialContent.pages}
@@ -107,7 +107,7 @@ export function WikiShell({ isAdmin = false, initialContent }: WikiShellProps) {
         )}
       </aside>
 
-      <div className="flex min-w-0 flex-1 flex-col">
+      <div className="flex min-w-0 flex-1 flex-col overflow-visible">
         <div className="flex items-center gap-3 border-b border-border px-5 py-4">
           <button
             type="button"
@@ -122,7 +122,7 @@ export function WikiShell({ isAdmin = false, initialContent }: WikiShellProps) {
           </h1>
         </div>
 
-        <div className="relative flex flex-1 flex-col overflow-y-auto">
+        <div className="relative flex flex-1 flex-col overflow-visible wiki-editor-scroll-container">
           <div className="flex-1">
             {isEditingStructure ? (
               <div className="mx-auto w-full max-w-6xl p-8">

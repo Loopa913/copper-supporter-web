@@ -18,7 +18,6 @@ import "@blocknote/core/fonts/inter.css";
 import "@blocknote/shadcn/style.css";
 import type { WikiPage } from "@/lib/data/wiki";
 import { saveWikiPageContent } from "@/app/wiki/actions";
-import { WIKI_BLOCKNOTE_PORTAL_ELEMENTS } from "@/lib/wiki/blocknote-portals";
 import { WikiEditorContext } from "@/components/wiki/WikiEditorContext";
 import { wikiBlockNoteSchema } from "@/lib/wiki/blocknote-schema";
 import {
@@ -228,7 +227,6 @@ export function WikiEditor({
           theme="light"
           className="font-pretendard wiki-blocknote"
           slashMenu={false}
-          portalElements={WIKI_BLOCKNOTE_PORTAL_ELEMENTS}
           onChange={() => {
             if (!editable) return;
             debouncedSave(JSON.stringify(editor.document));
