@@ -142,14 +142,28 @@
  * BlockNote의 모든 팝오버, 툴바, 슬래시 메뉴 등을 
  * Radix UI / Shadcn의 z-index보다 훨씬 높게 강제 설정 
  */
+.bn-root {
+  isolation: isolate;
+  z-index: 10;
+}
+
 [data-radix-popper-content-wrapper],
+.z-50[data-state],
+div[role="tooltip"],
+div[role="dialog"],
+div[role="menu"],
 .bn-popover,
 .bn-menu-dropdown,
 .bn-toolbar,
 .bn-formatting-toolbar,
-.bn-suggestion-menu {
-  z-index: 99999 !important;
+.bn-suggestion-menu,
+.bn-tooltip {
+  z-index: 2147483647 !important;
+  transform: translateZ(1000px) !important;
+  pointer-events: auto !important;
 }
+
+
 
 @layer utilities {
   .leading-loose {

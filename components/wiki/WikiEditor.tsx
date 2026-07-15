@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useTransition } from "react";
+import { useCallback, useEffect, useMemo, useRef, useTransition, useState } from "react";
 import {
   useCreateBlockNote,
   getDefaultReactSlashMenuItems,
@@ -164,6 +164,15 @@ export function WikiEditor({
     [editor]
   );
 
+  const portalContainerRef = useRef<HTMLDivElement>(null);
+  const [portalElement, setPortalElement] = useState<HTMLElement | null>(null);
+
+  useEffect(() => {
+    if (portalContainerRef.current) {
+      setPortalElement(portalContainerRef.current);
+    }
+  }, []);
+
   const getSlashMenuItems = useCallback(
     async (query: string) => {
       let defaultItems: any[] = [];
@@ -241,19 +250,41 @@ export function WikiEditor({
             if (!editable) return;
             debouncedSave(JSON.stringify(editor.document));
           }}
+          portalElements={portalElement ? { default: portalElement } : undefined}
         >
           <SuggestionMenuController
             triggerCharacter="/"
             getItems={getSlashMenuItems}
+            portalElement={portalElement || undefined}
           />
           {editable && (
             <SuggestionMenuController
               triggerCharacter="@"
               getItems={getMentionMenuItems}
               minQueryLength={0}
+              portalElement={portalElement || undefined}
             />
           )}
         </BlockNoteView>
+
+        {/* 
+          포털 컨테이너: BlockNote의 팝오버들이 인라인으로 렌더링되어 다른 텍스트 블록 뒤에 가려지는 것을 방지합니다.
+          별도의 최상위 absolute 컨테이너로 빼주되, theme(light)와 bn-root 클래스를 상속받게 하여 스타일이 깨지지 않게 합니다.
+        */}
+        <div
+          ref={portalContainerRef}
+          className="bn-root bn-shadcn light font-pretendard"
+          style={{
+            position: "absolute",
+            zIndex: 999999,
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: 0,
+            pointerEvents: "none",
+          }}
+          data-theme="light"
+        />
       </div>
     </WikiEditorContext.Provider>
   );
