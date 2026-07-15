@@ -8,10 +8,8 @@ export default async function WikiPage() {
   const isAdmin = await checkIsAdmin();
   const wikiContent = await getWikiContent();
   return (
-    <div className="overflow-x-auto">
-      <div className="min-w-[1024px]">
-        <WikiShell isAdmin={isAdmin} initialContent={wikiContent} />
-      </div>
+    <div className="min-w-[1024px]">
+      <WikiShell isAdmin={isAdmin} initialContent={wikiContent} />
     </div>
   );
 }

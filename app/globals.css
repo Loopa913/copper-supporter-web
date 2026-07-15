@@ -138,6 +138,19 @@
   overflow: visible !important;
 }
 
+/* 
+ * BlockNote의 모든 팝오버, 툴바, 슬래시 메뉴 등을 
+ * Radix UI / Shadcn의 z-index보다 훨씬 높게 강제 설정 
+ */
+[data-radix-popper-content-wrapper],
+.bn-popover,
+.bn-menu-dropdown,
+.bn-toolbar,
+.bn-formatting-toolbar,
+.bn-suggestion-menu {
+  z-index: 99999 !important;
+}
+
 @layer utilities {
   .leading-loose {
     line-height: 1.85;

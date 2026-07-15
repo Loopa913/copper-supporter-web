@@ -93,8 +93,8 @@ export function WikiEditor({
       dictionary: {
         ...locales.ko,
         slash_menu: {
-          ...locales.ko.slash_menu,
-          ...multiColumnLocales.ko.slash_menu,
+          ...locales.ko?.slash_menu,
+          ...(multiColumnLocales.ko?.slash_menu || {}),
         },
       },
       links: {
@@ -166,18 +166,28 @@ export function WikiEditor({
 
   const getSlashMenuItems = useCallback(
     async (query: string) => {
+      let defaultItems: any[] = [];
+      let multiColumnItems: any[] = [];
+      
       try {
-        const defaultItems = getDefaultReactSlashMenuItems(editor);
-        const multiColumnItems = editable ? getMultiColumnSlashMenuItems(editor) : [];
-        const customItems = editable ? [wikiButtonSlashItem] : [];
-        return filterMenuItems(
-          [...customItems, ...multiColumnItems, ...defaultItems],
-          query
-        );
-      } catch (error) {
-        console.error("Failed to load wiki slash menu items:", error);
-        return filterMenuItems(editable ? [wikiButtonSlashItem] : [], query);
+        defaultItems = getDefaultReactSlashMenuItems(editor);
+      } catch (err) {
+        console.error("Failed to load default slash items:", err);
       }
+
+      try {
+        if (editable) {
+          multiColumnItems = getMultiColumnSlashMenuItems(editor);
+        }
+      } catch (err) {
+        console.error("Failed to load multi-column slash items:", err);
+      }
+
+      const customItems = editable ? [wikiButtonSlashItem] : [];
+      return filterMenuItems(
+        [...customItems, ...multiColumnItems, ...defaultItems],
+        query
+      );
     },
     [editor, editable, wikiButtonSlashItem]
   );
