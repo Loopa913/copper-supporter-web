@@ -115,34 +115,16 @@
   }
 }
 
-/* 
- * BlockNote 팝오버들이 다른 UI보다 위에 오도록 강제
- * --bn-ui-base-z-index: shadcn/core 팝오버 z-index를 조정
- */
-:root {
-  --bn-ui-base-z-index: 1000;
-}
 
-/* 
- * 1) 위키 에디터의 스크롤 컨테이너(.flex-1.overflow-y-auto)가 stacking context를 만들어버리면
- * 그 안에 있는 팝오버가 GNB/사이드바/본문 위로 탈출하지 못합니다.
- * 이를 위해 위키 에디터와 셸 구조 내부의 overflow, position 등을 리셋하거나 강제로 visible 처리합니다.
- */
-.wiki-editor-scroll-container {
-  overflow: visible !important;
-}
 
-/* BlockNote 에디터 자체 내부에서도 overflow가 막히지 않도록 처리 */
-.wiki-blocknote .bn-container,
-.wiki-blocknote .bn-editor {
-  overflow: visible !important;
-}
+
 
 /* 위키 에디터 포털 내부의 팝오버 요소들이 마우스 이벤트를 받을 수 있도록 복구 */
 .wiki-portal-root > * {
-  pointer-events: auto;
+  pointer-events: auto !important;
 }
 
+/* BlockNote UI 팝오버 z-index를 최상단으로 올리기 */
 [data-radix-popper-content-wrapper],
 .z-50[data-state],
 div[role="tooltip"],
@@ -155,11 +137,12 @@ div[role="menu"],
 .bn-suggestion-menu,
 .bn-tooltip {
   z-index: 2147483647 !important;
-  transform: translateZ(1000px) !important;
-  pointer-events: auto !important;
 }
 
-
+:root {
+  /* BlockNote의 팝오버 메뉴를 최상위 레벨로 올림 */
+  --bn-ui-base-z-index: 999999;
+}
 
 @layer utilities {
   .leading-loose {
