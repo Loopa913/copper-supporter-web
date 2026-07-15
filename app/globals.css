@@ -114,27 +114,9 @@
     padding-inline: 54px;
   }
 
-  .wiki-blocknote .bn-container,
-  .wiki-blocknote .bn-editor {
-    overflow: visible;
-  }
-
+  /* BlockNote 팝오버들이 다른 UI보다 위에 오도록 에디터 래퍼의 base z-index를 조정 */
   .wiki-editor-shell {
-    position: relative;
-    isolation: isolate;
-  }
-
-  .wiki-blocknote-portals {
-    position: absolute;
-    inset: 0;
-    z-index: 200;
-    overflow: visible;
-    pointer-events: none;
-    --bn-ui-base-z-index: 0;
-  }
-
-  .wiki-blocknote-portals > * {
-    pointer-events: auto;
+    --bn-ui-base-z-index: 100;
   }
 }
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState, useTransition } from "react";
+import { useCallback, useEffect, useMemo, useRef, useTransition } from "react";
 import {
   useCreateBlockNote,
   getDefaultReactSlashMenuItems,
@@ -18,7 +18,7 @@ import "@blocknote/core/fonts/inter.css";
 import "@blocknote/shadcn/style.css";
 import type { WikiPage } from "@/lib/data/wiki";
 import { saveWikiPageContent } from "@/app/wiki/actions";
-import { WIKI_BLOCKNOTE_PORTAL_ELEMENTS, WIKI_BLOCKNOTE_PORTAL_ID } from "@/lib/wiki/blocknote-portals";
+import { WIKI_BLOCKNOTE_PORTAL_ELEMENTS } from "@/lib/wiki/blocknote-portals";
 import { WikiEditorContext } from "@/components/wiki/WikiEditorContext";
 import { wikiBlockNoteSchema } from "@/lib/wiki/blocknote-schema";
 import {
@@ -61,7 +61,6 @@ export function WikiEditor({
 }: WikiEditorProps) {
   const [isPending, startTransition] = useTransition();
   const cleanedLegacyBlocksRef = useRef(false);
-  const [portalHost, setPortalHost] = useState<HTMLDivElement | null>(null);
 
   const { blocks: initialBlocks, wasSanitized } = useMemo(
     () => sanitizeWikiInitialContent(page.content),
@@ -223,13 +222,6 @@ export function WikiEditor({
           )}
         </div>
 
-        <div
-          id={WIKI_BLOCKNOTE_PORTAL_ID}
-          ref={setPortalHost}
-          className="wiki-blocknote-portals"
-          aria-hidden="true"
-        />
-
         <BlockNoteView
           editor={editor}
           editable={editable}
@@ -245,14 +237,12 @@ export function WikiEditor({
           <SuggestionMenuController
             triggerCharacter="/"
             getItems={getSlashMenuItems}
-            portalElement={portalHost ?? undefined}
           />
           {editable && (
             <SuggestionMenuController
               triggerCharacter="@"
               getItems={getMentionMenuItems}
               minQueryLength={0}
-              portalElement={portalHost ?? undefined}
             />
           )}
         </BlockNoteView>
