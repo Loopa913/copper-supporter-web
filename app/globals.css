@@ -138,13 +138,9 @@
   overflow: visible !important;
 }
 
-/* 
- * BlockNote의 모든 팝오버, 툴바, 슬래시 메뉴 등을 
- * Radix UI / Shadcn의 z-index보다 훨씬 높게 강제 설정 
- */
-.bn-root {
-  isolation: isolate;
-  z-index: 10;
+/* 위키 에디터 포털 내부의 팝오버 요소들이 마우스 이벤트를 받을 수 있도록 복구 */
+.wiki-portal-root > * {
+  pointer-events: auto;
 }
 
 [data-radix-popper-content-wrapper],

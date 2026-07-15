@@ -164,12 +164,27 @@ export function WikiEditor({
     [editor]
   );
 
-  const portalContainerRef = useRef<HTMLDivElement>(null);
   const [portalElement, setPortalElement] = useState<HTMLElement | null>(null);
 
   useEffect(() => {
-    if (portalContainerRef.current) {
-      setPortalElement(portalContainerRef.current);
+    if (typeof document !== "undefined") {
+      // document.body의 최하단에 전용 포털을 생성하여 그 어떤 요소보다도 위에 렌더링되도록 강제합니다.
+      const el = document.createElement("div");
+      el.className = "bn-root bn-shadcn light font-pretendard wiki-portal-root";
+      el.style.position = "absolute";
+      el.style.zIndex = "2147483647";
+      el.style.top = "0";
+      el.style.left = "0";
+      el.style.width = "100%";
+      el.style.pointerEvents = "none"; // 클릭은 하위 요소(팝오버)에서 받도록 함
+      document.body.appendChild(el);
+      setPortalElement(el);
+
+      return () => {
+        if (document.body.contains(el)) {
+          document.body.removeChild(el);
+        }
+      };
     }
   }, []);
 
@@ -266,25 +281,6 @@ export function WikiEditor({
             />
           )}
         </BlockNoteView>
-
-        {/* 
-          포털 컨테이너: BlockNote의 팝오버들이 인라인으로 렌더링되어 다른 텍스트 블록 뒤에 가려지는 것을 방지합니다.
-          별도의 최상위 absolute 컨테이너로 빼주되, theme(light)와 bn-root 클래스를 상속받게 하여 스타일이 깨지지 않게 합니다.
-        */}
-        <div
-          ref={portalContainerRef}
-          className="bn-root bn-shadcn light font-pretendard"
-          style={{
-            position: "absolute",
-            zIndex: 999999,
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: 0,
-            pointerEvents: "none",
-          }}
-          data-theme="light"
-        />
       </div>
     </WikiEditorContext.Provider>
   );
