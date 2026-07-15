@@ -114,33 +114,28 @@
     padding-inline: 54px;
   }
 
-  .wiki-blocknote .bn-container {
+  .wiki-blocknote .bn-container,
+  .wiki-blocknote .bn-editor {
     overflow: visible;
   }
 
-  .wiki-blocknote .bn-editor,
-  .wiki-blocknote .bn-block-group {
+  .wiki-editor-shell {
+    position: relative;
+    isolation: isolate;
+  }
+
+  .wiki-blocknote-portals {
+    position: absolute;
+    inset: 0;
+    z-index: 200;
     overflow: visible;
+    pointer-events: none;
+    --bn-ui-base-z-index: 0;
   }
 
-  .wiki-blocknote .bn-block-outer {
-    position: relative;
-    z-index: 0;
+  .wiki-blocknote-portals > * {
+    pointer-events: auto;
   }
-
-  .wiki-blocknote .bn-block-outer:has(.ProseMirror-selectednode) {
-    z-index: 1;
-  }
-
-  .wiki-blocknote [data-content-type="none"] {
-    position: relative;
-    z-index: 0;
-  }
-}
-
-/* BlockNote floating UI (body portal) — inherit base z-index while wiki is open */
-body:has(.wiki-blocknote) {
-  --bn-ui-base-z-index: 40;
 }
 
 @layer utilities {

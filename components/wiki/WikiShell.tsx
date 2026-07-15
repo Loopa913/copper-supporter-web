@@ -122,7 +122,7 @@ export function WikiShell({ isAdmin = false, initialContent }: WikiShellProps) {
           </h1>
         </div>
 
-        <div className="relative flex flex-1 flex-col overflow-y-auto overflow-x-visible">
+        <div className="relative flex flex-1 flex-col overflow-y-auto">
           <div className="flex-1">
             {isEditingStructure ? (
               <div className="mx-auto w-full max-w-6xl p-8">

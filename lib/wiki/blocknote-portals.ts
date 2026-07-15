@@ -1,14 +1,14 @@
 import type { PortalElementsMap } from "@blocknote/react";
 
-/** BlockNote floating UI를 document.body로 보내 위키 스크롤/overflow stacking 문제를 피합니다. */
+export const WIKI_BLOCKNOTE_PORTAL_ID = "wiki-blocknote-portals";
+
+/** 위키 에디터 위에 뜨는 BlockNote floating UI 전용 레이어 */
 export const WIKI_BLOCKNOTE_PORTAL_ELEMENTS: PortalElementsMap = {
-  default: null,
-  formattingToolbar: null,
-  linkToolbar: null,
-  slashMenu: null,
-  emojiPicker: null,
-  sideMenu: null,
-  filePanel: null,
-  tableHandles: null,
-  comments: null,
+  formattingToolbar: `#${WIKI_BLOCKNOTE_PORTAL_ID}`,
+  linkToolbar: `#${WIKI_BLOCKNOTE_PORTAL_ID}`,
+  slashMenu: `#${WIKI_BLOCKNOTE_PORTAL_ID}`,
+  emojiPicker: `#${WIKI_BLOCKNOTE_PORTAL_ID}`,
+  sideMenu: `#${WIKI_BLOCKNOTE_PORTAL_ID}`,
+  filePanel: `#${WIKI_BLOCKNOTE_PORTAL_ID}`,
+  tableHandles: `#${WIKI_BLOCKNOTE_PORTAL_ID}`,
 };
