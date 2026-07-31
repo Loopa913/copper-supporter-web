@@ -18,6 +18,7 @@ import "@blocknote/core/fonts/inter.css";
 import "@blocknote/shadcn/style.css";
 import type { WikiPage } from "@/lib/data/wiki";
 import { saveWikiPageContent } from "@/app/wiki/actions";
+import { WIKI_BLOCKNOTE_PORTAL_ELEMENTS } from "@/lib/wiki/blocknote-portals";
 import { WikiEditorContext } from "@/components/wiki/WikiEditorContext";
 import { wikiBlockNoteSchema } from "@/lib/wiki/blocknote-schema";
 import {
@@ -204,31 +205,6 @@ export function WikiEditor({
     [editor]
   );
 
-  const [portalElement, setPortalElement] = useState<HTMLElement | null>(null);
-
-  useEffect(() => {
-    if (typeof document !== "undefined") {
-      // document.body의 최하단에 전용 포털을 생성하여 그 어떤 요소보다도 위에 렌더링되도록 강제합니다.
-      const el = document.createElement("div");
-      el.className = "bn-root bn-shadcn light font-pretendard wiki-portal-root";
-      el.style.position = "fixed"; // absolute 대신 fixed로 변경하여 스크롤에 관계없이 최상단 유지
-      el.style.zIndex = "2147483647";
-      el.style.top = "0";
-      el.style.left = "0";
-      el.style.width = "100%";
-      el.style.height = "0"; // 높이를 0으로 주어 레이아웃에 영향을 주지 않음
-      el.style.pointerEvents = "none"; // 클릭은 하위 요소(팝오버)에서 받도록 함
-      document.body.appendChild(el);
-      setPortalElement(el);
-
-      return () => {
-        if (document.body.contains(el)) {
-          document.body.removeChild(el);
-        }
-      };
-    }
-  }, []);
-
   const getSlashMenuItems = useCallback(
     async (query: string) => {
       let defaultItems: any[] = [];
@@ -302,23 +278,23 @@ export function WikiEditor({
           theme="light"
           className="font-pretendard wiki-blocknote"
           slashMenu={false}
+          portalElements={WIKI_BLOCKNOTE_PORTAL_ELEMENTS}
           onChange={() => {
             if (!editable) return;
             debouncedSave(JSON.stringify(editor.document));
           }}
-          portalElements={portalElement ? { default: portalElement } : undefined}
         >
           <SuggestionMenuController
             triggerCharacter="/"
             getItems={getSlashMenuItems}
-            portalElement={portalElement || undefined}
+            portalElement={null}
           />
           {editable && (
             <SuggestionMenuController
               triggerCharacter="@"
               getItems={getMentionMenuItems}
               minQueryLength={0}
-              portalElement={portalElement || undefined}
+              portalElement={null}
             />
           )}
         </BlockNoteView>

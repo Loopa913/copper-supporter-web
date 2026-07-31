@@ -138,47 +138,53 @@
   .wiki-blocknote .bn-editor {
     padding-inline: 54px;
   }
+
+  .wiki-blocknote .bn-container {
+    overflow: visible;
+  }
+
+  .wiki-blocknote .bn-editor,
+  .wiki-blocknote .bn-block-group {
+    overflow: visible;
+  }
+
+  .wiki-blocknote .bn-block-outer {
+    position: relative;
+    z-index: 0;
+  }
+
+  .wiki-blocknote .bn-block-outer:hover {
+    z-index: 5;
+  }
+
+  .wiki-blocknote .bn-block-outer:has(.ProseMirror-selectednode),
+  .wiki-blocknote .bn-block-outer:focus-within {
+    z-index: 10;
+  }
+
+  .wiki-blocknote [data-content-type="none"] {
+    position: relative;
+    z-index: 0;
+  }
 }
 
-
-
-
-
-/* 위키 에디터 포털 내부의 팝오버 요소들이 마우스 이벤트를 받을 수 있도록 복구 */
-.wiki-portal-root > * {
-  pointer-events: auto !important;
+/* BlockNote floating UI (body portal) — inherit base z-index while wiki is open */
+body:has(.wiki-blocknote) {
+  --bn-ui-base-z-index: 40;
 }
 
-/* BlockNote UI 팝오버 z-index를 최상단으로 올리기 및 배경색 지정 */
-[data-radix-popper-content-wrapper],
-.z-50[data-state],
-div[role="tooltip"],
-div[role="dialog"],
-div[role="menu"],
+/* BlockNote UI 팝오버 배경색 및 그림자 복구 (투명하게 렌더링되어 글자가 겹쳐 보이는 현상 방지) */
+[data-radix-popper-content-wrapper] > div,
 .bn-popover,
 .bn-menu-dropdown,
 .bn-toolbar,
 .bn-formatting-toolbar,
 .bn-suggestion-menu,
-.bn-tooltip {
-  z-index: 2147483647 !important;
-}
-
-/* Shadcn 팝오버들이 투명하게 렌더링되어 글자가 겹쳐 보이는 현상 방지 */
-.wiki-portal-root [data-radix-popper-content-wrapper] > div,
-.wiki-portal-root .bn-popover,
-.wiki-portal-root .bn-menu-dropdown,
-.wiki-portal-root .bn-toolbar,
-.wiki-portal-root .bn-formatting-toolbar,
-.wiki-portal-root .bn-suggestion-menu {
+.bn-panel-popover,
+.bn-panel {
   background-color: #ffffff !important;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
   border: 1px solid rgba(0, 0, 0, 0.1) !important;
-}
-
-:root {
-  /* BlockNote의 팝오버 메뉴를 최상위 레벨로 올림 */
-  --bn-ui-base-z-index: 999999;
 }
 
 @layer utilities {
