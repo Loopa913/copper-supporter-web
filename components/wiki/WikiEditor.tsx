@@ -108,6 +108,12 @@ export function WikiEditor({
         },
       },
       uploadFile: async (file: File) => {
+        // 비디오 파일 업로드 차단 (유튜브 링크 사용 권장)
+        if (file.type.startsWith("video/")) {
+          alert("비디오 파일 직접 업로드는 지원하지 않습니다. 유튜브 링크(Embed)를 이용해 주세요.");
+          throw new Error("Video upload is disabled. Use YouTube embed instead.");
+        }
+
         try {
           const supabase = createClient();
           const bucketName = "images";
