@@ -26,6 +26,7 @@ import {
   type WikiNavItem,
 } from "@/lib/wiki/nav-items";
 import { sanitizeWikiInitialContent } from "@/lib/wiki/sanitize-content";
+import { createClient } from "@/lib/supabase/client";
 
 function debounce<T extends (...args: Parameters<T>) => void>(func: T, wait: number) {
   let timeout: ReturnType<typeof setTimeout>;
@@ -66,6 +67,14 @@ export function WikiEditor({
     [page.content]
   );
 
+  const navItemsRef = useRef(navItems);
+  const onNavigateRef = useRef(onNavigate);
+
+  useEffect(() => {
+    navItemsRef.current = navItems;
+    onNavigateRef.current = onNavigate;
+  }, [navItems, onNavigate]);
+
   const handleWikiLinkClick = useCallback(
     (event: MouseEvent) => {
       const anchor = (event.target as HTMLElement | null)?.closest("a");
@@ -77,12 +86,12 @@ export function WikiEditor({
       const slug = getWikiSlugFromHref(href);
       if (!slug) return;
 
-      if (!navItems.some((item) => item.slug === slug)) return;
+      if (!navItemsRef.current.some((item) => item.slug === slug)) return;
 
       event.preventDefault();
-      onNavigate(slug);
+      onNavigateRef.current(slug);
     },
-    [navItems, onNavigate]
+    []
   );
 
   const editor = useCreateBlockNote(
@@ -97,6 +106,37 @@ export function WikiEditor({
           ...(multiColumnLocales.ko?.slash_menu || {}),
         },
       },
+      uploadFile: async (file: File) => {
+        try {
+          const supabase = createClient();
+          const bucketName = "images";
+          const fileExt = file.name.split(".").pop();
+          const fileName = `${Math.random().toString(36).substring(2, 15)}_${Date.now()}.${fileExt}`;
+          const filePath = `uploads/${fileName}`;
+
+          const { error } = await supabase.storage
+            .from(bucketName)
+            .upload(filePath, file, {
+              cacheControl: "3600",
+              upsert: false,
+            });
+
+          if (error) {
+            console.error("Upload error:", error);
+            throw error;
+          }
+
+          const { data } = supabase.storage
+            .from(bucketName)
+            .getPublicUrl(filePath);
+
+          return data.publicUrl;
+        } catch (error) {
+          console.error("Error uploading image:", error);
+          alert("이미지 업로드 중 오류가 발생했습니다.");
+          return "";
+        }
+      },
       links: {
         HTMLAttributes: {
           class: "wiki-internal-link",
@@ -108,7 +148,7 @@ export function WikiEditor({
         },
       },
     },
-    [page.id, handleWikiLinkClick, initialBlocks]
+    [page.id, handleWikiLinkClick]
   );
 
   useEffect(() => {
