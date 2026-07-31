@@ -10,7 +10,7 @@ export const WIKI_BLOCKNOTE_PORTAL_ELEMENTS: PortalElementsMap = {
   linkToolbar: null,
   slashMenu: null,
   emojiPicker: null,
-  sideMenu: null,
+  sideMenu: ".wiki-blocknote .bn-container", // 사이드 메뉴는 에디터 내부에 두어 hover 브리지가 끊기지 않게 함
   filePanel: null,
   tableHandles: null,
   comments: null,
