@@ -131,6 +131,24 @@ export function WikiCategoryCmsEditor({
           >
             <Plus className="h-4 w-4" />
           </button>
+          <div className="mt-1 flex flex-col opacity-0 transition-opacity group-hover:opacity-100 shrink-0">
+            <button
+              type="button"
+              onClick={() => movePage(page.id, "up")}
+              className="p-0.5 text-text-muted hover:text-copper"
+              title="위로 이동"
+            >
+              <ChevronUp className="h-3 w-3" />
+            </button>
+            <button
+              type="button"
+              onClick={() => movePage(page.id, "down")}
+              className="p-0.5 text-text-muted hover:text-copper"
+              title="아래로 이동"
+            >
+              <ChevronDown className="h-3 w-3" />
+            </button>
+          </div>
           <button
             type="button"
             onClick={() => handleRemovePage(page.id)}
@@ -179,6 +197,28 @@ export function WikiCategoryCmsEditor({
 
       const idsToRemove = [id, ...getDescendants(target.slug)];
       return prev.filter(p => !idsToRemove.includes(p.id));
+    });
+  };
+
+  const movePage = (id: string, direction: "up" | "down") => {
+    setPages((prev) => {
+      const pageIndex = prev.findIndex(p => p.id === id);
+      if (pageIndex === -1) return prev;
+      const page = prev[pageIndex];
+      
+      // Find siblings in the current order of `prev`
+      const siblings = prev.filter(p => p.categorySlug === page.categorySlug && p.parentSlug === page.parentSlug);
+      const siblingIndex = siblings.findIndex(p => p.id === id);
+      
+      const targetSiblingIndex = direction === "up" ? siblingIndex - 1 : siblingIndex + 1;
+      if (targetSiblingIndex < 0 || targetSiblingIndex >= siblings.length) return prev;
+      
+      const targetSibling = siblings[targetSiblingIndex];
+      const targetIndexInPrev = prev.findIndex(p => p.id === targetSibling.id);
+      
+      const next = [...prev];
+      [next[pageIndex], next[targetIndexInPrev]] = [next[targetIndexInPrev], next[pageIndex]];
+      return next;
     });
   };
 
