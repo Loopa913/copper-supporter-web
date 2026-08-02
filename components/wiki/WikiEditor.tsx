@@ -211,6 +211,31 @@ export function WikiEditor({
     [editor]
   );
 
+  const youtubeSlashItem = useMemo(
+    () => ({
+      title: "유튜브 영상",
+      subtext: "유튜브 영상 링크를 삽입합니다",
+      aliases: ["유튜브", "영상", "youtube", "video"],
+      group: "미디어",
+      onItemClick: () => {
+        const cursor = editor.getTextCursorPosition();
+        editor.insertBlocks(
+          [
+            {
+              type: "youtube",
+              props: {
+                url: "",
+              },
+            },
+          ],
+          cursor.block,
+          "after"
+        );
+      },
+    }),
+    [editor]
+  );
+
   const getSlashMenuItems = useCallback(
     async (query: string) => {
       let defaultItems: any[] = [];
@@ -230,13 +255,13 @@ export function WikiEditor({
         console.error("Failed to load multi-column slash items:", err);
       }
 
-      const customItems = editable ? [wikiButtonSlashItem] : [];
+      const customItems = editable ? [wikiButtonSlashItem, youtubeSlashItem] : [];
       return filterMenuItems(
         [...customItems, ...multiColumnItems, ...defaultItems],
         query
       );
     },
-    [editor, editable, wikiButtonSlashItem]
+    [editor, editable, wikiButtonSlashItem, youtubeSlashItem]
   );
 
   const getMentionMenuItems = useCallback(

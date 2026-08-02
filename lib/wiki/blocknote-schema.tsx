@@ -1,16 +1,16 @@
-import { BlockNoteSchema } from "@blocknote/core";
+import { BlockNoteSchema, defaultBlockSpecs } from "@blocknote/core";
 import { withMultiColumn } from "@blocknote/xl-multi-column";
 import { createReactBlockSpec } from "@blocknote/react";
 import { WikiPageButtonBlock } from "@/components/wiki/WikiPageButtonBlock";
-import { CustomVideoBlock } from "@/components/wiki/CustomVideoBlock";
+import { YoutubeBlock } from "@/components/wiki/YoutubeBlock";
 
 export const WikiPageButton = createReactBlockSpec(
   {
     type: "wikiButton",
     propSchema: {
-      label: { default: "" },
-      targetSlug: { default: "" },
-      targetTitle: { default: "" },
+      label: { default: "" as const },
+      targetSlug: { default: "" as const },
+      targetTitle: { default: "" as const },
     },
     content: "none",
   },
@@ -20,10 +20,11 @@ export const WikiPageButton = createReactBlockSpec(
 );
 
 export const wikiBlockNoteSchema = withMultiColumn(
-  BlockNoteSchema.create().extend({
+  BlockNoteSchema.create({
     blockSpecs: {
+      ...defaultBlockSpecs,
       wikiButton: WikiPageButton(),
-      video: CustomVideoBlock(),
+      youtube: YoutubeBlock(),
     },
   })
 );

@@ -10,6 +10,7 @@ const SUPPORTED_BLOCK_TYPES = new Set([
   "table",
   "image",
   "video",
+  "youtube",
   "audio",
   "file",
   "wikiButton",
